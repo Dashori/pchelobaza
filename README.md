@@ -11,7 +11,7 @@
 -----
 
 #### Use-case диаграмма системы
-![use-case.png](./images/use-case.png)
+![use-case.svg](./images/use-case.svg)
 -----
 
 #### BPMN диаграмма основных бизнес-процессов
@@ -33,7 +33,7 @@
 -----
 
 #### ER-диаграмма сущностей
-![er.png](./images/er.png)
+![er.svg](./images/er.svg)
 
 -----
 
@@ -43,7 +43,7 @@
 -----
 
 #### Компонентная диаграмма системы
-![upper.png](./images/upper.png)
+![upper.svg](./images/upper.svg)
 
 -----
 
