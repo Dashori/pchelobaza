@@ -48,5 +48,5 @@
 -----
 
 #### Экраны будущего web-приложения на уровне черновых эскизов.
-![first_ui_web.png](./images/first_ui_web.png)
+![first_ui_web.png](./images/first_ui_web.svg)
 
