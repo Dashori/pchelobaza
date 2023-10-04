@@ -167,123 +167,43 @@ paths:
         '500':
           description: Status internal server error
           
-  /users/{login}/farms:
-    get:
-      tags:
-        - users
-      summary: Getting all user's farm
-      description: Getting all the information about the bee farm of user 
-      security:
-        - bearerAuth: []
-      parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: user login
-          in: path
-          name: login
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllFarms'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
+  # /users/{login}/farms:
+  #   get:
+  #     tags:
+      #   - users
+      # summary: Getting all user's farm
+      # description: Getting all the information about the bee farm of user 
+      # security:
+      #   - bearerAuth: []
+      # parameters:
+      #   - description: Authorization
+      #     in: header
+      #     name: Authorization
+      #     required: true
+      #     schema:
+      #       type: string
+      #   - description: user login
+      #     in: path
+      #     name: login
+      #     required: true
+      #     schema:
+      #       type: string
+      # responses:
+      #   '200':
+      #     description: OK
+      #     content:
+      #       application/json:
+      #         schema:
+      #           $ref: '#/components/schemas/AllFarms'
+      #   '400':
+      #     description: Invalid input
+      #   '403':
+      #     description: Permission denied
+      #   '404':
+      #     description: User not found
+      #   '500':
+      #     description: Status internal server error
 
-  /users/{login}/requests:
-    get:
-      tags:
-        - users
-      summary: Getting all user's requests
-      description: Getting all user's requests to became a beemaster
-      security:
-        - bearerAuth: []
-      parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: user login
-          in: path
-          name: login
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllRequests'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
-          
-  /users/{login}/requests/{id_request}:
-    get:
-      tags:
-        - users
-      summary: Getting certain user request
-      description: Getting certain user request
-      security:
-        - bearerAuth: []
-      parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: user login
-          in: path
-          name: login
-          required: true
-          schema:
-            type: string
-        - description: request id
-          in: path
-          name: id_request
-          required: true
-          schema:
-            type: number
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllRequests'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
-  
   /farms:
     parameters:
       - description: Authorization
@@ -292,30 +212,30 @@ paths:
         required: true
         schema:
           type: string
-    get:
-      tags: 
-        - farms
-      summary: Get all farms
-      description: Get all farms
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllFarms'
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
+    # get:
+      # tags: 
+      #   - farms
+      # summary: Get all farms
+      # description: Get all farms
+      # security:
+      #   - bearerAuth: []
+      # responses:
+      #   '200':
+      #     description: OK
+      #     content:
+      #       application/json:
+      #         schema:
+      #           $ref: '#/components/schemas/AllFarms'
+      #   '400':
+      #     description: Invalid input
+      #   '401':
+      #     description: Unauthorized
+      #   '403':
+      #     description: Permission denied
+      #   '404':
+      #     description: User not found
+      #   '500':
+      #     description: Status internal server error
     post:
       tags: 
         - farms
@@ -515,7 +435,7 @@ paths:
         '500':
           description: Status internal server error
           
-  /requests/{id_request}/answer:
+  /requests/{name}/answer:
     patch:
       tags:
       - requests
@@ -524,9 +444,9 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-      - description: request id
+      - description: user name
         in: path
-        name: id_request
+        name: name
         required: true
         schema:
           type: number
@@ -744,37 +664,37 @@ paths:
         required: true
         schema:
           type: string
-    get:
-      tags:
-      - conferences
-      summary: Get all the reviews about conference
-      description: Get all the reviews about conference
-      security:
-        - bearerAuth: []
-      parameters:
-        - description: name
-          in: path
-          name: name
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllReviews'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '422':
-          description: Unprocessable Entity
-        '500':
-          description: Status internal server error
+    # get:
+    #   tags:
+    #   - conferences
+    #   summary: Get all the reviews about conference
+    #   description: Get all the reviews about conference
+    #   security:
+    #     - bearerAuth: []
+    #   parameters:
+    #     - description: name
+    #       in: path
+    #       name: name
+    #       required: true
+    #       schema:
+    #         type: string
+    #   responses:
+    #     '200':
+    #       description: OK
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/AllReviews'
+    #     '400':
+    #       description: Invalid input
+    #     '403':
+    #       description: Permission denied
+    #     '404':
+    #       description: User not found
+    #     '422':
+    #       description: Unprocessable Entity
+    #     '500':
+    #       description: Status internal server error
     post:
       tags:
       - conferences
@@ -882,7 +802,7 @@ components:
         role:
           type: string
           example: 'beemaster'
-          
+  
     UserPatch:
       type: object
       properties:
@@ -946,12 +866,10 @@ components:
         name:
           type: string
           example: 'wildflower'
-        source:
-          type: string
-          example: 'wildflowers'
         description:
           type: string
           example: 'Typically a mix of flowers and flavors, wildflower honey is a subtle cacophony of floral notes'
+          
     AllHoney:
       type: object
       properties:
@@ -959,7 +877,7 @@ components:
           items: 
             $ref: '#/components/schemas/Honey'
           type: array
-          
+    
     Request:
       type: object
       properties:
@@ -972,9 +890,7 @@ components:
         state:
           type: string
           example: 'waiting for approve'
-        AdminResponse:
-          type: string
-          example: 'Approve! Welcome, beemaster!'
+
           
     AllRequests:
       type: object
@@ -1002,9 +918,13 @@ components:
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
+        available:
+          type: number
+          example: 100
         maxUsers:
           type: number
           example: 500
+        
           
     ConferencePatch:
       type: object
@@ -1018,9 +938,6 @@ components:
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
-        availableUsers: 
-          type: number
-          example: 200
         maxUsers:
           type: number
           example: 500
@@ -1036,9 +953,7 @@ components:
     Review:
       type: object
       properties:
-        id:
-          type: number
-          example: 123
+
         owner:
           type: string
           example: "dashori"
