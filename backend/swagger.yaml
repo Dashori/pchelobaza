@@ -249,30 +249,6 @@ paths:
         required: true
         schema:
           type: string
-    get:
-      tags: 
-        - farms
-      summary: Get all farms
-      description: Get all farms
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllFarms'
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
     post:
       tags: 
         - farms
@@ -471,8 +447,44 @@ paths:
           description: User not found
         '500':
           description: Status internal server error
-          
-  /requests/{id_request}/answer:
+  
+  /requests/{login}:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+      - requests
+      summary: Get user's request
+      description: Get user's request
+      security:
+        - bearerAuth: []
+      parameters:
+      - description: user login
+        in: path
+        name: login
+        required: true
+        schema:
+          type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Invalid input
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
     patch:
       tags:
       - requests
@@ -481,9 +493,9 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-      - description: request id
+      - description: user login
         in: path
-        name: id_request
+        name: login
         required: true
         schema:
           type: number
@@ -903,9 +915,6 @@ components:
         name:
           type: string
           example: 'wildflower'
-        source:
-          type: string
-          example: 'wildflowers'
         description:
           type: string
           example: 'Typically a mix of flowers and flavors, wildflower honey is a subtle cacophony of floral notes'
