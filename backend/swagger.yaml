@@ -148,7 +148,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserPatch'
+              $ref: '#/components/schemas/UserUpdate'
       responses:
         '200':
           description: OK
@@ -167,43 +167,80 @@ paths:
         '500':
           description: Status internal server error
           
-  # /users/{login}/farms:
-  #   get:
-  #     tags:
-      #   - users
-      # summary: Getting all user's farm
-      # description: Getting all the information about the bee farm of user 
-      # security:
-      #   - bearerAuth: []
-      # parameters:
-      #   - description: Authorization
-      #     in: header
-      #     name: Authorization
-      #     required: true
-      #     schema:
-      #       type: string
-      #   - description: user login
-      #     in: path
-      #     name: login
-      #     required: true
-      #     schema:
-      #       type: string
-      # responses:
-      #   '200':
-      #     description: OK
-      #     content:
-      #       application/json:
-      #         schema:
-      #           $ref: '#/components/schemas/AllFarms'
-      #   '400':
-      #     description: Invalid input
-      #   '403':
-      #     description: Permission denied
-      #   '404':
-      #     description: User not found
-      #   '500':
-      #     description: Status internal server error
+  /users/{login}/farms:
+    get:
+      tags:
+        - users
+      summary: Getting all user's farm
+      description: Getting all the information about the bee farm of user 
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: Authorization
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: user login
+          in: path
+          name: login
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllFarms'
+        '400':
+          description: Invalid input
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
 
+  /users/{login}/requests:
+    get:
+      tags:
+        - users
+      summary: Getting user's request
+      description: Getting user's request to became a beemaster
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: Authorization
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - description: user login
+          in: path
+          name: login
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllRequests'
+        '400':
+          description: Invalid input
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
+    
   /farms:
     parameters:
       - description: Authorization
@@ -212,30 +249,30 @@ paths:
         required: true
         schema:
           type: string
-    # get:
-      # tags: 
-      #   - farms
-      # summary: Get all farms
-      # description: Get all farms
-      # security:
-      #   - bearerAuth: []
-      # responses:
-      #   '200':
-      #     description: OK
-      #     content:
-      #       application/json:
-      #         schema:
-      #           $ref: '#/components/schemas/AllFarms'
-      #   '400':
-      #     description: Invalid input
-      #   '401':
-      #     description: Unauthorized
-      #   '403':
-      #     description: Permission denied
-      #   '404':
-      #     description: User not found
-      #   '500':
-      #     description: Status internal server error
+    get:
+      tags: 
+        - farms
+      summary: Get all farms
+      description: Get all farms
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllFarms'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
     post:
       tags: 
         - farms
@@ -435,7 +472,7 @@ paths:
         '500':
           description: Status internal server error
           
-  /requests/{name}/answer:
+  /requests/{id_request}/answer:
     patch:
       tags:
       - requests
@@ -444,9 +481,9 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-      - description: user name
+      - description: request id
         in: path
-        name: name
+        name: id_request
         required: true
         schema:
           type: number
@@ -599,7 +636,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConferencePatch'
+              $ref: '#/components/schemas/ConferenceUpdate'
       responses:
         '200':
           description: OK
@@ -664,37 +701,37 @@ paths:
         required: true
         schema:
           type: string
-    # get:
-    #   tags:
-    #   - conferences
-    #   summary: Get all the reviews about conference
-    #   description: Get all the reviews about conference
-    #   security:
-    #     - bearerAuth: []
-    #   parameters:
-    #     - description: name
-    #       in: path
-    #       name: name
-    #       required: true
-    #       schema:
-    #         type: string
-    #   responses:
-    #     '200':
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/AllReviews'
-    #     '400':
-    #       description: Invalid input
-    #     '403':
-    #       description: Permission denied
-    #     '404':
-    #       description: User not found
-    #     '422':
-    #       description: Unprocessable Entity
-    #     '500':
-    #       description: Status internal server error
+    get:
+      tags:
+      - conferences
+      summary: Get all the reviews about conference
+      description: Get all the reviews about conference
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReviews'
+        '400':
+          description: Invalid input
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '422':
+          description: Unprocessable Entity
+        '500':
+          description: Status internal server error
     post:
       tags:
       - conferences
@@ -802,8 +839,8 @@ components:
         role:
           type: string
           example: 'beemaster'
-  
-    UserPatch:
+          
+    UserUpdate:
       type: object
       properties:
         password:
@@ -866,10 +903,12 @@ components:
         name:
           type: string
           example: 'wildflower'
+        source:
+          type: string
+          example: 'wildflowers'
         description:
           type: string
           example: 'Typically a mix of flowers and flavors, wildflower honey is a subtle cacophony of floral notes'
-          
     AllHoney:
       type: object
       properties:
@@ -877,7 +916,7 @@ components:
           items: 
             $ref: '#/components/schemas/Honey'
           type: array
-    
+          
     Request:
       type: object
       properties:
@@ -890,7 +929,6 @@ components:
         state:
           type: string
           example: 'waiting for approve'
-
           
     AllRequests:
       type: object
@@ -918,15 +956,14 @@ components:
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
-        available:
+        availableUsers:
           type: number
-          example: 100
+          example: 200
         maxUsers:
           type: number
           example: 500
-        
           
-    ConferencePatch:
+    ConferenceUpdate:
       type: object
       properties:
         description:
@@ -941,19 +978,28 @@ components:
         maxUsers:
           type: number
           example: 500
-  
+    
+    ConferenceSimple: 
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'The International Honeybee Conference'
+        description:
+          type: string
+          example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
+      
     AllConferences:
       type: object
       properties:
         conferences:
           items: 
-            $ref: '#/components/schemas/Conference'
+            $ref: '#/components/schemas/ConferenceSimple'
           type: array
     
     Review:
       type: object
       properties:
-
         owner:
           type: string
           example: "dashori"
