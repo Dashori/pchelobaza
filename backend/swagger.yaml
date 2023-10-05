@@ -41,6 +41,8 @@ paths:
           description: Invalid input
         '401':
           description: Invalid login or password
+        '404':
+          description: User not found
         '500':
           description: Status internal server error
           
@@ -57,7 +59,7 @@ paths:
               $ref: '#/components/schemas/NewUser'
         required: true
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -88,8 +90,10 @@ paths:
       responses:
         "200":
           description: OK
-        "400":
-          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
         "500":
           description: Internal Server Error
 
@@ -122,10 +126,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
           description: User not found
         '500':
@@ -162,8 +164,6 @@ paths:
           description: Unauthorized
         '403':
           description: Permission denied
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
           
@@ -188,6 +188,12 @@ paths:
           required: true
           schema:
             type: string
+        - description: Limit farms
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -195,10 +201,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllFarms'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
           description: User not found
         '500':
@@ -234,6 +238,8 @@ paths:
                 $ref: '#/components/schemas/AllRequests'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
         '404':
@@ -263,7 +269,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Farm'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -275,8 +281,6 @@ paths:
           description: Unauthorized
         '403':
           description: Permission denied
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
   
@@ -311,12 +315,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Farm'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
-          description: User not found
+          description: Farm not found
         '500':
           description: Status internal server error
           
@@ -353,7 +355,7 @@ paths:
         '403':
           description: Permission denied
         '404':
-          description: User not found
+          description: Farm not found
         '500':
           description: Status internal server error
           
@@ -373,6 +375,12 @@ paths:
           required: true
           schema:
             type: string
+        - description: Limit honey
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -380,12 +388,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllHoney'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
+        '401':
+          description: Unauthorized
         '500':
           description: Status internal server error
           
@@ -402,6 +406,13 @@ paths:
       - requests
       summary: Get all requests
       description: Get all requests, method for admin
+      parameters:
+      - description: Limit requests
+        in: query
+        name: limit
+        required: true
+        schema:
+          type: number
       security:
         - bearerAuth: []
       responses:
@@ -411,12 +422,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllRequests'
-        '400':
-          description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
     post:
@@ -433,7 +442,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Request'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -441,10 +450,12 @@ paths:
                 $ref: '#/components/schemas/Request'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
-        '404':
-          description: User not found
+        '409':
+          description: Request already exists
         '500':
           description: Status internal server error
   
@@ -477,12 +488,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Request'
-        '400':
-          description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
         '404':
-          description: User not found
+          description: User or request not found
         '500':
           description: Status internal server error
     patch:
@@ -514,10 +525,12 @@ paths:
                 $ref: '#/components/schemas/Request'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
         '404':
-          description: User not found
+          description: User or request not found
         '500':
           description: Status internal server error
   
@@ -534,9 +547,22 @@ paths:
       tags:
       - conferences
       summary: Get all conferences
-      description: Get all conferences
       security:
         - bearerAuth: []
+      description: Get all conferences
+      parameters:
+        - description: Limit confereces
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        # - description: Skipped confereces
+        #   in: query
+        #   name: skipped
+        #   required: true
+        #   schema:
+        #     type: number
       responses:
         '200':
           description: OK
@@ -544,12 +570,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllConferences'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
+        '401':
+          description: Unauthorized
         '500':
           description: Status internal server error
     post:
@@ -565,7 +587,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Conference'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -573,10 +595,10 @@ paths:
                 $ref: '#/components/schemas/Conference'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
           
@@ -610,12 +632,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Conference'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
-          description: User not found
+          description: Conference not found
         '500':
           description: Status internal server error
     
@@ -658,10 +678,12 @@ paths:
                 $ref: '#/components/schemas/Conference'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
         '404':
-          description: User not found
+          description: Conference not found
         '500':
           description: Status internal server error
           
@@ -687,6 +709,12 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceUpdateByUser'
       responses:
         '200':
           description: OK
@@ -696,12 +724,12 @@ paths:
                 $ref: '#/components/schemas/Conference'
         '400':
           description: Invalid input
+        '401':
+          description: Unauthorized
         '403':
           description: Permission denied
         '404':
-          description: User not found
-        '422':
-          description: Unprocessable Entity
+          description: Conference not found
         '500':
           description: Status internal server error
   
@@ -727,21 +755,23 @@ paths:
           required: true
           schema:
             type: string
+        - description: Limit reviews
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllReviews'
-        '400':
-          description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
-          description: User not found
-        '422':
-          description: Unprocessable Entity
+          description: Conference not found
         '500':
           description: Status internal server error
     post:
@@ -773,12 +803,10 @@ paths:
                 $ref: '#/components/schemas/AllReviews'
         '400':
           description: Invalid input
-        '403':
-          description: Permission denied
+        '401':
+          description: Unauthorized
         '404':
-          description: User not found
-        '422':
-          description: Unprocessable Entity
+          description: Conference not found
         '500':
           description: Status internal server error
 
@@ -987,7 +1015,14 @@ components:
         maxUsers:
           type: number
           example: 500
-    
+          
+    ConferenceUpdateByUser:
+      type: object
+      properties:
+        availableUsers:
+          type: number
+          example: 201
+          
     ConferenceSimple: 
       type: object
       properties:
