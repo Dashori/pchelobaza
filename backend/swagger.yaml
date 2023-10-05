@@ -194,6 +194,12 @@ paths:
           required: true
           schema:
             type: number
+        - description: Skipped farms
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -375,12 +381,12 @@ paths:
           required: true
           schema:
             type: string
-        - description: Limit honey
-          in: query
-          name: limit
-          required: true
-          schema:
-            type: number
+        # - description: Limit honey
+        #   in: query
+        #   name: limit
+        #   required: true
+        #   schema:
+        #     type: number
       responses:
         '200':
           description: OK
@@ -410,6 +416,12 @@ paths:
       - description: Limit requests
         in: query
         name: limit
+        required: true
+        schema:
+          type: number
+      - description: Skipped requests
+        in: query
+        name: skipped
         required: true
         schema:
           type: number
@@ -557,12 +569,12 @@ paths:
           required: true
           schema:
             type: number
-        # - description: Skipped confereces
-        #   in: query
-        #   name: skipped
-        #   required: true
-        #   schema:
-        #     type: number
+        - description: Skipped confereces
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -758,6 +770,12 @@ paths:
         - description: Limit reviews
           in: query
           name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped reviews
+          in: query
+          name: skipped
           required: true
           schema:
             type: number
