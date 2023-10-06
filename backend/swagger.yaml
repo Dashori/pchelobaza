@@ -166,24 +166,26 @@ paths:
           description: Permission denied
         '500':
           description: Status internal server error
+
+  /farms:
+    parameters:
+    - description: Authorization
+      in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
           
-  /users/{login}/farms:
     get:
       tags:
-        - users
+        - farms
       summary: Getting all user's farm
-      description: Getting all the information about the bee farm of user 
       security:
         - bearerAuth: []
+      description: Getting all the information about the bee farm of user 
       parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
         - description: user login
-          in: path
+          in: query
           name: login
           required: true
           schema:
@@ -213,54 +215,6 @@ paths:
           description: User not found
         '500':
           description: Status internal server error
-
-  /users/{login}/requests:
-    get:
-      tags:
-        - users
-      summary: Getting user's request
-      description: Getting user's request to became a beemaster
-      security:
-        - bearerAuth: []
-      parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        - description: user login
-          in: path
-          name: login
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllRequests'
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized
-        '403':
-          description: Permission denied
-        '404':
-          description: User not found
-        '500':
-          description: Status internal server error
-    
-  /farms:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     post:
       tags: 
         - farms
@@ -407,39 +361,39 @@ paths:
         required: true
         schema:
           type: string
-    get:
-      tags:
-      - requests
-      summary: Get all requests
-      description: Get all requests, method for admin
-      parameters:
-      - description: Limit requests
-        in: query
-        name: limit
-        required: true
-        schema:
-          type: number
-      - description: Skipped requests
-        in: query
-        name: skipped
-        required: true
-        schema:
-          type: number
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllRequests'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Permission denied
-        '500':
-          description: Status internal server error
+    # get:
+    #   tags:
+    #   - requests
+    #   summary: Get all requests
+    #   description: Get all requests, method for admin
+    #   parameters:
+    #   - description: Limit requests
+    #     in: query
+    #     name: limit
+    #     required: true
+    #     schema:
+    #       type: number
+    #   - description: Skipped requests
+    #     in: query
+    #     name: skipped
+    #     required: true
+    #     schema:
+    #       type: number
+    #   security:
+    #     - bearerAuth: []
+    #   responses:
+    #     '200':
+    #       description: OK
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/AllRequests'
+    #     '401':
+    #       description: Unauthorized
+    #     '403':
+    #       description: Permission denied
+    #     '500':
+    #       description: Status internal server error
     post:
       tags:
       - requests
@@ -470,36 +424,27 @@ paths:
           description: Request already exists
         '500':
           description: Status internal server error
-  
-  /requests/{login}:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     get:
       tags:
       - requests
-      summary: Get user's request
-      description: Get user's request
+      summary: Get user's request or all requests
+      description: Get user's request or all requests
       security:
         - bearerAuth: []
       parameters:
-      - description: user login
-        in: path
+      - description: login
+        in: query
         name: login
-        required: true
+        required: false
         schema:
-          type: number
+          type: string
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Request'
+                $ref: '#/components/schemas/AllRequests'
         '401':
           description: Unauthorized
         '403':
@@ -521,7 +466,7 @@ paths:
         name: login
         required: true
         schema:
-          type: number
+          type: string
       requestBody:
         required: true
         content:
@@ -707,7 +652,38 @@ paths:
         required: true
         schema:
           type: string
-    patch:
+    get:
+      tags:
+      - conferences
+      summary: Get participants
+      description: Get participants
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+    post:
       tags:
       - conferences
       summary: Edit conferense by user
@@ -721,14 +697,8 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConferenceUpdateByUser'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -975,9 +945,6 @@ components:
     Request:
       type: object
       properties:
-        userLogin:
-          type: string
-          example: 'dashori'
         description:
           type: string
           example: 'Please give me the beemaster rules because...'
@@ -1033,14 +1000,7 @@ components:
         maxUsers:
           type: number
           example: 500
-          
-    ConferenceUpdateByUser:
-      type: object
-      properties:
-        availableUsers:
-          type: number
-          example: 201
-          
+
     ConferenceSimple: 
       type: object
       properties:
