@@ -11,8 +11,8 @@ import (
 	"backend/internal/repository"
 	"fmt"
 	"github.com/charmbracelet/log"
-	_ "github.com/lib/pq"
-	// _ "github.com/jackc/pgx/stdlib"
+	// _ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/stdlib"
 )
 
 type App struct {
@@ -77,7 +77,18 @@ func (a *App) Init() error {
 	if err != nil {
 		return err
 	}
-	a.initRepositories()
+	a.Repositories = a.initRepositories()
+	newUser2 := models.User {
+		Login    :       "dashori",
+		Password  :      "aaaa",
+		// ConfirmPassword: "aaaa",
+		Name           : "dasha",
+		Surname        : "chepigo",
+		Contacts       : "daahaaa@icloud.com",
+	}
+
+	a.Repositories.UserRepository.Create(&newUser2)
+	a.Services = a.initServices(a.Repositories)
 
 	newUser := models.NewUser {
 		Login    :       "dashori",
@@ -102,7 +113,7 @@ func (a *App) InitDB() (*sql.DB, error) {
 		a.Config.Postgres.Host, a.Config.Postgres.Port)
 	fmt.Println(dsnPGConn)
 
-	db, err := sql.Open("postgres", dsnPGConn)
+	db, err := sql.Open("pgx", dsnPGConn)
 	if err != nil {
 		fmt.Println("1 error")
 		// logger.Fatal("POSTGRES! Error in method open")

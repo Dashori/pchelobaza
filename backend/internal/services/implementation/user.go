@@ -22,7 +22,6 @@ func NewUserImplementation(
 	hasher hasher.Hasher,
 	// logger *log.Logger,
 ) services.UserService {
-
 	fmt.Println("HERE!")
 	return &UserImplementation{
 		UserRepository: UserRepository,
