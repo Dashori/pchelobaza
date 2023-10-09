@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: web-postgres
+    ports: 
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    env_file:
+        - .env
+    networks:
+      - mynetwork
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: web-backend
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:1.24
+    container_name: web-nginx
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+    ports:
+      - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+      - ./nginx/nginx.conf:/nginx.conf.template
+    depends_on:
+      - backend
+      - postgres
+
+networks:
+  mynetwork:
