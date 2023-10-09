@@ -6,10 +6,19 @@ services:
     container_name: web-postgres
     ports: 
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      # - .:/var/lib/postgresql/data
+      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
     env_file:
         - .env
-    networks:
-      - mynetwork
+    # networks:
+    #   - mynetwork
+
   backend:
     build:
       context: ./backend
@@ -17,26 +26,27 @@ services:
     container_name: web-backend
     env_file:
       - .env
-    networks:
-      - mynetwork
     depends_on:
       - postgres
+    # networks:
+    #   - mynetwork
 
-  nginx:
-    image: nginx:1.24
-    container_name: web-nginx
-    env_file:
-      - .env
-    networks:
-      - mynetwork
-    ports:
-      - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
-    volumes:
-      - ./logs/nginx:/var/log/nginx
-      - ./nginx/nginx.conf:/nginx.conf.template
-    depends_on:
-      - backend
-      - postgres
+#   nginx:
+#     image: nginx:1.24
+#     container_name: web-nginx
+#     env_file:
+#       - .env
+#     networks:
+#       - mynetwork
+#     ports:
+#       - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
+#     volumes:
+#       - ./logs/nginx:/var/log/nginx
+#       - ./nginx/nginx.conf:/nginx.conf.template
+#     depends_on:
+#       - backend
+#       - postgres
 
-networks:
-  mynetwork:
+# networks:
+#   mynetwork:
+#     driver: bridge

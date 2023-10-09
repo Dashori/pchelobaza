@@ -1,4 +1,4 @@
-package UserImplementation
+package servicesImplementation
 
 import (
 	"backend/internal/models"
@@ -31,7 +31,7 @@ func NewUserImplementation(
 	}
 }
 
-func (c *UserImplementation) Create(user *models.NewUser) (*models.User, error) {
+func (c *UserImplementation) Create(newUser *models.NewUser) (*models.User, error) {
 	// c.logger.Debug("CLIENT! Start create client with", "login", client.Login)
 
 	// _, err := c.ClientRepository.GetClientByLogin(client.Login)
@@ -44,14 +44,15 @@ func (c *UserImplementation) Create(user *models.NewUser) (*models.User, error) 
 	// 	return nil, serviceErrors.ClientAlreadyExists
 	// }
 
-	// passwordHash, err := c.hasher.GetHash(password)
-	// if err != nil {
-	// 	c.logger.Warn("CLIENT! Error get hash for password", "login", client.Login)
-	// 	return nil, serviceErrors.ErrorHash
-	// }
-	// client.Password = string(passwordHash)
-
-	// err = c.ClientRepository.Create(client)
+	passwordHash, err := c.hasher.GetHash(newUser.Password)
+	if err != nil {
+		// c.logger.Warn("CLIENT! Error get hash for password", "login", client.Login)
+		return nil, nil//serviceErrors.ErrorHash
+	}
+	var user models.User
+	user.Password = string(passwordHash)
+	
+	err = c.UserRepository.Create(&user)
 	// if err != nil {
 	// 	c.logger.Warn("CLIENT! Error in repository Create", "login", client.Login, "error", err)
 	// 	return nil, err
@@ -64,9 +65,9 @@ func (c *UserImplementation) Create(user *models.NewUser) (*models.User, error) 
 	// }
 
 	// c.logger.Info("CLIENT! Successfully create client", "login", newClient.Login, "id", newClient.ClientId)
-	var newClient *models.User
+	// var newClient *models.User
 
-	return newClient, nil
+	return &user, nil
 }
 
 func (c *UserImplementation) Login(login, password string) (*models.User, error) {

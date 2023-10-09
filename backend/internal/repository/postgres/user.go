@@ -4,8 +4,9 @@ import (
 	"backend/internal/models"
 	// "backend/internal/pkg/errors/dbErrors"
 	// "backend/internal/pkg/errors/repoErrors"
-	// "backend/internal/repository"
+	// "backend/internal/repository/postgres/postgres_models"
 	"database/sql"
+	"backend/internal/repository"
 	// "github.com/jinzhu/copier"
 	"github.com/jmoiron/sqlx"
 	"fmt"
@@ -15,19 +16,10 @@ type UserPostgresRepository struct {
 	db *sqlx.DB
 }
 
-// func NewUserPostgresRepository(db *sqlx.DB) repository.UserRepository {
-// 	return &UserPostgresRepository{db: db}
-// }
-
-// type PostgresRepositoryFields struct {
-// 	DB     *sql.DB
-// 	// Config config.Config
-// }
-
-func CreateUserPostgresRepository(db *sql.DB) UserPostgresRepository {
+func CreateUserPostgresRepository(db *sql.DB) repository.UserRepository {
 	dbx := sqlx.NewDb(db, "pgx")
 
-	return UserPostgresRepository{db: dbx}
+	return &UserPostgresRepository{db: dbx}
 }
 
 
@@ -39,7 +31,30 @@ func (c *UserPostgresRepository) Create(user *models.User) error {
 	if err != nil {
 		// return dbErrors.ErrorInsert
 		return fmt.Errorf("aaaaa")
+		// return err
 	}
 
 	return nil
 }
+
+// func (c *UserPostgresRepository) GetUserByLogin(login string) (*models.User, error) {
+// 	query := `select * from bee_user where login = $1;`
+// 	userDB := &postgresModel.UserPostgres{}
+
+// 	err := c.db.Get(userDB, query, login)
+
+// 	if err == sql.ErrNoRows {
+// 		return nil, repoErrors.EntityDoesNotExists
+// 	} else if err != nil {
+// 		return nil, dbErrors.ErrorSelect
+// 	}
+
+// 	userModels := &models.User{}
+// 	err = copier.Copy(userModels, userDB)
+
+// 	if err != nil {
+// 		return nil, dbErrors.ErrorCopy
+// 	}
+
+// 	return userModels, nil
+// }
