@@ -24,13 +24,14 @@ func CreateUserPostgresRepository(db *sql.DB) repository.UserRepository {
 
 
 func (c *UserPostgresRepository) Create(user *models.User) error {
-	// fmt.Println("HERE")
-	query := `insert into bee_user(login, password, name, contact, registered_at, role) values($1, $2, $3, $4, $5, $6);`
+	fmt.Println("HERE...")
+	query := `insert into bee_user(login, password, name, surname, contact, registered_at, role) values($1, $2, $3, $4, $5, $6, $7);`
 
 	_, err := c.db.Exec(query, user.Login, user.Password, user.Name, user.Surname, user.Contacts, user.RegistrationDate, user.Role)
 
 	if err != nil {
 		// return dbErrors.ErrorInsert
+		fmt.Println("aaa...", err)
 		return fmt.Errorf("aaaaa")
 		// return err
 	}

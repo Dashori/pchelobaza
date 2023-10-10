@@ -7,10 +7,10 @@ services:
     ports: 
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      # - .:/var/lib/postgresql/data
-      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./data:/var/lib/postgresql/data
+      - ./data/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d dbname -U dashori"]
+      test: ["CMD-SHELL", "pg_isready -d postgres -U dashori"]
       interval: 10s
       timeout: 5s
       retries: 5
