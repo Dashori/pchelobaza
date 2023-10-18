@@ -20,8 +20,8 @@ type Config struct {
 	Postgres PostgresFlags 
 	Address  string        
 	Port     string       
-	// LogLevel string        
-	// LogFile  string       
+	LogLevel string        
+	LogFile  string       
 }
 
 func (c *Config) ParseConfig() {
@@ -33,6 +33,9 @@ func (c *Config) ParseConfig() {
 
 	c.Address = os.Getenv("BACKEND_HOST")
 	c.Port = os.Getenv("BACKEND_PORT")
+	c.LogLevel=os.Getenv("LOG_LEVEL")
+	c.LogFile=os.Getenv("LOG_FILE")
+
 	c.Postgres.Host = os.Getenv("POSTGRES_HOST")
 	c.Postgres.Port = os.Getenv("POSTGRES_PORT")
 	c.Postgres.User = os.Getenv("POSTGRES_USER")

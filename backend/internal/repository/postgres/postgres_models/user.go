@@ -7,6 +7,7 @@ type UserPostgres struct {
 	Login        string    `db:"login"`
 	Password     string    `db:"password"`
 	Name         string    `db:"name"`
+	Surname      string    `db:"surname"`
 	Contact      string    `db:"contact"`
 	RegisteredAt time.Time `db:"registered_at"`
 	Role         string    `db:"role"`

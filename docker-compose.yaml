@@ -24,6 +24,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: web-backend
+    volumes:
+      - ./backend:/app
     env_file:
       - .env
     depends_on:
@@ -50,4 +52,4 @@ services:
 
 networks:
   mynetwork:
-#     driver: bridge
+    driver: bridge

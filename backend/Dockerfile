@@ -13,4 +13,6 @@ RUN go mod download
 
 RUN go build cmd/main.go
 
+RUN chmod +777 ./main
+
 CMD ["./main"]

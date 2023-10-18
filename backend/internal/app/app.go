@@ -10,8 +10,9 @@ import (
 	"backend/internal/repository/postgres"
 	"backend/internal/repository"
 	"fmt"
-	"github.com/charmbracelet/log"
+	"os"
 	// _ "github.com/lib/pq"
+	"github.com/charmbracelet/log"
 	_ "github.com/jackc/pgx/stdlib"
 )
 
@@ -45,7 +46,7 @@ func (a *App) initRepositories() *AppRepositoryFields {
 		// RecordRepository: postgres_repo.CreateRecordPostgresRepository(fields),
 	}
 
-	// a.Logger.Info("Success initialization of repositories")
+	a.Logger.Info("Success initialization of repositories")
 
 	return f
 }
@@ -54,15 +55,41 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 	passwordHasher := hasherImplementation.NewBcryptHasher()
 
 	u := &AppServiceFields{
-		UserService: servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher),
+		UserService: servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
 		// DoctorService: servicesImplementation.NewDoctorServiceImplementation(r.DoctorRepository, passwordHasher, a.Logger),
 		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
 		// RecordService: servicesImplementation.NewRecordServiceImplementation(r.RecordRepository, r.DoctorRepository,
 		// 	r.ClientRepository, r.PetRepository, a.Logger),
 	}
 
-	// a.Logger.Info("Success initialization of services")
+	a.Logger.Info("Success initialization of services")
 	return u
+}
+
+func (a *App) initLogger() {
+	f, err := os.OpenFile(a.Config.LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Logger := log.New(f)
+
+	log.SetFormatter(log.LogfmtFormatter)
+	Logger.SetReportTimestamp(true)
+	Logger.SetReportCaller(true)
+
+	if a.Config.LogLevel == "debug" {
+		Logger.SetLevel(log.DebugLevel)
+	} else if a.Config.LogLevel == "info" {
+		Logger.SetLevel(log.InfoLevel)
+	} else {
+		log.Fatal("Error log level")
+	}
+
+	Logger.Print("\n")
+	Logger.Info("Success initialization of new Logger!")
+
+	a.Logger = Logger
 }
 
 
@@ -71,6 +98,8 @@ func (a *App) Init() error {
 	fmt.Println("port ", a.Config.Port)
 	fmt.Println("port 2 ", a.Config.Postgres.Port)
 
+	a.initLogger()
+
 
 	var err error
 	a.PostgresDB, err = a.InitDB()
@@ -78,20 +107,33 @@ func (a *App) Init() error {
 		return err
 	}
 	a.Repositories = a.initRepositories()
-	newUser2 := models.User {
-		Login    :       "dashori",
-		Password  :      "aaaa",
-		// ConfirmPassword: "aaaa",
-		Name           : "dasha",
-		Surname        : "chepigo",
-		Contacts       : "daahaaa@icloud.com",
-	}
+	// newUser2 := models.User {
+	// 	Login    :       "dashori",
+	// 	Password  :      "aaaa",
+	// 	// ConfirmPassword: "aaaa",
+	// 	Name           : "dasha",
+	// 	Surname        : "chepigo",
+	// 	Contacts       : "daahaaa@icloud.com",
+	// }
+	// newUser2update := models.User {
+	// 	Login    :       "dashori",
+	// 	Password  :      "aaaa",
+	// 	// ConfirmPassword: "aaaa",
+	// 	Name           : "arisha",
+	// 	Surname        : "chepigo",
+	// 	Contacts       : "daahaaa@icloud.com",
+	// }
 
-	a.Repositories.UserRepository.Create(&newUser2)
+
+	// a.Repositories.UserRepository.Create(&newUser2)
+	// a.Repositories.UserRepository.GetUserByLogin("dashori")
+	// a.Repositories.UserRepository.UpdateUser(&newUser2update)
+	// a.Repositories.UserRepository.GetUserByLogin("dashori")
+
 	a.Services = a.initServices(a.Repositories)
 
-	newUser := models.NewUser {
-		Login    :       "dashori",
+	newUser := models.User {
+		Login    :       "dashori2",
 		Password  :      "aaaa",
 		ConfirmPassword: "aaaa",
 		Name           : "dasha",
@@ -99,14 +141,19 @@ func (a *App) Init() error {
 		Contacts       : "daahaaa@icloud.com",
 	}
 
-	a.Services.UserService.Create(&newUser)
+	user, err := a.Services.UserService.Create(&newUser)
+	if err != nil {
+		fmt.Println(user.Name)
+	} else {
+		fmt.Println(err)
+	}
 	return nil
 }
 
 
 func (a *App) InitDB() (*sql.DB, error) {
-	// a.logger.Debug("POSTGRES! Start init postgreSQL", "user", Config.Postgres.User, "DBName", Config.Postgres.DBName,
-		// "host", Config.Postgres.Host, "port", Config.Postgres.Port)
+	a.Logger.Debug("POSTGRES! Start init postgreSQL", "user", a.Config.Postgres.User, "DBName", a.Config.Postgres.DBName,
+		"host", a.Config.Postgres.Host, "port", a.Config.Postgres.Port)
 
 	dsnPGConn := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable",
 		a.Config.Postgres.User, a.Config.Postgres.DBName, a.Config.Postgres.Password,
@@ -116,21 +163,20 @@ func (a *App) InitDB() (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsnPGConn)
 	if err != nil {
 		fmt.Println("1 error")
-		// logger.Fatal("POSTGRES! Error in method open")
+		a.Logger.Fatal("POSTGRES! Error in method open")
 		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		// logger.Fatal("POSTGRES! Error in method ping")
+		a.Logger.Fatal("POSTGRES! Error in method ping")
 		fmt.Println("2 error ", err)
 		return nil, err
 	}
 
 	db.SetMaxOpenConns(10)
-	fmt.Println("ALL IS OK")
 
-	// logger.Info("POSTGRES! Successfully init postgreSQL")
+	a.Logger.Info("POSTGRES! Successfully init postgreSQL")
 
 	return db, nil
 }

@@ -3,7 +3,7 @@ package services
 import "backend/internal/models"
 
 type UserService interface {
-	Create(newUser *models.NewUser) (*models.User, error)
+	Create(newUser *models.User) (*models.User, error)
 	Login(login, password string) (*models.User, error)
 	GetUserByLogin(login string) (*models.User, error)
 	// SetRole() error

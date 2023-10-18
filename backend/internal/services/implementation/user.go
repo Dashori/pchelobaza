@@ -2,81 +2,80 @@ package servicesImplementation
 
 import (
 	"backend/internal/models"
-	// "backend/internal/pkg/errors/repoErrors"
-	// "backend/internal/pkg/errors/servicesErrors"
+	repoErrors "backend/internal/pkg/errors/repo_errors"
+	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/pkg/hasher"
 	"backend/internal/repository"
 	"backend/internal/services"
-	// "github.com/charmbracelet/log"
+	"github.com/charmbracelet/log"
 	"fmt"
 )
 
 type UserImplementation struct {
 	UserRepository repository.UserRepository
 	hasher           hasher.Hasher
-	// logger           *log.Logger
+	logger           *log.Logger
 }
 
 func NewUserImplementation(
 	UserRepository repository.UserRepository,
 	hasher hasher.Hasher,
-	// logger *log.Logger,
+	logger *log.Logger,
 ) services.UserService {
-	fmt.Println("HERE!")
 	return &UserImplementation{
 		UserRepository: UserRepository,
 		hasher:           hasher,
-		// logger:           logger,
+		logger:           logger,
 	}
 }
 
-func (c *UserImplementation) Create(newUser *models.NewUser) (*models.User, error) {
-	// c.logger.Debug("CLIENT! Start create client with", "login", client.Login)
+func (c *UserImplementation) Create(newUser *models.User) (*models.User, error) {
+	c.logger.Debug("USER! Start create user with", "login", newUser.Login)
+	fmt.Println("AAAAAAAA")
+	_, err := c.UserRepository.GetUserByLogin(newUser.Login)
 
-	// _, err := c.ClientRepository.GetClientByLogin(client.Login)
-
-	// if err != nil && err != repoErrors.EntityDoesNotExists {
-	// 	c.logger.Warn("CLIENT! Error in repository GetClientByLogin", "login", client.Login, "error", err)
-	// 	return nil, err
-	// } else if err == nil {
-	// 	c.logger.Warn("CLIENT! Client already exists", "login", client.Login)
-	// 	return nil, serviceErrors.ClientAlreadyExists
-	// }
-
-	passwordHash, err := c.hasher.GetHash(newUser.Password)
-	if err != nil {
-		// c.logger.Warn("CLIENT! Error get hash for password", "login", client.Login)
-		return nil, nil//serviceErrors.ErrorHash
+	if err != nil && err != repoErrors.EntityDoesNotExists {
+		c.logger.Warn("USER! Error in repository GetUserByLogin", "login", newUser.Login, "error", err)
+		return nil, err
+	} else if err == nil {
+		c.logger.Warn("USER! User already exists", "login", newUser.Login)
+		return nil, serviceErrors.UserAlreadyExists
 	}
-	var user models.User
-	user.Password = string(passwordHash)
+	fmt.Println("BBBBBB")
+
+	// passwordHash, err := c.hasher.GetHash(newUser.Password)
+	// if err != nil {
+	// 	c.logger.Warn("USER! Error get hash for password", "login", newUser.Login)
+	// 	return nil, serviceErrors.ErrorHash
+	// }
+
+	// newUser.Password = string(passwordHash)
 	
-	err = c.UserRepository.Create(&user)
+	// err = c.UserRepository.Create(newUser)
 	// if err != nil {
-	// 	c.logger.Warn("CLIENT! Error in repository Create", "login", client.Login, "error", err)
+	// 	c.logger.Warn("USER! Error in repository Create", "login", newUser.Login, "error", err)
 	// 	return nil, err
 	// }
 
-	// newClient, err := c.GetClientByLogin(client.Login)
+	// newUser, err = c.GetUserByLogin(newUser.Login)
 	// if err != nil {
-	// 	c.logger.Warn("CLIENT! Error in repository method GetClientByLogin", "login", client.Login, "error", err)
+	// 	c.logger.Warn("USER! Error in repository method GetUserByLogin", "login", newUser.Login, "error", err)
 	// 	return nil, err
 	// }
 
-	// c.logger.Info("CLIENT! Successfully create client", "login", newClient.Login, "id", newClient.ClientId)
-	// var newClient *models.User
+	// c.logger.Info("USER! Successfully create newUser", "login", newUser.Login, "id", newUser.UserId)
 
-	return &user, nil
+	return newUser, nil
 }
 
 func (c *UserImplementation) Login(login, password string) (*models.User, error) {
-	var newClient *models.User
+	var newUser *models.User
 
-	return newClient, nil
+	return newUser, nil
 }
 
 func (c *UserImplementation)  GetUserByLogin(login string) (*models.User, error) {
-	var newClient *models.User
+	var newUser *models.User
 
-	return newClient, nil
+	return newUser, nil
 }

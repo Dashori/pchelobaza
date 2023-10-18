@@ -6,6 +6,7 @@ type User struct {
 	UserId           uint64
 	Login            string
 	Password         string
+	ConfirmPassword  string
 	Name             string
 	Surname          string
 	Contacts         string
@@ -20,11 +21,11 @@ type UserPatch struct {
 	Contacts string
 }
 
-type NewUser struct {
-	Login           string
-	Password        string
-	ConfirmPassword string
-	Name            string
-	Surname         string
-	Contacts        string
-}
+// type NewUser struct {
+// 	Login           string
+// 	Password        string
+// 	ConfirmPassword string
+// 	Name            string
+// 	Surname         string
+// 	Contacts        string
+// }
