@@ -22,6 +22,7 @@ var (
 	UserAlreadyExists   = errors.New("Service error! Пользователь уже существует в базе!")
 
 	ErrorUserUpdate = errors.New("Service error! Не удалось обновить информацию о пользователе!")
+	ErrorConfirmPassword = errors.New("Service error! Пароли не совпадают!")
 
 	// Create + login
 	ErrorGetUserByLogin   = errors.New("Service error! Ошибка при получении пользователя по логину!")

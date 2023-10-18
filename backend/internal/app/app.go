@@ -2,13 +2,13 @@ package app
 
 import (
 	// "github.com/jmoiron/sqlx"
-	"database/sql"
 	"backend/internal/models"
+	"backend/internal/pkg/hasher/implementation"
+	"backend/internal/repository"
+	"backend/internal/repository/postgres"
 	"backend/internal/services"
 	"backend/internal/services/implementation"
-	"backend/internal/pkg/hasher/implementation"
-	"backend/internal/repository/postgres"
-	"backend/internal/repository"
+	"database/sql"
 	"fmt"
 	"os"
 	// _ "github.com/lib/pq"
@@ -25,14 +25,16 @@ type App struct {
 }
 
 type AppServiceFields struct {
-	UserService services.UserService
+	UserService  services.UserService
+	HoneyService services.HoneyService
 	// DoctorService services.DoctorService
 	// PetService    services.PetService
 	// RecordService services.RecordService
 }
 
 type AppRepositoryFields struct {
-	UserRepository repository.UserRepository
+	UserRepository  repository.UserRepository
+	HoneyRepository repository.HoneyRepository
 	// DoctorRepository repository.DoctorRepository
 	// PetRepository    repository.PetRepository
 	// RecordRepository repository.RecordRepository
@@ -40,7 +42,8 @@ type AppRepositoryFields struct {
 
 func (a *App) initRepositories() *AppRepositoryFields {
 	f := &AppRepositoryFields{
-		UserRepository: postgres.CreateUserPostgresRepository(a.PostgresDB),
+		UserRepository:  postgres.CreateUserPostgresRepository(a.PostgresDB),
+		HoneyRepository: postgres.CreateHoneyPostgresRepository(a.PostgresDB),
 		// DoctorRepository: postgres_repo.CreateDoctorPostgresRepository(fields),
 		// PetRepository:    postgres_repo.CreatePetPostgresRepository(fields),
 		// RecordRepository: postgres_repo.CreateRecordPostgresRepository(fields),
@@ -55,7 +58,8 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 	passwordHasher := hasherImplementation.NewBcryptHasher()
 
 	u := &AppServiceFields{
-		UserService: servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
+		UserService:  servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
+		HoneyService: servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
 		// DoctorService: servicesImplementation.NewDoctorServiceImplementation(r.DoctorRepository, passwordHasher, a.Logger),
 		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
 		// RecordService: servicesImplementation.NewRecordServiceImplementation(r.RecordRepository, r.DoctorRepository,
@@ -92,15 +96,9 @@ func (a *App) initLogger() {
 	a.Logger = Logger
 }
 
-
 func (a *App) Init() error {
 	a.Config.ParseConfig()
-	fmt.Println("port ", a.Config.Port)
-	fmt.Println("port 2 ", a.Config.Postgres.Port)
-
 	a.initLogger()
-
-
 	var err error
 	a.PostgresDB, err = a.InitDB()
 	if err != nil {
@@ -109,9 +107,57 @@ func (a *App) Init() error {
 
 	a.Repositories = a.initRepositories()
 	a.Services = a.initServices(a.Repositories)
+
+	newUser := models.User{
+		Login:           "dashori6",
+		Password:        "abcde",
+		ConfirmPassword: "abcd",
+		Name:            "dasha",
+		Surname:         "chepigo",
+		Contact:         "daahaaa@icloud.com",
+	}
+
+	user, err := a.Services.UserService.Create(&newUser)
+	if err != nil {
+		fmt.Println("create ", err)
+	} else {
+		fmt.Println(user.Name)
+	}
+	user, err = a.Services.UserService.Login("dashori5", "abcd")
+	if err != nil {
+		fmt.Println("login", err)
+	} else {
+		fmt.Println(user.Name, user.Surname)
+	}
+	user2, err := a.Services.UserService.GetUserByLogin("dashori5")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(user2.Name, user2.Surname)
+	}
+
+	userup := models.UserPatch{
+		Login: "dashori3",
+		Name:  "arisha",
+	}
+
+	err = a.Services.UserService.Update(&userup)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		user2, _ = a.Services.UserService.GetUserByLogin("dashori3")
+		fmt.Println(user2.Name, user2.Surname)
+	}
+
+	Honey, err := a.Services.HoneyService.GetAllHoney()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(Honey)
+	}
+
 	return nil
 }
-
 
 func (a *App) InitDB() (*sql.DB, error) {
 	a.Logger.Debug("POSTGRES! Start init postgreSQL", "user", a.Config.Postgres.User, "DBName", a.Config.Postgres.DBName,

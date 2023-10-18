@@ -40,7 +40,6 @@ ALTER TABLE
 CREATE TABLE "bee_honey"(
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "source" TEXT NOT NULL,
     "description" TEXT NOT NULL
 );
 ALTER TABLE
@@ -101,3 +100,9 @@ ALTER TABLE
     "bee_user_conf" ADD CONSTRAINT "bee_user_conf_id_conf_foreign" FOREIGN KEY("id_conf") REFERENCES "bee_conf"("id");
 ALTER TABLE
     "bee_request" ADD CONSTRAINT "bee_request_id_admin_foreign" FOREIGN KEY("id_admin") REFERENCES "bee_user"("id");
+
+
+insert into bee_honey(name, description) values 
+('Caldwell0','12345'),
+('Miller1','12345'),
+('Espinoza2','12345');

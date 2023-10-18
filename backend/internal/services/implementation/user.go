@@ -13,8 +13,8 @@ import (
 
 type UserImplementation struct {
 	UserRepository repository.UserRepository
-	hasher           hasher.Hasher
-	logger           *log.Logger
+	hasher         hasher.Hasher
+	logger         *log.Logger
 }
 
 func NewUserImplementation(
@@ -24,13 +24,17 @@ func NewUserImplementation(
 ) services.UserService {
 	return &UserImplementation{
 		UserRepository: UserRepository,
-		hasher:           hasher,
-		logger:           logger,
+		hasher:         hasher,
+		logger:         logger,
 	}
 }
 
 func (c *UserImplementation) Create(newUser *models.User) (*models.User, error) {
 	c.logger.Debug("USER! Start create user with", "login", newUser.Login)
+
+	if newUser.Password != newUser.ConfirmPassword {
+		return nil, serviceErrors.ErrorConfirmPassword
+	}
 
 	_, err := c.UserRepository.GetUserByLogin(newUser.Login)
 
@@ -104,7 +108,7 @@ func (c *UserImplementation) GetUserByLogin(login string) (*models.User, error) 
 	return tempUser, nil
 }
 
-func (c *UserImplementation) Update(user *models.UserPatch) (error) {
+func (c *UserImplementation) Update(user *models.UserPatch) error {
 	_, err := c.UserRepository.GetUserByLogin(user.Login)
 
 	if err != nil && err == repoErrors.EntityDoesNotExists {
