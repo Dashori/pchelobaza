@@ -8,7 +8,8 @@ import (
 	"backend/internal/repository/postgres/postgres_models"
 	"database/sql"
 	"backend/internal/repository"
-	"github.com/jinzhu/copier"
+	// "github.com/jinzhu/copier"
+	"time"
 	"github.com/jmoiron/sqlx"
 	"fmt"
 )
@@ -23,11 +24,34 @@ func CreateUserPostgresRepository(db *sql.DB) repository.UserRepository {
 	return &UserPostgresRepository{db: dbx}
 }
 
+func copyUser(u postgresModel.UserPostgres) models.User {
+	user := models.User{UserId: u.UserId,
+						 Login: u.Login,
+						 Password: u.Password,
+						 Name: u.Name,
+						 Surname: u.Surname,
+						 Contact: u.Contact,
+						 Role: u.Role,
+
+						 RegisteredAt: time.Date(
+			u.RegisteredAt.Year(),
+			u.RegisteredAt.Month(),
+			u.RegisteredAt.Day(),
+			u.RegisteredAt.Hour(),
+			u.RegisteredAt.Minute(),
+			u.RegisteredAt.Second(),
+			u.RegisteredAt.Nanosecond(),
+			time.UTC),
+	}
+
+	return user
+}
+
 
 func (c *UserPostgresRepository) Create(user *models.User) error {
 	query := `insert into bee_user(login, password, name, surname, contact, registered_at, role) values($1, $2, $3, $4, $5, $6, $7);`
 
-	_, err := c.db.Exec(query, user.Login, user.Password, user.Name, user.Surname, user.Contacts, user.RegistrationDate, user.Role)
+	_, err := c.db.Exec(query, user.Login, user.Password, user.Name, user.Surname, user.Contact, user.RegisteredAt, user.Role)
 
 	if err != nil {
 		return dbErrors.ErrorInsert
@@ -52,20 +76,15 @@ func (c *UserPostgresRepository) GetUserByLogin(login string) (*models.User, err
 		fmt.Println(err)
 	}
 
-	userModels := &models.User{}
-	err = copier.Copy(userModels, userDB)
+	userModels := copyUser(*userDB)
 
-	if err != nil {
-		return nil, dbErrors.ErrorCopy
-	}
-
-	return userModels, nil
+	return &userModels, nil
 }
 
-func (c *UserPostgresRepository) UpdateUser(user *models.User) error {
-	query := `update bee_user set password = $1, name = $2, surname = $3, contact = $4`
+func (c *UserPostgresRepository) UpdateUser(user *models.UserPatch) error {
+	query := `update bee_user set password = $1, name = $2, surname = $3, contact = $4 where login = $5;`
 
-	_, err := c.db.Exec(query, user.Password, user.Name, user.Surname, user.Contacts)
+	_, err := c.db.Exec(query, user.Password, user.Name, user.Surname, user.Contact, user.Login)
 
 	if err != nil {
 		return dbErrors.ErrorUpdate

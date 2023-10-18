@@ -19,7 +19,9 @@ var (
 	// entity already exists
 	PetAlreadyExists    = errors.New("Service error! Питомец уже существует в базе!")
 	DoctorAlreadyExists = errors.New("Service error! Доктор уже существует в базе!")
-	UserAlreadyExists   = errors.New("Service error! Клиент уже существует в базе!")
+	UserAlreadyExists   = errors.New("Service error! Пользователь уже существует в базе!")
+
+	ErrorUserUpdate = errors.New("Service error! Не удалось обновить информацию о пользователе!")
 
 	// Create + login
 	ErrorGetUserByLogin   = errors.New("Service error! Ошибка при получении пользователя по логину!")

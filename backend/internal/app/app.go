@@ -106,47 +106,9 @@ func (a *App) Init() error {
 	if err != nil {
 		return err
 	}
+
 	a.Repositories = a.initRepositories()
-	// newUser2 := models.User {
-	// 	Login    :       "dashori",
-	// 	Password  :      "aaaa",
-	// 	// ConfirmPassword: "aaaa",
-	// 	Name           : "dasha",
-	// 	Surname        : "chepigo",
-	// 	Contacts       : "daahaaa@icloud.com",
-	// }
-	// newUser2update := models.User {
-	// 	Login    :       "dashori",
-	// 	Password  :      "aaaa",
-	// 	// ConfirmPassword: "aaaa",
-	// 	Name           : "arisha",
-	// 	Surname        : "chepigo",
-	// 	Contacts       : "daahaaa@icloud.com",
-	// }
-
-
-	// a.Repositories.UserRepository.Create(&newUser2)
-	// a.Repositories.UserRepository.GetUserByLogin("dashori")
-	// a.Repositories.UserRepository.UpdateUser(&newUser2update)
-	// a.Repositories.UserRepository.GetUserByLogin("dashori")
-
 	a.Services = a.initServices(a.Repositories)
-
-	newUser := models.User {
-		Login    :       "dashori2",
-		Password  :      "aaaa",
-		ConfirmPassword: "aaaa",
-		Name           : "dasha",
-		Surname        : "chepigo",
-		Contacts       : "daahaaa@icloud.com",
-	}
-
-	user, err := a.Services.UserService.Create(&newUser)
-	if err != nil {
-		fmt.Println(user.Name)
-	} else {
-		fmt.Println(err)
-	}
 	return nil
 }
 

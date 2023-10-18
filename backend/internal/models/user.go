@@ -9,16 +9,17 @@ type User struct {
 	ConfirmPassword  string
 	Name             string
 	Surname          string
-	Contacts         string
-	RegistrationDate time.Time
+	Contact          string
+	RegisteredAt time.Time
 	Role             string
 }
 
 type UserPatch struct {
+	Login string
 	Password string
 	Name     string
 	Surname  string
-	Contacts string
+	Contact string
 }
 
 // type NewUser struct {
