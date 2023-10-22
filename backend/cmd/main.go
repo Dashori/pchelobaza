@@ -1,8 +1,8 @@
 package main
 
 import (
-	server "backend/internal/server"
 	"backend/internal/app"
+	"backend/internal/server"
 	"fmt"
 	"os"
 )

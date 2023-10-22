@@ -3,34 +3,26 @@ package serviceErrors
 import "errors"
 
 var (
-	// records
-	ErrorCreateRecordTime = errors.New("Service error! Неверное время для записи!")
-	TimeIsTaken           = errors.New("Service error! Данное время уже занято!")
-	ErrorDoctorTime       = errors.New("Service error! Неверное время для записи к этому доктору!")
-
-	NotUserPet = errors.New("Service error! Данный питомец не принадлежит вам!")
-
-	// entity does not exists
-	DoctorDoesNotExists = errors.New("Service error! Такого доктора не существует!")
-	UserDoesNotExists   = errors.New("Service error! Такого пользователя не существует!")
-	RecordDoesNotExists = errors.New("Service error! Такой записи не существует!")
-	PetDoesNotExists    = errors.New("Service error! Такого питомца не существует!")
-
-	// entity already exists
-	PetAlreadyExists    = errors.New("Service error! Питомец уже существует в базе!")
-	DoctorAlreadyExists = errors.New("Service error! Доктор уже существует в базе!")
-	UserAlreadyExists   = errors.New("Service error! Пользователь уже существует в базе!")
-
-
-	ErrorUserCreate = errors.New("Service error! Не удалось добавить нового пользователя!")
-	ErrorUserUpdate      = errors.New("Service error! Не удалось обновить информацию о пользователе!")
-	ErrorConfirmPassword = errors.New("Service error! Пароли не совпадают!")
+	UserDoesNotExists     = errors.New("Service error! Такого пользователя не существует!")
+	UserAlreadyExists     = errors.New("Service error! Пользователь уже существует в базе!")
+	ErrorUserCreate       = errors.New("Service error! Не удалось добавить нового пользователя!")
+	ErrorUserUpdate       = errors.New("Service error! Не удалось обновить информацию о пользователе!")
+	ErrorConfirmPassword  = errors.New("Service error! Пароли не совпадают!")
+	ErrorPaginationParams = errors.New("Service error! Неверные параметры для пагинации!")
 
 	// Create + login
-	ErrorGetUserByLogin   = errors.New("Service error! Ошибка при получении пользователя по логину!")
+	ErrorGetUserByLogin = errors.New("Service error! Ошибка при получении пользователя по логину!")
 
+	ErrorCreateRequest         = errors.New("Service error! Не удалось создать новую заявкУ!")
+	ErrorGetAllRequests        = errors.New("Service error! Ошибка при получении пользовательских заявок!")
+	ErrorGetRequestsPagination = errors.New("Service error! Ошибка при получении пользовательских заявок с пагинацией!")
+	ErrorGetUserRequest        = errors.New("Service error! Ошибка при получении заявки пользователя!")
+	UserAlreadyBeemaster       = errors.New("Service error! Пользователь уже является beemaster!")
+	RequestDoesNotExists       = errors.New("Service error! Заявки от пользователя нет!")
+	RequestAlreadyExists       = errors.New("Service error! Заявка от пользователя уже существует!")
+	ErrorRequestStatus         = errors.New("Service error! Заявку нельзя редактировать, так как она не находится в статусе ожидания!")
+	ErrorRequestPatch          = errors.New("Service error! Не удалось обновить статус по заявке!")
 
-	ErrorHash             = errors.New("Service error! Ошибка получения хэша для пароля!")
-	InvalidPassword       = errors.New("Service error! Неверный пароль!")
-
+	ErrorHash       = errors.New("Service error! Ошибка получения хэша для пароля!")
+	InvalidPassword = errors.New("Service error! Неверный пароль!")
 )

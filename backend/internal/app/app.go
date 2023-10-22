@@ -119,6 +119,7 @@ func (a *App) Init() error {
 		Name:            "dasha",
 		Surname:         "chepigo",
 		Contact:         "daahaaa@icloud.com",
+		Role:            "beeman",
 	}
 
 	user, err := a.Services.UserService.Create(&newUser)
@@ -160,7 +161,7 @@ func (a *App) Init() error {
 		fmt.Println(Honey)
 	}
 
-	// fmt.Println("\n\n")
+	fmt.Println("\n\n")
 	req, err := a.Services.RequestService.GetRequestsPagination(5, 4)
 	if err != nil {
 		fmt.Println(err)
@@ -168,7 +169,7 @@ func (a *App) Init() error {
 		fmt.Println(req)
 	}
 
-	// fmt.Println("\n\n")
+	fmt.Println("\n\n")
 	req, err = a.Services.RequestService.GetAllRequests()
 	if err != nil {
 		fmt.Println(err)
@@ -176,12 +177,24 @@ func (a *App) Init() error {
 		fmt.Println(req)
 	}
 
-	// fmt.Println("\n\n")
-	req2, err := a.Services.RequestService.GetUserRequest("Wood52")
+	fmt.Println("\n\n")
+	req2, err := a.Services.RequestService.GetUserRequest("dashori6")
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println(req2)
+	}
+
+	req5 := models.Request{
+		UserLogin:   "dashori6",
+		Description: "need",
+	}
+
+	req3, err := a.Services.RequestService.CreateRequest(&req5)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(req3)
 	}
 
 	requp := models.Request{

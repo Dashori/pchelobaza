@@ -22,7 +22,7 @@ func CreateUserPostgresRepository(db *sql.DB) repository.UserRepository {
 
 func copyUser(u postgresModel.UserPostgres) models.User {
 	user := models.User{
-		UserId: u.UserId,
+		UserId:   u.UserId,
 		Login:    u.Login,
 		Password: u.Password,
 		Name:     u.Name,

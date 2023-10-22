@@ -22,6 +22,7 @@ func CreateRequestPostgresRepository(db *sql.DB) repository.RequestRepository {
 func copyRequest(r postgresModel.RequestRostgres) models.Request {
 	request := models.Request{
 		RequestId:   r.RequestId,
+		UserId:      r.UserId,
 		UserLogin:   r.UserLogin,
 		Description: r.Description,
 		Status:      r.Status,
@@ -30,14 +31,24 @@ func copyRequest(r postgresModel.RequestRostgres) models.Request {
 	return request
 }
 
-func (r *RequestPostgresRepository) GetRequestsPagination(limit int, skipped int) ([]models.Request, error) {
+func (r *RequestPostgresRepository) Create(request *models.Request) error {
+	query := `insert into bee_request(id_user, description, status) values($1, $2, $3);`
+
+	_, err := r.db.Exec(query, request.UserId, request.Description, request.Status)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *RequestPostgresRepository) GetAllRequests() ([]models.Request, error) {
 	query := `select r.id, r.description, r.status, u.login from bee_request r join bee_user u on r.id_user = u.id
-	order by status desc
-	offset $1 
-	limit $2;`
+	order by status desc`
 
 	var requestPostgres []postgresModel.RequestRostgres
-	err := r.db.Select(&requestPostgres, query, skipped, limit)
+	err := r.db.Select(&requestPostgres, query)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
@@ -55,12 +66,14 @@ func (r *RequestPostgresRepository) GetRequestsPagination(limit int, skipped int
 	return requestModels, nil
 }
 
-func (r *RequestPostgresRepository) GetAllRequests() ([]models.Request, error) {
+func (r *RequestPostgresRepository) GetRequestsPagination(limit int, skipped int) ([]models.Request, error) {
 	query := `select r.id, r.description, r.status, u.login from bee_request r join bee_user u on r.id_user = u.id
-	order by status desc`
+	order by status desc
+	offset $1 
+	limit $2;`
 
 	var requestPostgres []postgresModel.RequestRostgres
-	err := r.db.Select(&requestPostgres, query)
+	err := r.db.Select(&requestPostgres, query, skipped, limit)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
