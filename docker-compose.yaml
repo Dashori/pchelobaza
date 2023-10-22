@@ -19,23 +19,24 @@ services:
     networks:
       - mynetwork
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: web-backend
-  #   volumes:
-  #     - ./backend:/app
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy 
-  #   networks:
-  #     - mynetwork
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: web-backend
+    command: go run cmd/main.go
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy 
+    networks:
+      - mynetwork
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:7
     container_name: web-pgadmin
     env_file:
       - .env
@@ -48,21 +49,21 @@ services:
     networks:
       - mynetwork
 
-#   nginx:
-#     image: nginx:1.24
-#     container_name: web-nginx
-#     env_file:
-#       - .env
-#     networks:
-#       - mynetwork
-#     ports:
-#       - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
-#     volumes:
-#       - ./logs/nginx:/var/log/nginx
-#       - ./nginx/nginx.conf:/nginx.conf.template
-#     depends_on:
-#       - backend
-#       - postgres
+  nginx:
+    image: nginx:1.24
+    container_name: web-nginx
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+    ports:
+      - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+      - ./nginx/nginx.conf:/nginx.conf.template
+    depends_on:
+      - backend
+      - postgres
 
 networks:
   mynetwork:

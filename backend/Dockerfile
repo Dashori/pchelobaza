@@ -1,9 +1,4 @@
-FROM debian:12.1-slim
-
-RUN apt update 
-RUN apt show golang
-RUN apt install golang ca-certificates -y
-RUN apt install host -y
+FROM golang:1.21.3 AS build
 
 WORKDIR /app
 
@@ -11,8 +6,12 @@ COPY . .
 
 RUN go mod download
 
-RUN go build cmd/main.go
+RUN go build -o ./build/main ./cmd/main.go
 
-RUN chmod 777 main
+# FROM alpine:3.18
 
-CMD ["./main"]
+# WORKDIR /app
+
+# COPY --from=build /build/main .
+
+# CMD ["./main"]
