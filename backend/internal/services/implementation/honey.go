@@ -30,5 +30,7 @@ func (c *HoneyImplementation) GetAllHoney() ([]models.Honey, error) {
 		return nil, err
 	}
 
+	c.logger.Info("HONEY! Successfully get all honey")
+
 	return honey, nil
 }

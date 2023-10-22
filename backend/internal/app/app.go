@@ -137,7 +137,7 @@ func (a *App) Init() error {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println(user2.Name, user2.Surname)
+		fmt.Println(user2)
 	}
 
 	userup := models.UserPatch{

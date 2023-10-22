@@ -20,7 +20,8 @@ func CreateHoneyPostgresRepository(db *sql.DB) repository.HoneyRepository {
 }
 
 func copyHoney(h postgresModel.HoneyPostgres) models.Honey {
-	honey := models.Honey{HoneyId: h.HoneyId,
+	honey := models.Honey{
+		HoneyId: h.HoneyId,
 		Name:        h.Name,
 		Description: h.Description,
 	}
