@@ -3,8 +3,6 @@ from faker import Faker
 import os
 fake = Faker()
 
-COUNT = 500
-DOC = 50
 USERS = 100
 FARMS = 120
 HONEY = 20

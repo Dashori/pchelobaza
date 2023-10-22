@@ -73,9 +73,9 @@ func (u *UserPostgresRepository) GetUserByLogin(login string) (*models.User, err
 		fmt.Println(err)
 	}
 
-	userModels := copyUser(*userDB)
+	userModel := copyUser(*userDB)
 
-	return &userModels, nil
+	return &userModel, nil
 }
 
 func (u *UserPostgresRepository) UpdateUser(user *models.UserPatch) error {

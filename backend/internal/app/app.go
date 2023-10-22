@@ -27,6 +27,7 @@ type App struct {
 type AppServiceFields struct {
 	UserService  services.UserService
 	HoneyService services.HoneyService
+	RequestService services.RequestService
 	// DoctorService services.DoctorService
 	// PetService    services.PetService
 	// RecordService services.RecordService
@@ -35,6 +36,7 @@ type AppServiceFields struct {
 type AppRepositoryFields struct {
 	UserRepository  repository.UserRepository
 	HoneyRepository repository.HoneyRepository
+	RequestRepository repository.RequestRepository
 	// DoctorRepository repository.DoctorRepository
 	// PetRepository    repository.PetRepository
 	// RecordRepository repository.RecordRepository
@@ -44,6 +46,7 @@ func (a *App) initRepositories() *AppRepositoryFields {
 	f := &AppRepositoryFields{
 		UserRepository:  postgres.CreateUserPostgresRepository(a.PostgresDB),
 		HoneyRepository: postgres.CreateHoneyPostgresRepository(a.PostgresDB),
+		RequestRepository: postgres.CreateRequestPostgresRepository(a.PostgresDB),
 		// DoctorRepository: postgres_repo.CreateDoctorPostgresRepository(fields),
 		// PetRepository:    postgres_repo.CreatePetPostgresRepository(fields),
 		// RecordRepository: postgres_repo.CreateRecordPostgresRepository(fields),
@@ -60,6 +63,7 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 	u := &AppServiceFields{
 		UserService:  servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
 		HoneyService: servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
+		RequestService: servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
 		// DoctorService: servicesImplementation.NewDoctorServiceImplementation(r.DoctorRepository, passwordHasher, a.Logger),
 		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
 		// RecordService: servicesImplementation.NewRecordServiceImplementation(r.RecordRepository, r.DoctorRepository,
@@ -155,6 +159,50 @@ func (a *App) Init() error {
 	} else {
 		fmt.Println(Honey)
 	}
+
+	fmt.Println("\n\n")
+	req, err := a.Services.RequestService.GetRequestsPagination(5, 4)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(req)
+	}
+
+	fmt.Println("\n\n")
+	req, err = a.Services.RequestService.GetAllRequests()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(req)
+	}
+
+	fmt.Println("\n\n")
+	req2, err := a.Services.RequestService.GetUserRequest("Wood52")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(req2)
+	}
+
+	requp := models.Request{
+		UserLogin:   "Wood52",
+		Status:     "approved",
+	}
+
+
+	err = a.Services.RequestService.PatchUserRequest(requp)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("!!!\n\n")
+		req2, err := a.Services.RequestService.GetUserRequest("Wood52")
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(req2)
+		}	
+	}
+
 
 	return nil
 }

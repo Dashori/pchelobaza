@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 func GetKey(c *gin.Context) {
@@ -18,7 +18,6 @@ func GetKey(c *gin.Context) {
 func SetupServer() *gin.Engine {
 
 	router := gin.Default()
-	
 
 	redisApi := router.Group("/")
 	{

@@ -7,8 +7,8 @@ type Conference struct {
 	Description    string
 	Date           string
 	Address        string
-	AvailableUsers float64
 	MaxUsers       float64
+	CurrentUsers float64
 }
 
 type ConferencePatch struct {
@@ -16,6 +16,6 @@ type ConferencePatch struct {
 	Description    string
 	Date           string
 	Address        string
-	AvailableUsers float64
 	MaxUsers       float64
+	CurrentUsers float64
 }

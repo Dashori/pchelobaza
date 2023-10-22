@@ -19,18 +19,32 @@ services:
     networks:
       - mynetwork
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: web-backend
-    volumes:
-      - ./backend:/app
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: web-backend
+  #   volumes:
+  #     - ./backend:/app
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy 
+  #   networks:
+  #     - mynetwork
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: web-pgadmin
     env_file:
       - .env
+    ports: 
+      - ${PGADMIN_PORT}:${PGADMIN_PORT}
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
     depends_on:
-      postgres:
-        condition: service_healthy 
+      - postgres
     networks:
       - mynetwork
 
