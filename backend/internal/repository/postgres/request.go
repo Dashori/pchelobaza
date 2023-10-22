@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"backend/internal/models"
-	dbErrors "backend/internal/pkg/errors/db_errors"
 	repoErrors "backend/internal/pkg/errors/repo_errors"
 	"backend/internal/repository"
 	"backend/internal/repository/postgres/postgres_models"
@@ -25,7 +24,7 @@ func copyRequest(r postgresModel.RequestRostgres) models.Request {
 		RequestId:   r.RequestId,
 		UserLogin:   r.UserLogin,
 		Description: r.Description,
-		Status:       r.Status,
+		Status:      r.Status,
 	}
 
 	return request
@@ -79,7 +78,6 @@ func (r *RequestPostgresRepository) GetAllRequests() ([]models.Request, error) {
 	return requestModels, nil
 }
 
-
 func (r *RequestPostgresRepository) GetUserRequest(UserLogin string) (*models.Request, error) {
 	query := `select r.id, r.description, r.status, u.login from bee_request r join bee_user u on r.id_user = u.id
 	where u.login = $1;`
@@ -98,7 +96,7 @@ func (r *RequestPostgresRepository) GetUserRequest(UserLogin string) (*models.Re
 	return &requestModel, nil
 }
 
-func (r *RequestPostgresRepository) PatchUserRequest (request *models.Request) (error) {
+func (r *RequestPostgresRepository) PatchUserRequest(request *models.Request) error {
 	query := `update bee_request
 	set status = $1
 	from bee_request r join bee_user u on r.id_user = u.id
@@ -107,7 +105,7 @@ func (r *RequestPostgresRepository) PatchUserRequest (request *models.Request) (
 	_, err := r.db.Exec(query, request.Status, request.UserLogin)
 
 	if err != nil {
-		return dbErrors.ErrorUpdate
+		return err
 	}
 
 	return nil

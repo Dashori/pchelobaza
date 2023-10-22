@@ -335,12 +335,6 @@ paths:
           required: true
           schema:
             type: string
-        # - description: Limit honey
-        #   in: query
-        #   name: limit
-        #   required: true
-        #   schema:
-        #     type: number
       responses:
         '200':
           description: OK
@@ -438,6 +432,18 @@ paths:
         required: false
         schema:
           type: string
+      - description: Limit requests
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: number
+      - description: Skipped requests
+        in: query
+        name: skipped
+        required: false
+        schema:
+          type: number
       responses:
         '200':
           description: OK
@@ -462,7 +468,7 @@ paths:
         - bearerAuth: []
       parameters:
       - description: user login
-        in: path
+        in: query
         name: login
         required: true
         schema:
@@ -945,6 +951,9 @@ components:
     Request:
       type: object
       properties:
+        login:
+          type: string
+          example: 'dashori'
         description:
           type: string
           example: 'Please give me the beemaster rules because...'
@@ -968,7 +977,7 @@ components:
           example: 'The International Honeybee Conference'
         owner:
           type: string
-          example: "dashori"
+          example: 'dashori'
         description:
           type: string
           example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'

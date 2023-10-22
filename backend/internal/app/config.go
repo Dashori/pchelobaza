@@ -1,11 +1,9 @@
 package app
 
 import (
-	"os"
-	// "github.com/spf13/viper"
-
 	"fmt"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type PostgresFlags struct {

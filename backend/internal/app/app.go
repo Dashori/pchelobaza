@@ -25,8 +25,8 @@ type App struct {
 }
 
 type AppServiceFields struct {
-	UserService  services.UserService
-	HoneyService services.HoneyService
+	UserService    services.UserService
+	HoneyService   services.HoneyService
 	RequestService services.RequestService
 	// DoctorService services.DoctorService
 	// PetService    services.PetService
@@ -34,8 +34,8 @@ type AppServiceFields struct {
 }
 
 type AppRepositoryFields struct {
-	UserRepository  repository.UserRepository
-	HoneyRepository repository.HoneyRepository
+	UserRepository    repository.UserRepository
+	HoneyRepository   repository.HoneyRepository
 	RequestRepository repository.RequestRepository
 	// DoctorRepository repository.DoctorRepository
 	// PetRepository    repository.PetRepository
@@ -44,8 +44,8 @@ type AppRepositoryFields struct {
 
 func (a *App) initRepositories() *AppRepositoryFields {
 	f := &AppRepositoryFields{
-		UserRepository:  postgres.CreateUserPostgresRepository(a.PostgresDB),
-		HoneyRepository: postgres.CreateHoneyPostgresRepository(a.PostgresDB),
+		UserRepository:    postgres.CreateUserPostgresRepository(a.PostgresDB),
+		HoneyRepository:   postgres.CreateHoneyPostgresRepository(a.PostgresDB),
 		RequestRepository: postgres.CreateRequestPostgresRepository(a.PostgresDB),
 		// DoctorRepository: postgres_repo.CreateDoctorPostgresRepository(fields),
 		// PetRepository:    postgres_repo.CreatePetPostgresRepository(fields),
@@ -61,8 +61,8 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 	passwordHasher := hasherImplementation.NewBcryptHasher()
 
 	u := &AppServiceFields{
-		UserService:  servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
-		HoneyService: servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
+		UserService:    servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
+		HoneyService:   servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
 		RequestService: servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
 		// DoctorService: servicesImplementation.NewDoctorServiceImplementation(r.DoctorRepository, passwordHasher, a.Logger),
 		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
@@ -115,7 +115,7 @@ func (a *App) Init() error {
 	newUser := models.User{
 		Login:           "dashori6",
 		Password:        "abcde",
-		ConfirmPassword: "abcd",
+		ConfirmPassword: "abcde",
 		Name:            "dasha",
 		Surname:         "chepigo",
 		Contact:         "daahaaa@icloud.com",
@@ -133,7 +133,7 @@ func (a *App) Init() error {
 	} else {
 		fmt.Println(user.Name, user.Surname)
 	}
-	user2, err := a.Services.UserService.GetUserByLogin("dashori5")
+	user2, err := a.Services.UserService.GetUserByLogin("dashori6")
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -141,7 +141,7 @@ func (a *App) Init() error {
 	}
 
 	userup := models.UserPatch{
-		Login: "dashori3",
+		Login: "dashori6",
 		Name:  "arisha",
 	}
 
@@ -149,7 +149,7 @@ func (a *App) Init() error {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		user2, _ = a.Services.UserService.GetUserByLogin("dashori3")
+		user2, _ = a.Services.UserService.GetUserByLogin("dashori6")
 		fmt.Println(user2.Name, user2.Surname)
 	}
 
@@ -160,7 +160,7 @@ func (a *App) Init() error {
 		fmt.Println(Honey)
 	}
 
-	fmt.Println("\n\n")
+	// fmt.Println("\n\n")
 	req, err := a.Services.RequestService.GetRequestsPagination(5, 4)
 	if err != nil {
 		fmt.Println(err)
@@ -168,7 +168,7 @@ func (a *App) Init() error {
 		fmt.Println(req)
 	}
 
-	fmt.Println("\n\n")
+	// fmt.Println("\n\n")
 	req, err = a.Services.RequestService.GetAllRequests()
 	if err != nil {
 		fmt.Println(err)
@@ -176,7 +176,7 @@ func (a *App) Init() error {
 		fmt.Println(req)
 	}
 
-	fmt.Println("\n\n")
+	// fmt.Println("\n\n")
 	req2, err := a.Services.RequestService.GetUserRequest("Wood52")
 	if err != nil {
 		fmt.Println(err)
@@ -185,24 +185,22 @@ func (a *App) Init() error {
 	}
 
 	requp := models.Request{
-		UserLogin:   "Wood52",
-		Status:     "approved",
+		UserLogin: "Wood52",
+		Status:    "approved",
 	}
-
 
 	err = a.Services.RequestService.PatchUserRequest(requp)
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("!!!\n\n")
+		// fmt.Println("!!!\n\n")
 		req2, err := a.Services.RequestService.GetUserRequest("Wood52")
 		if err != nil {
 			fmt.Println(err)
 		} else {
 			fmt.Println(req2)
-		}	
+		}
 	}
-
 
 	return nil
 }

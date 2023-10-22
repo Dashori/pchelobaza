@@ -2,12 +2,10 @@ package postgres
 
 import (
 	"backend/internal/models"
-	dbErrors "backend/internal/pkg/errors/db_errors"
 	repoErrors "backend/internal/pkg/errors/repo_errors"
 	"backend/internal/repository"
 	"backend/internal/repository/postgres/postgres_models"
 	"database/sql"
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -51,7 +49,7 @@ func (u *UserPostgresRepository) Create(user *models.User) error {
 	_, err := u.db.Exec(query, user.Login, user.Password, user.Name, user.Surname, user.Contact, user.RegisteredAt, user.Role)
 
 	if err != nil {
-		return dbErrors.ErrorInsert
+		return err
 	}
 
 	return nil
@@ -66,11 +64,7 @@ func (u *UserPostgresRepository) GetUserByLogin(login string) (*models.User, err
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
 	} else if err != nil {
-		return nil, dbErrors.ErrorSelect
-	}
-
-	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	userModel := copyUser(*userDB)
@@ -84,7 +78,7 @@ func (u *UserPostgresRepository) UpdateUser(user *models.UserPatch) error {
 	_, err := u.db.Exec(query, user.Password, user.Name, user.Surname, user.Contact, user.Login)
 
 	if err != nil {
-		return dbErrors.ErrorUpdate
+		return err
 	}
 
 	return nil

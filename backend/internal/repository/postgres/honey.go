@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"backend/internal/models"
-	dbErrors "backend/internal/pkg/errors/db_errors"
 	repoErrors "backend/internal/pkg/errors/repo_errors"
 	"backend/internal/repository"
 	"backend/internal/repository/postgres/postgres_models"
@@ -38,7 +37,7 @@ func (h *HoneyPostgresRepository) GetAllHoney() ([]models.Honey, error) {
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
 	} else if err != nil {
-		return nil, dbErrors.ErrorSelect
+		return nil, err
 	}
 
 	honeyModels := []models.Honey{}

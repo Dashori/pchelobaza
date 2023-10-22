@@ -2,17 +2,17 @@ package servicesImplementation
 
 import (
 	"backend/internal/models"
+	repoErrors "backend/internal/pkg/errors/repo_errors"
+	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/repository"
 	"backend/internal/services"
 	"github.com/charmbracelet/log"
-	repoErrors "backend/internal/pkg/errors/repo_errors"
-	serviceErrors "backend/internal/pkg/errors/services_errors"
 )
 
 type RequestImplementation struct {
 	RequestRepository repository.RequestRepository
-	UserRepository repository.UserRepository
-	logger          *log.Logger
+	UserRepository    repository.UserRepository
+	logger            *log.Logger
 }
 
 func NewRequestImplementation(
@@ -22,8 +22,8 @@ func NewRequestImplementation(
 ) services.RequestService {
 	return &RequestImplementation{
 		RequestRepository: RequestRepository,
-		UserRepository: UserRepository,
-		logger:          logger,
+		UserRepository:    UserRepository,
+		logger:            logger,
 	}
 }
 
@@ -70,7 +70,7 @@ func (r *RequestImplementation) GetUserRequest(UserLogin string) (*models.Reques
 	return request, nil
 }
 
-func (r *RequestImplementation) PatchUserRequest(request models.Request) (error) {
+func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 	r.logger.Debug("REQUEST! Start patch user request")
 	oldRequest, err := r.GetUserRequest(request.UserLogin)
 	if err != nil {
@@ -79,13 +79,12 @@ func (r *RequestImplementation) PatchUserRequest(request models.Request) (error)
 	if oldRequest.Status != "waiting" {
 		return nil // нельзя его редактировать
 	}
-		
+
 	err = r.RequestRepository.PatchUserRequest(&request)
 	if err != nil {
 		r.logger.Warn("REQUEST! Error patch user request", "error", err)
 		return err
 	}
-	r.logger.Debug("REQUEST! PATCH IS OK")
 
 	return nil
 }

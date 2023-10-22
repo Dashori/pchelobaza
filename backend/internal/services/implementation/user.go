@@ -8,7 +8,6 @@ import (
 	"backend/internal/repository"
 	"backend/internal/services"
 	"github.com/charmbracelet/log"
-	// "fmt"
 )
 
 type UserImplementation struct {
@@ -29,101 +28,97 @@ func NewUserImplementation(
 	}
 }
 
-func (c *UserImplementation) Create(newUser *models.User) (*models.User, error) {
-	c.logger.Debug("USER! Start create user with", "login", newUser.Login)
+func (u *UserImplementation) GetUserByLogin(login string) (*models.User, error) {
+	u.logger.Debug("USER! Start GetUserByLogin with", "login", login)
+	tempUser, err := u.UserRepository.GetUserByLogin(login)
 
+	if err != nil && err == repoErrors.EntityDoesNotExists {
+		u.logger.Warn("USER! Error, user with this login does not exists", "login", login, "error", err)
+		return nil, serviceErrors.UserDoesNotExists
+	} else if err != nil {
+		u.logger.Warn("USER! Error in repository method GetUserByLogin", "login", login, "error", err)
+		return nil, serviceErrors.ErrorGetUserByLogin
+	}
+
+	u.logger.Debug("USER! Successfully GetUserByLogin with", "login", login)
+
+	return tempUser, nil
+}
+
+func (u *UserImplementation) Create(newUser *models.User) (*models.User, error) {
+	u.logger.Debug("USER! Start create user with", "login", newUser.Login)
+
+	// проверка совпадают ли пароли при регистрации
 	if newUser.Password != newUser.ConfirmPassword {
 		return nil, serviceErrors.ErrorConfirmPassword
 	}
 
-	_, err := c.UserRepository.GetUserByLogin(newUser.Login)
+	// проверка что такого юзера нет
+	_, err := u.UserRepository.GetUserByLogin(newUser.Login)
 
 	if err != nil && err != repoErrors.EntityDoesNotExists {
-		c.logger.Warn("USER! Error in repository GetUserByLogin", "login", newUser.Login, "error", err)
+		u.logger.Warn("USER! Error in repository method GetUserByLogin", "login", newUser.Login, "error", err)
 		return nil, err
 	} else if err == nil {
-		c.logger.Warn("USER! User already exists", "login", newUser.Login)
+		u.logger.Warn("USER! User already exists with", "login", newUser.Login)
 		return nil, serviceErrors.UserAlreadyExists
 	}
 
-	passwordHash, err := c.hasher.GetHash(newUser.Password)
+	// хэшируем пароль
+	passwordHash, err := u.hasher.GetHash(newUser.Password)
 	if err != nil {
-		c.logger.Warn("USER! Error get hash for password", "login", newUser.Login)
+		u.logger.Warn("USER! Error get hash for password", "login", newUser.Login)
 		return nil, serviceErrors.ErrorHash
 	}
-
 	newUser.Password = string(passwordHash)
 
-	err = c.UserRepository.Create(newUser)
+	err = u.UserRepository.Create(newUser)
 	if err != nil {
-		c.logger.Warn("USER! Error in repository Create", "login", newUser.Login, "error", err)
+		u.logger.Warn("USER! Error in repository Create", "login", newUser.Login, "error", err)
+		return nil, serviceErrors.ErrorUserCreate
+	}
+
+	newUser, err = u.GetUserByLogin(newUser.Login)
+	if err != nil {
 		return nil, err
 	}
 
-	newUser, err = c.UserRepository.GetUserByLogin(newUser.Login)
-	if err != nil {
-		c.logger.Warn("USER! Error in repository method GetUserByLogin", "login", newUser.Login, "error", err)
-		return nil, err
-	}
-
-	c.logger.Info("USER! Successfully create newUser", "login", newUser.Login, "id", newUser.UserId)
+	u.logger.Info("USER! Successfully create newUser", "login", newUser.Login, "id", newUser.UserId)
 
 	return newUser, nil
 }
 
-func (c *UserImplementation) Login(login, password string) (*models.User, error) {
-	c.logger.Debug("USER! Start login with", "login", login)
-	tempUser, err := c.UserRepository.GetUserByLogin(login)
-
-	if err != nil && err == repoErrors.EntityDoesNotExists {
-		c.logger.Warn("USER! Error, user with this login does not exists", "login", login, "error", err)
-		return nil, serviceErrors.UserDoesNotExists
-	} else if err != nil {
-		c.logger.Warn("USER! Error in repository method GetUserByLogin", "login", login, "error", err)
+func (u *UserImplementation) Login(login, password string) (*models.User, error) {
+	u.logger.Debug("USER! Start login with", "login", login)
+	tempUser, err := u.GetUserByLogin(login)
+	if err != nil {
 		return nil, err
 	}
 
-	if !c.hasher.CheckUnhashedValue(tempUser.Password, password) {
-		c.logger.Warn("USER! Error user password", "login", login)
+	if !u.hasher.CheckUnhashedValue(tempUser.Password, password) {
+		u.logger.Warn("USER! Error user password", "login", login)
 		return nil, serviceErrors.InvalidPassword
 	}
 
-	c.logger.Info("USER! Success login with", "login", login, "id", tempUser.UserId)
+	u.logger.Info("USER! Success login with", "login", login, "id", tempUser.UserId)
 
 	return tempUser, nil
 }
 
-func (c *UserImplementation) GetUserByLogin(login string) (*models.User, error) {
-	c.logger.Debug("USER! Start GetUserByLogin with", "login", login)
-	tempUser, err := c.UserRepository.GetUserByLogin(login)
-
-	if err != nil && err == repoErrors.EntityDoesNotExists {
-		c.logger.Warn("USER! Error, user with this login does not exists", "login", login, "error", err)
-		return nil, serviceErrors.UserDoesNotExists
-	} else if err != nil {
-		c.logger.Warn("USER! Error in repository method GetUserByLogin", "login", login, "error", err)
-		return nil, err
-	}
-
-	return tempUser, nil
-}
-
-func (c *UserImplementation) Update(user *models.UserPatch) error {
-	_, err := c.UserRepository.GetUserByLogin(user.Login)
-
-	if err != nil && err == repoErrors.EntityDoesNotExists {
-		c.logger.Warn("USER! Error, user with this login does not exists", "login", user.Login, "error", err)
-		return serviceErrors.UserDoesNotExists
-	} else if err != nil {
-		c.logger.Warn("USER! Error in repository method GetUserByLogin", "login", user.Login, "error", err)
+func (u *UserImplementation) Update(user *models.UserPatch) error {
+	u.logger.Debug("USER! Start update user with", "login", user.Login)
+	_, err := u.GetUserByLogin(user.Login)
+	if err != nil {
 		return err
 	}
 
-	err = c.UserRepository.UpdateUser(user)
+	err = u.UserRepository.UpdateUser(user)
 	if err != nil {
-		c.logger.Warn("USER! Error, user update with login", "login", user.Login, "error", err)
+		u.logger.Warn("USER! Error, user update with login", "login", user.Login, "error", err)
 		return serviceErrors.ErrorUserUpdate
 	}
+
+	u.logger.Info("USER! Successfully update user with", "login", user.Login)
 
 	return nil
 }

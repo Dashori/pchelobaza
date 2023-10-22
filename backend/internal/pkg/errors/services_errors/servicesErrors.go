@@ -21,14 +21,16 @@ var (
 	DoctorAlreadyExists = errors.New("Service error! Доктор уже существует в базе!")
 	UserAlreadyExists   = errors.New("Service error! Пользователь уже существует в базе!")
 
+
+	ErrorUserCreate = errors.New("Service error! Не удалось добавить нового пользователя!")
 	ErrorUserUpdate      = errors.New("Service error! Не удалось обновить информацию о пользователе!")
 	ErrorConfirmPassword = errors.New("Service error! Пароли не совпадают!")
 
 	// Create + login
 	ErrorGetUserByLogin   = errors.New("Service error! Ошибка при получении пользователя по логину!")
-	ErrorGetDoctorByLogin = errors.New("Service error! Ошибка при получении доктора по логину!")
+
+
 	ErrorHash             = errors.New("Service error! Ошибка получения хэша для пароля!")
 	InvalidPassword       = errors.New("Service error! Неверный пароль!")
 
-	ErrorWrongNewShedule = errors.New("Service error! Неверное время для расписания!")
 )
