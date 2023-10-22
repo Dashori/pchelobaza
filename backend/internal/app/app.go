@@ -28,7 +28,7 @@ type AppServiceFields struct {
 	UserService    services.UserService
 	HoneyService   services.HoneyService
 	RequestService services.RequestService
-	// DoctorService services.DoctorService
+	FarmService    services.FarmService
 	// PetService    services.PetService
 	// RecordService services.RecordService
 }
@@ -37,7 +37,7 @@ type AppRepositoryFields struct {
 	UserRepository    repository.UserRepository
 	HoneyRepository   repository.HoneyRepository
 	RequestRepository repository.RequestRepository
-	// DoctorRepository repository.DoctorRepository
+	FarmRepository    repository.FarmRepository
 	// PetRepository    repository.PetRepository
 	// RecordRepository repository.RecordRepository
 }
@@ -47,9 +47,9 @@ func (a *App) initRepositories() *AppRepositoryFields {
 		UserRepository:    postgres.CreateUserPostgresRepository(a.PostgresDB),
 		HoneyRepository:   postgres.CreateHoneyPostgresRepository(a.PostgresDB),
 		RequestRepository: postgres.CreateRequestPostgresRepository(a.PostgresDB),
-		// DoctorRepository: postgres_repo.CreateDoctorPostgresRepository(fields),
-		// PetRepository:    postgres_repo.CreatePetPostgresRepository(fields),
-		// RecordRepository: postgres_repo.CreateRecordPostgresRepository(fields),
+		FarmRepository:    postgres.CreateFarmPostgresRepository(a.PostgresDB),
+		// PetRepository:    postgres.CreatePetPostgresRepository(fields),
+		// RecordRepository: postgres.CreateRecordPostgresRepository(fields),
 	}
 
 	a.Logger.Info("Success initialization of repositories")
@@ -64,7 +64,7 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 		UserService:    servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
 		HoneyService:   servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
 		RequestService: servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
-		// DoctorService: servicesImplementation.NewDoctorServiceImplementation(r.DoctorRepository, passwordHasher, a.Logger),
+		FarmService:    servicesImplementation.NewFarmImplementation(r.FarmRepository, r.UserRepository, a.Logger),
 		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
 		// RecordService: servicesImplementation.NewRecordServiceImplementation(r.RecordRepository, r.DoctorRepository,
 		// 	r.ClientRepository, r.PetRepository, a.Logger),
@@ -207,12 +207,19 @@ func (a *App) Init() error {
 		fmt.Println(err)
 	} else {
 		// fmt.Println("!!!\n\n")
-		req2, err := a.Services.RequestService.GetUserRequest("Wood52")
+		req2, err := a.Services.RequestService.GetUserRequest("Lindsey69")
 		if err != nil {
 			fmt.Println(err)
 		} else {
 			fmt.Println(req2)
 		}
+	}
+
+	farm, err := a.Services.FarmService.GetUsersFarm("Pacheco30", 5, 0)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(farm)
 	}
 
 	return nil

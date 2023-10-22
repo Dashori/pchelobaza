@@ -116,7 +116,7 @@ func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 func (r *RequestImplementation) CreateRequest(newRequest *models.Request) (*models.Request, error) {
 	r.logger.Debug("REQUEST! Start create user request")
 	UserLogin := newRequest.UserLogin
-	
+
 	// проверка что такое пользователь существует
 	user, err := r.UserRepository.GetUserByLogin(UserLogin)
 	if err == repoErrors.EntityDoesNotExists {

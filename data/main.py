@@ -96,7 +96,7 @@ for i in range (0, FARMS):
 
     # name
     file.write('\'')
-    farm = "farm " + str(fake.word())
+    farm = "farm " + str(fake.word() + str(i))
     file.write(farm)
     file.write('\',')
 

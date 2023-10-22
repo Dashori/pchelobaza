@@ -10,4 +10,6 @@ var (
 
 	ErrorGetAllByClient = errors.New("Repository error! Ошибка при получении всех питомцев клиента!")
 	ErrorGetAllByDoctor = errors.New("Repository error! Ошибка при получении всех записей доктора")
+
+	ErrorAlreadyExists = errors.New("Repository error! Такой объект уже существует!")
 )
