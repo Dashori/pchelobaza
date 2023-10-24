@@ -309,6 +309,7 @@ insert into bee_conference(id_user, name, description, date, address, maximum_us
 
 insert into bee_user_conference(id_user, id_conference) values 
 ('1','1'),
+('2','1'),
 ('2','2'),
 ('3','3'),
 ('4','4'),
@@ -330,6 +331,8 @@ insert into bee_user_conference(id_user, id_conference) values
 
 insert into bee_review(id_conference, id_user, date, description) values 
 ('1','1','2023-5-17 16:00','It is my comment!'),
+('1','2','2023-5-17 16:00','It is my comment!'),
+('1','3','2023-5-17 16:00','It is my comment!'),
 ('2','2','2023-12-1 13:00','It is my comment!'),
 ('3','3','2023-7-19 11:00','It is my comment!'),
 ('4','4','2023-7-18 18:00','It is my comment!'),

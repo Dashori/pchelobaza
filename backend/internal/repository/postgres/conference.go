@@ -48,6 +48,9 @@ func copyReview(r postgresModel.ReviewPostgres) models.Review {
 		ConferenceId: r.ConferenceId,
 		UserId:       r.UserId,
 		Description:  r.Description,
+		Login:        r.Login,
+		Name:         r.Name,
+		Surname:      r.Surname,
 		Date: time.Date(
 			r.Date.Year(),
 			r.Date.Month(),
@@ -64,6 +67,7 @@ func copyReview(r postgresModel.ReviewPostgres) models.Review {
 
 func (c *ConferencePostgresRepository) GetAllConferences(limit int, skipped int) ([]models.Conference, error) {
 	query := `select * from bee_conference
+	order by date desc
 	offset $1
 	limit $2;`
 
@@ -133,10 +137,9 @@ func (c *ConferencePostgresRepository) PatchConference(conference *models.Confer
 
 func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int,
 	skipped int) ([]models.User, error) {
-	//!!!!!!!!!!!!! отдаю логины и ??
-	query := `select * from bee_conference where name = $1 join 
-	offset $2
-	limit $3;`
+	query := `select u.login, u.name, u.surname from bee_user_conference as c
+	join bee_user as u on c.id_user = u.id
+	where id_conference = $1;`
 
 	var usersPostgres []postgresModel.UserPostgres
 	err := c.db.Select(&usersPostgres, query, skipped, limit)
@@ -157,11 +160,11 @@ func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int
 	return conferenceUsers, nil
 }
 
-func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.Conference) error {
-	// and update bee_user_conf!!!!
-	query := `update bee_conference set current_users = $1 where id = $5;`
+func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.Conference, UserId uint64) error {
+	query := `update bee_conference set current_users = $1 where id = $2;
+	insert into bee_user_conference(id_user, id_conference) values($3, $4);`
 
-	_, err := c.db.Exec(query, conference.CurrentUsers, conference.ConferenceId)
+	_, err := c.db.Exec(query, conference.CurrentUsers, conference.ConferenceId, UserId, conference.ConferenceId)
 
 	if err != nil {
 		return err
@@ -172,8 +175,9 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 
 func (c *ConferencePostgresRepository) GetConferenceReviews(name string, limit int,
 	skipped int) ([]models.Review, error) {
-	//!!!!!!!!!!!!! отдаю логины и ??
-	query := `select * from bee_conference where name = $1 join 
+	query := `select r.description, u.login, u.name, u.surname
+	from bee_review as r join bee_user as u on u.id= r.id_user
+	where id_conference = $1
 	offset $2
 	limit $3;`
 

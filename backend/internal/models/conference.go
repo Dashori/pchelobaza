@@ -17,6 +17,9 @@ type Review struct {
 	ReviewId     uint64
 	ConferenceId uint64
 	UserId       uint64
+	Login        string
+	Name         string
+	Surname      string
 	Date         time.Time
 	Description  string
 }
