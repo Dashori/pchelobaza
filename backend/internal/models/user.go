@@ -21,12 +21,3 @@ type UserPatch struct {
 	Surname  string
 	Contact  string
 }
-
-// type NewUser struct {
-// 	Login           string
-// 	Password        string
-// 	ConfirmPassword string
-// 	Name            string
-// 	Surname         string
-// 	Contacts        string
-// }

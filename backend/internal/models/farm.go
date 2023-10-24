@@ -9,9 +9,3 @@ type Farm struct {
 	Address     string
 	Honey       []Honey
 }
-
-type FarmPatch struct {
-	Description string
-	Address     string
-	Honey       []Honey
-}

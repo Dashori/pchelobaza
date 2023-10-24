@@ -7,7 +7,3 @@ type Request struct {
 	Description string
 	Status      string
 }
-
-type AllRequests struct {
-	Requests []Request
-}
