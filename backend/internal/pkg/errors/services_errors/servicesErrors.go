@@ -3,14 +3,17 @@ package serviceErrors
 import "errors"
 
 var (
-	UserDoesNotExists     = errors.New("Service error! Такого пользователя не существует!")
-	UserAlreadyExists     = errors.New("Service error! Пользователь уже существует в базе!")
-	ErrorUserCreate       = errors.New("Service error! Не удалось добавить нового пользователя!")
-	ErrorUserUpdate       = errors.New("Service error! Не удалось обновить информацию о пользователе!")
-	ErrorConfirmPassword  = errors.New("Service error! Пароли не совпадают!")
+	// bad request
+	UserDoesNotExists    = errors.New("Service error! Такого пользователя не существует!")
+	InvalidPassword      = errors.New("Service error! Неверный пароль!")
+	ErrorConfirmPassword = errors.New("Service error! Пароли не совпадают!")
+
+	UserAlreadyExists = errors.New("Service error! Пользователь уже существует в базе!")
+	ErrorUserCreate   = errors.New("Service error! Не удалось добавить нового пользователя!")
+	ErrorUserUpdate   = errors.New("Service error! Не удалось обновить информацию о пользователе!")
+
 	ErrorPaginationParams = errors.New("Service error! Неверные параметры для пагинации!")
 
-	// Create + login
 	ErrorGetUserByLogin = errors.New("Service error! Ошибка при получении пользователя по логину!")
 
 	ErrorCreateRequest         = errors.New("Service error! Не удалось создать новую заявку!")
@@ -49,6 +52,5 @@ var (
 	ErrorJoinConf                 = errors.New("Service error! Ошибка при записи на конференцию!")
 	ErrorCreateReview             = errors.New("Service error! Ошибка при добавлении комментария!")
 
-	ErrorHash       = errors.New("Service error! Ошибка получения хэша для пароля!")
-	InvalidPassword = errors.New("Service error! Неверный пароль!")
+	ErrorHash = errors.New("Service error! Ошибка получения хэша для пароля!")
 )

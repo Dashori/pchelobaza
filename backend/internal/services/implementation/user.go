@@ -8,6 +8,7 @@ import (
 	"backend/internal/repository"
 	"backend/internal/services"
 	"github.com/charmbracelet/log"
+	"time"
 )
 
 type UserImplementation struct {
@@ -70,7 +71,9 @@ func (u *UserImplementation) Create(newUser *models.User) (*models.User, error) 
 		u.logger.Warn("USER! Error get hash for password", "login", newUser.Login)
 		return nil, serviceErrors.ErrorHash
 	}
+	newUser.Role = "beeman"
 	newUser.Password = string(passwordHash)
+	newUser.RegisteredAt = time.Now()
 
 	err = u.UserRepository.Create(newUser)
 	if err != nil {
@@ -105,12 +108,20 @@ func (u *UserImplementation) Login(login, password string) (*models.User, error)
 	return tempUser, nil
 }
 
-func (u *UserImplementation) Update(user *models.UserPatch) error {
+func (u *UserImplementation) Update(user *models.User) error {
 	u.logger.Debug("USER! Start update user with", "login", user.Login)
 	_, err := u.GetUserByLogin(user.Login)
 	if err != nil {
 		return err
 	}
+
+	passwordHash, err := u.hasher.GetHash(user.Password)
+	if err != nil {
+		u.logger.Warn("USER! Error get hash for password", "login", user.Login)
+		return serviceErrors.ErrorHash
+	}
+
+	user.Password = string(passwordHash)
 
 	err = u.UserRepository.UpdateUser(user)
 	if err != nil {

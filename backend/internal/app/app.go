@@ -1,8 +1,8 @@
 package app
 
 import (
-	// "github.com/jmoiron/sqlx"
 	"backend/internal/models"
+	dbErrors "backend/internal/pkg/errors/db_errors"
 	"backend/internal/pkg/hasher/implementation"
 	"backend/internal/repository"
 	"backend/internal/repository/postgres"
@@ -10,11 +10,10 @@ import (
 	"backend/internal/services/implementation"
 	"database/sql"
 	"fmt"
-	"os"
-	"time"
-	// _ "github.com/lib/pq"
 	"github.com/charmbracelet/log"
 	_ "github.com/jackc/pgx/stdlib"
+	"os"
+	"time"
 )
 
 type App struct {
@@ -90,7 +89,6 @@ func (a *App) initLogger() {
 		log.Fatal("Error log level")
 	}
 
-	Logger.Print("\n")
 	Logger.Info("Success initialization of new Logger!")
 
 	a.Logger = Logger
@@ -137,7 +135,7 @@ func (a *App) Init() error {
 		fmt.Println(user2)
 	}
 
-	userup := models.UserPatch{
+	userup := models.User{
 		Login: "dashori6",
 		Name:  "arisha",
 	}
@@ -202,7 +200,6 @@ func (a *App) Init() error {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		// fmt.Println("!!!\n\n")
 		req2, err := a.Services.RequestService.GetUserRequest("Lindsey69")
 		if err != nil {
 			fmt.Println(err)
@@ -287,16 +284,14 @@ func (a *App) InitDB() (*sql.DB, error) {
 
 	db, err := sql.Open("pgx", dsnPGConn)
 	if err != nil {
-		fmt.Println("1 error")
-		a.Logger.Fatal("POSTGRES! Error in method open")
-		return nil, err
+		a.Logger.Fatal("POSTGRES! Error in method open", err)
+		return nil, dbErrors.ErrorInitDB
 	}
 
 	err = db.Ping()
 	if err != nil {
-		a.Logger.Fatal("POSTGRES! Error in method ping")
-		fmt.Println("2 error ", err)
-		return nil, err
+		a.Logger.Fatal("POSTGRES! Error in method ping", err)
+		return nil, dbErrors.ErrorInitDB
 	}
 
 	db.SetMaxOpenConns(10)

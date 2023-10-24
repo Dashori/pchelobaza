@@ -73,7 +73,7 @@ func (u *UserPostgresRepository) GetUserByLogin(login string) (*models.User, err
 	return &userModel, nil
 }
 
-func (u *UserPostgresRepository) UpdateUser(user *models.UserPatch) error {
+func (u *UserPostgresRepository) UpdateUser(user *models.User) error {
 	query := `update bee_user set password = $1, name = $2, surname = $3, contact = $4 where login = $5;`
 
 	_, err := u.db.Exec(query, user.Password, user.Name, user.Surname, user.Contact, user.Login)
