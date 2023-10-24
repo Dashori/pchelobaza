@@ -22,15 +22,15 @@ func NewHoneyImplementation(
 	}
 }
 
-func (c *HoneyImplementation) GetAllHoney() ([]models.Honey, error) {
-	c.logger.Debug("HONEY! Start get all honey")
-	honey, err := c.HoneyRepository.GetAllHoney()
+func (h *HoneyImplementation) GetAllHoney() ([]models.Honey, error) {
+	h.logger.Debug("HONEY! Start get all honey")
+	honey, err := h.HoneyRepository.GetAllHoney()
 	if err != nil {
-		c.logger.Warn("HONEY! Error get all honey", "error", err)
+		h.logger.Warn("HONEY! Error get all honey", "error", err)
 		return nil, err
 	}
 
-	c.logger.Info("HONEY! Successfully get all honey")
+	h.logger.Info("HONEY! Successfully get all honey")
 
 	return honey, nil
 }

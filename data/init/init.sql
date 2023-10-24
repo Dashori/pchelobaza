@@ -68,7 +68,7 @@ CREATE TABLE "bee_conference"(
     "id_user" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "date" TEXT NOT NULL,
+    "date" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     "address" TEXT NOT NULL,
     "maximum_users" INTEGER NOT NULL,
     "current_users" INTEGER NOT NULL

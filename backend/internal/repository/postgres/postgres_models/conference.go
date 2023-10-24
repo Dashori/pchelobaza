@@ -7,10 +7,10 @@ type ConferencePostgres struct {
 	UserId       uint64    `db:"id_user"`
 	Name         string    `db:"name"`
 	Description  string    `db:"description"`
-	Date         time.Time `db:"date"`
 	Address      string    `db:"address"`
-	MaxUsers     float64   `db:"maximum_users"`
-	CurrentUsers float64   `db:"current_users"`
+	MaxUsers     int       `db:"maximum_users"`
+	CurrentUsers int       `db:"current_users"`
+	Date         time.Time `db:"date"`
 }
 
 type ReviewPostgres struct {

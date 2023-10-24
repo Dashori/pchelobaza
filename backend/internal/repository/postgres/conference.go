@@ -135,14 +135,44 @@ func (c *ConferencePostgresRepository) PatchConference(conference *models.Confer
 	return nil
 }
 
-func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int,
-	skipped int) ([]models.User, error) {
-	query := `select u.login, u.name, u.surname from bee_user_conference as c
+func (c *ConferencePostgresRepository) GetAllConferenceUsers(name string) ([]models.User, error) {
+	query := `select u.login, u.name, u.surname, cn.name 
+	from bee_user_conference as c
 	join bee_user as u on c.id_user = u.id
-	where id_conference = $1;`
+	join bee_conference as cn on c.id_conference = cn.id
+	where cn.name = $1;`
 
 	var usersPostgres []postgresModel.UserPostgres
-	err := c.db.Select(&usersPostgres, query, skipped, limit)
+	err := c.db.Select(&usersPostgres, query, name)
+
+	if err == sql.ErrNoRows {
+		return nil, repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return nil, err
+	}
+
+	conferenceUsers := []models.User{}
+
+	for _, r := range usersPostgres {
+		user := copyUser(r)
+		conferenceUsers = append(conferenceUsers, user)
+	}
+
+	return conferenceUsers, nil
+}
+
+func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int,
+	skipped int) ([]models.User, error) {
+	query := `select u.login, u.name, u.surname, cn.name 
+	from bee_user_conference as c
+	join bee_user as u on c.id_user = u.id
+	join bee_conference as cn on c.id_conference = cn.id
+	where cn.name = $1
+	offset $2
+	limit $3;`
+
+	var usersPostgres []postgresModel.UserPostgres
+	err := c.db.Select(&usersPostgres, query, name, skipped, limit)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
@@ -161,10 +191,17 @@ func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int
 }
 
 func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.Conference, UserId uint64) error {
-	query := `update bee_conference set current_users = $1 where id = $2;
-	insert into bee_user_conference(id_user, id_conference) values($3, $4);`
+	query := `update bee_conference set current_users = $1 where id = $2;`
 
-	_, err := c.db.Exec(query, conference.CurrentUsers, conference.ConferenceId, UserId, conference.ConferenceId)
+	_, err := c.db.Exec(query, conference.CurrentUsers, conference.ConferenceId)
+
+	if err != nil {
+		return err
+	}
+
+	query = `insert into bee_user_conference(id_user, id_conference) values($1, $2);`
+
+	_, err = c.db.Exec(query, UserId, conference.ConferenceId)
 
 	if err != nil {
 		return err
@@ -176,13 +213,15 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 func (c *ConferencePostgresRepository) GetConferenceReviews(name string, limit int,
 	skipped int) ([]models.Review, error) {
 	query := `select r.description, u.login, u.name, u.surname
-	from bee_review as r join bee_user as u on u.id= r.id_user
-	where id_conference = $1
+	from bee_review as r 
+	join bee_user as u on u.id= r.id_user
+	join bee_conference as cn on r.id_conference = cn.id
+	where cn.name = $1
 	offset $2
 	limit $3;`
 
 	var reviewsPostgres []postgresModel.ReviewPostgres
-	err := c.db.Select(&reviewsPostgres, query, skipped, limit)
+	err := c.db.Select(&reviewsPostgres, query, name, skipped, limit)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists

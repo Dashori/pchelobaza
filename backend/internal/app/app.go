@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 	// _ "github.com/lib/pq"
 	"github.com/charmbracelet/log"
 	_ "github.com/jackc/pgx/stdlib"
@@ -25,31 +26,28 @@ type App struct {
 }
 
 type AppServiceFields struct {
-	UserService    services.UserService
-	HoneyService   services.HoneyService
-	RequestService services.RequestService
-	FarmService    services.FarmService
-	// PetService    services.PetService
-	// RecordService services.RecordService
+	UserService       services.UserService
+	HoneyService      services.HoneyService
+	RequestService    services.RequestService
+	FarmService       services.FarmService
+	ConferenceService services.ConferenceService
 }
 
 type AppRepositoryFields struct {
-	UserRepository    repository.UserRepository
-	HoneyRepository   repository.HoneyRepository
-	RequestRepository repository.RequestRepository
-	FarmRepository    repository.FarmRepository
-	// PetRepository    repository.PetRepository
-	// RecordRepository repository.RecordRepository
+	UserRepository       repository.UserRepository
+	HoneyRepository      repository.HoneyRepository
+	RequestRepository    repository.RequestRepository
+	FarmRepository       repository.FarmRepository
+	ConferenceRepository repository.ConferenceRepository
 }
 
 func (a *App) initRepositories() *AppRepositoryFields {
 	f := &AppRepositoryFields{
-		UserRepository:    postgres.CreateUserPostgresRepository(a.PostgresDB),
-		HoneyRepository:   postgres.CreateHoneyPostgresRepository(a.PostgresDB),
-		RequestRepository: postgres.CreateRequestPostgresRepository(a.PostgresDB),
-		FarmRepository:    postgres.CreateFarmPostgresRepository(a.PostgresDB),
-		// PetRepository:    postgres.CreatePetPostgresRepository(fields),
-		// RecordRepository: postgres.CreateRecordPostgresRepository(fields),
+		UserRepository:       postgres.CreateUserPostgresRepository(a.PostgresDB),
+		HoneyRepository:      postgres.CreateHoneyPostgresRepository(a.PostgresDB),
+		RequestRepository:    postgres.CreateRequestPostgresRepository(a.PostgresDB),
+		FarmRepository:       postgres.CreateFarmPostgresRepository(a.PostgresDB),
+		ConferenceRepository: postgres.CreateConferencePostgresRepository(a.PostgresDB),
 	}
 
 	a.Logger.Info("Success initialization of repositories")
@@ -61,13 +59,11 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 	passwordHasher := hasherImplementation.NewBcryptHasher()
 
 	u := &AppServiceFields{
-		UserService:    servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
-		HoneyService:   servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
-		RequestService: servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
-		FarmService:    servicesImplementation.NewFarmImplementation(r.FarmRepository, r.UserRepository, a.Logger),
-		// PetService:    servicesImplementation.NewPetServiceImplementation(r.PetRepository, r.ClientRepository, a.Logger),
-		// RecordService: servicesImplementation.NewRecordServiceImplementation(r.RecordRepository, r.DoctorRepository,
-		// 	r.ClientRepository, r.PetRepository, a.Logger),
+		UserService:       servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
+		HoneyService:      servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
+		RequestService:    servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
+		FarmService:       servicesImplementation.NewFarmImplementation(r.FarmRepository, r.UserRepository, a.Logger),
+		ConferenceService: servicesImplementation.NewConferenceImplementation(r.ConferenceRepository, r.UserRepository, a.Logger),
 	}
 
 	a.Logger.Info("Success initialization of services")
@@ -222,6 +218,61 @@ func (a *App) Init() error {
 		fmt.Println(farm)
 	}
 
+	confs, err := a.Services.ConferenceService.GetAllConferences(5, 0)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(confs)
+	}
+
+	conf := models.Conference{
+		Name:        "myconf2",
+		UserLogin:   "Black99",
+		Description: "abcde",
+		Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
+		Address:     "aaaa",
+		MaxUsers:    12,
+	}
+	confPatch := models.Conference{
+		Name:        "myconf2",
+		UserLogin:   "Black99",
+		Description: "abcdefghijklmnop",
+		Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
+		Address:     "aaaa",
+		MaxUsers:    12,
+	}
+
+	newConf, err := a.Services.ConferenceService.CreateConference(&conf)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(newConf)
+	}
+	err = a.Services.ConferenceService.PatchConference(&confPatch)
+	fmt.Println("!!!", err)
+
+	newConf, err = a.Services.ConferenceService.GetConferenceByName("myconf2")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(newConf)
+	}
+
+	usersss, err := a.Services.ConferenceService.GetConferenceUsers("Conference1", 5, 0)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(usersss)
+	}
+
+	reviews, err := a.Services.ConferenceService.GetConferenceReviews("Conference1", 5, 0)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(reviews)
+	}
+	err = a.Services.ConferenceService.PatchConferenceUsers("myconf2", "Black99")
+	fmt.Println("***", err)
 	return nil
 }
 

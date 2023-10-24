@@ -58,7 +58,7 @@ func (u *UserImplementation) Create(newUser *models.User) (*models.User, error) 
 
 	if err != nil && err != repoErrors.EntityDoesNotExists {
 		u.logger.Warn("USER! Error in repository method GetUserByLogin", "login", newUser.Login, "error", err)
-		return nil, err
+		return nil, serviceErrors.ErrorUserCreate
 	} else if err == nil {
 		u.logger.Warn("USER! User already exists with", "login", newUser.Login)
 		return nil, serviceErrors.UserAlreadyExists

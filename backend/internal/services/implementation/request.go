@@ -46,7 +46,7 @@ func (r *RequestImplementation) GetAllRequests() ([]models.Request, error) {
 
 func (r *RequestImplementation) GetRequestsPagination(limit int, skipped int) ([]models.Request, error) {
 	r.logger.Debug("REQUEST! Start get all requests with pagination")
-	if limit < 0 && skipped < 0 {
+	if limit < 0 || skipped < 0 {
 		return nil, serviceErrors.ErrorPaginationParams
 	}
 
