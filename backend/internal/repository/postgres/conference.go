@@ -64,8 +64,8 @@ func copyReview(r postgresModel.ReviewPostgres) models.Review {
 
 func (c *ConferencePostgresRepository) GetAllConferences(limit int, skipped int) ([]models.Conference, error) {
 	query := `select * from bee_conference
-	offset $2
-	limit $3;`
+	offset $1
+	limit $2;`
 
 	var conferencePostgres []postgresModel.ConferencePostgres
 	err := c.db.Select(&conferencePostgres, query, skipped, limit)

@@ -285,7 +285,7 @@ insert into bee_request(id_user, description, status)  values
 ('59','Please give me the beeman rules','waiting'),
 ('60','Please give me the beeman rules','waiting');
 
-insert into bee_conf(id_user, name, description, date, place, maximum_users, current_users) values 
+insert into bee_conference(id_user, name, description, date, address, maximum_users, current_users) values 
 ('51','Conference0','Welcome to the conference!','2023-2-13 18:00','Equatorial Guinea, Port Katieborough, Daniel Fork, 288','46','27'),
 ('52','Conference1','Welcome to the conference!','2021-5-11 17:00','Qatar, East Richard, Martin Plaza, 6973','79','14'),
 ('53','Conference2','Welcome to the conference!','2021-4-26 15:00','Brazil, Hannahport, Cynthia Walk, 5938','53','17'),
@@ -307,7 +307,7 @@ insert into bee_conf(id_user, name, description, date, place, maximum_users, cur
 ('69','Conference18','Welcome to the conference!','2023-10-25 11:00','Monaco, Emilystad, Calderon Stream, 02323','23','21'),
 ('70','Conference19','Welcome to the conference!','2023-1-20 19:00','Ecuador, Lonnieside, Wanda Meadows, 18920','41','31');
 
-insert into bee_user_conf(id_user, id_conf) values 
+insert into bee_user_conference(id_user, id_conference) values 
 ('1','1'),
 ('2','2'),
 ('3','3'),
@@ -328,7 +328,7 @@ insert into bee_user_conf(id_user, id_conf) values
 ('18','18'),
 ('19','19');
 
-insert into bee_comment(id_conf, id_user, time, description) values 
+insert into bee_review(id_conference, id_user, date, description) values 
 ('1','1','2023-5-17 16:00','It is my comment!'),
 ('2','2','2023-12-1 13:00','It is my comment!'),
 ('3','3','2023-7-19 11:00','It is my comment!'),

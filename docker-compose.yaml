@@ -45,7 +45,8 @@ services:
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy 
     networks:
       - mynetwork
 
