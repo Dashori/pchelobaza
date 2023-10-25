@@ -19,7 +19,8 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.ErrorUserCreate ||
 		err == serviceErrors.ErrorGetUserByLogin ||
 		err == serviceErrors.ErrorGetFarmByName ||
-		err == serviceErrors.ErrorCreateFarm {
+		err == serviceErrors.ErrorCreateFarm ||
+		err == serviceErrors.ErrorGetHoney {
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}

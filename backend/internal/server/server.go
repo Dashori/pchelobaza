@@ -44,6 +44,12 @@ func SetupServer(a *app.App) *gin.Engine {
 			farm.PATCH("/", s.PatchFarm)
 		}
 
+		honey := api.Group("/honey")
+		{
+			honey.Use(middlewares.JwtAuthMiddleware())
+			honey.GET("", s.GetHoney)
+		}
+
 		api.POST("/setRole", s.setRole)
 	}
 

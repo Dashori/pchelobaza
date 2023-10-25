@@ -140,7 +140,7 @@ func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
 		return err
 	}
 
-	query = `insert into bee_farm_honey(id_farm, if_honey) valuse($1, $2);`
+	query = `insert into bee_farm_honey(id_farm, id_honey) values($1, $2);`
 
 	for _, i := range farm.Honey {
 		_, err = tx.Exec(query, farm.FarmId, i.HoneyId)
@@ -148,6 +148,12 @@ func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
 			tx.Rollback()
 			return err
 		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return err
 	}
 
 	return nil

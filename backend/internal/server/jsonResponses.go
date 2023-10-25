@@ -57,6 +57,11 @@ func jsonFarmCreateResponse(c *gin.Context, farm models.Farm) {
 		"address": farm.Address, "userLogin": farm.UserLogin})
 }
 
+// honey
+func jsonUserHoneyOkResponse(c *gin.Context, honey []models.Honey) {
+	c.JSON(http.StatusOK, gin.H{"honey": honey})
+}
+
 // func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 // 	c.JSON(http.StatusOK, gin.H{"UserId": user.UserId, "Login": user.Login})
 // }

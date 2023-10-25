@@ -34,7 +34,8 @@ var (
 	ErrorFarmAccess    = errors.New("Service error! Ферма не принадлежит Вам, вы не можете ее изменять!")
 	ErrorFarmUpdate    = errors.New("Service error! Не удалось обновить информацию о ферме!")
 
-	ErrorHoney = errors.New("Service error! Такого меда не существует!")
+	ErrorHoney    = errors.New("Service error! Такого меда не существует!")
+	ErrorGetHoney = errors.New("Service error! Ошибка при получении меда")
 
 	ErrorGetConferencesPagination = errors.New("Service error! Ошибка при получении конференций с пагинацией!")
 	ErrorRoleForConference        = errors.New("Service error! Ошибка при создании конференции -- пользователь не является мастером!")

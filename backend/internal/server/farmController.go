@@ -51,6 +51,14 @@ func (s *services) AddFarm(c *gin.Context) {
 		return
 	}
 
+	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	if err != nil {
+		jsonUnauthorizedResponse(c, nil)
+		return
+	}
+
+	farm.UserLogin = login
+
 	res, err := s.Services.FarmService.CreateFarm(farm)
 	if err != nil {
 		fmt.Println(err)

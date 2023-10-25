@@ -32,7 +32,7 @@ func (h *HoneyImplementation) GetAllHoney() ([]models.Honey, error) {
 	honey, err := h.HoneyRepository.GetAllHoney()
 	if err != nil {
 		h.logger.Warn("HONEY! Error get all honey", "error", err)
-		return nil, err
+		return nil, serviceErrors.ErrorGetHoney
 	}
 
 	h.logger.Info("HONEY! Successfully get all honey")
@@ -55,7 +55,7 @@ func (h *HoneyImplementation) GetFarmHoney(name string) ([]models.Honey, error) 
 	honey, err := h.HoneyRepository.GetFarmHoney(name)
 	if err != nil {
 		h.logger.Warn("HONEY! Error get farm honey", "error", err)
-		return nil, err
+		return nil, serviceErrors.ErrorGetHoney
 	}
 
 	h.logger.Info("HONEY! Successfully get farm honey")
