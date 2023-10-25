@@ -1,4 +1,5 @@
 insert into bee_user(login, password, name, surname, contact, registered_at, role) values 
+('admin','$2a$10$bvWqLIiNe4UoiWRySbM/.u1r1Y5zQrmabwbbrhaOcAnhJ3pVyeEbW','admin','admin','admin@example.org','2018-6-5','beeadmin'),
 ('Poole0','12345','Michael','Poole','diazwayne@example.org','2018-6-5','beeman'),
 ('Morales1','12345','Michaela','Morales','mallen@example.net','2020-7-27','beeman'),
 ('Price2','12345','James','Price','evanswilliam@example.org','2019-7-1','beeman'),
