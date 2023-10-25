@@ -45,12 +45,13 @@ func copyConference(c postgresModel.ConferencePostgres) models.Conference {
 
 func copyReview(r postgresModel.ReviewPostgres) models.Review {
 	review := models.Review{
-		ConferenceId: r.ConferenceId,
-		UserId:       r.UserId,
-		Description:  r.Description,
-		Login:        r.Login,
-		Name:         r.Name,
-		Surname:      r.Surname,
+		ConferenceId:   r.ConferenceId,
+		ConferenceName: r.ConferenceName,
+		UserId:         r.UserId,
+		Description:    r.Description,
+		Login:          r.Login,
+		Name:           r.Name,
+		Surname:        r.Surname,
 		Date: time.Date(
 			r.Date.Year(),
 			r.Date.Month(),
@@ -218,7 +219,7 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 
 func (c *ConferencePostgresRepository) GetConferenceReviews(name string, limit int,
 	skipped int) ([]models.Review, error) {
-	query := `select r.description, u.login, u.name, u.surname
+	query := `select cn.name as conf_name, r.description, u.login, u.name, u.surname
 	from bee_review as r 
 	join bee_user as u on u.id= r.id_user
 	join bee_conference as cn on r.id_conference = cn.id

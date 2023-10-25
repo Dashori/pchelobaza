@@ -1,11 +1,11 @@
 package server
 
 import (
+	models "backend/internal/models"
 	"backend/internal/server/middlewares"
 	"fmt"
-	"strconv"
-	models "backend/internal/models"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func (s *services) AddRequest(c *gin.Context) {
@@ -62,7 +62,7 @@ func (s *services) GetRequest(c *gin.Context) {
 		jsonGetRequestResponse(c, res)
 		return
 	}
-	
+
 	limit, ok := c.GetQuery("limit")
 	if !ok {
 		jsonBadRequestResponse(c, fmt.Errorf("No limit in the query!"))
@@ -91,7 +91,6 @@ func (s *services) GetRequest(c *gin.Context) {
 		return
 	}
 }
-
 
 func (s *services) PatchRequest(c *gin.Context) {
 	_, role, err := middlewares.ExtractTokenIdAndRole(c)

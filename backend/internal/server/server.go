@@ -58,6 +58,20 @@ func SetupServer(a *app.App) *gin.Engine {
 			request.PATCH("", s.PatchRequest)
 		}
 
+		conference := api.Group("/conferences")
+		{
+			conference.Use(middlewares.JwtAuthMiddleware())
+			conference.GET("", s.GetAllConferences)
+			conference.POST("", s.CreateConference)
+			conference.GET("/:name", s.GetConference)
+			conference.PATCH("/:name", s.PatchConference)
+			conference.GET("/:name/participants", s.GetConferenceUsers)
+			conference.POST("/:name/participants", s.PatchConferenceUsers)
+			conference.GET("/:name/reviews", s.GetConferenceReviews)
+			conference.POST("/:name/reviews", s.AddReview)
+
+		}
+
 	}
 
 	return router

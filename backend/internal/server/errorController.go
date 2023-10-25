@@ -21,7 +21,14 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.ErrorGetFarmByName ||
 		err == serviceErrors.ErrorCreateFarm ||
 		err == serviceErrors.ErrorGetHoney ||
-		err == serviceErrors.ErrorCreateRequest {
+		err == serviceErrors.ErrorCreateRequest ||
+		err == serviceErrors.ErrorGetConferencesPagination ||
+		err == serviceErrors.ErrorCreateConference ||
+		err == serviceErrors.ErrorGetConference ||
+		err == serviceErrors.ErrorEditConference ||
+		err == serviceErrors.ErrorGetConferenceUsers ||
+		err == serviceErrors.ErrorJoinConf ||
+		err == serviceErrors.ErrorGetConferenceReviews {
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}
@@ -35,9 +42,25 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.FarmDoesNotExists ||
 		err == serviceErrors.ErrorHoney ||
 		err == serviceErrors.RequestAlreadyExists ||
-		err == serviceErrors.UserAlreadyBeemaster {
+		err == serviceErrors.UserAlreadyBeemaster ||
+		err == serviceErrors.ErrorPaginationParams ||
+		err == serviceErrors.ErrorRoleForConference ||
+		err == serviceErrors.ErrorDateForConference ||
+		err == serviceErrors.ErrorUsersForConference ||
+		err == serviceErrors.ErrorNameForConference ||
+		err == serviceErrors.ErrorNoConference ||
+		err == serviceErrors.ErrorOldConference ||
+		err == serviceErrors.ErrorDateForConference ||
+		err == serviceErrors.ErrorUsersForConference ||
+		err == serviceErrors.ErrorNoPlace ||
+		err == serviceErrors.ErrorConferenceJoin {
 		jsonBadRequestResponse(c, err)
 		return false
+	}
+
+	if err == serviceErrors.ErrorNoYourConference ||
+		err == serviceErrors.ErrorRoleForConference {
+		jsonPermResponse(c, err)
 	}
 
 	return true

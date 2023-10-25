@@ -10,6 +10,10 @@ func jsonStatusOkResponse(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+func jsonPermResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+}
+
 // errors
 
 func jsonInternalServerErrorResponse(c *gin.Context, err error) {
@@ -68,64 +72,49 @@ func jsonRequestCreateResponse(c *gin.Context, request *models.Request) {
 }
 
 func jsonGetRequestResponse(c *gin.Context, request *models.Request) {
-	c.JSON(http.StatusCreated, gin.H{"description": request.Description, "status": request.Status})
+	c.JSON(http.StatusOK, gin.H{"description": request.Description, "status": request.Status})
 }
 
 func jsonGetRequestsResponse(c *gin.Context, requests []models.Request) {
-	c.JSON(http.StatusCreated, gin.H{"requests": requests})
+	c.JSON(http.StatusOK, gin.H{"requests": requests})
 }
 
 func jsonGetRequestPermResponse(c *gin.Context) {
 	c.JSON(http.StatusForbidden, gin.H{"err": "You can't see this, permission denied!"})
 }
 
+// conferences
+func jsonConferencesOkResponse(c *gin.Context, conferences []models.Conference) {
+	c.JSON(http.StatusOK, gin.H{"conferences": conferences})
+}
 
+func jsonConferenceOkResponse(c *gin.Context, conference *models.Conference) {
+	c.JSON(http.StatusOK, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+		"description": conference.Description, "date": conference.Date,
+		"address": conference.Address, "maxUsers": conference.MaxUsers,
+		"currentUsers": conference.CurrentUsers})
+}
 
+func jsonConferenceUsersOkResponse(c *gin.Context, users []models.User) {
+	c.JSON(http.StatusOK, gin.H{"users": users})
+}
 
-// func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
-// 	c.JSON(http.StatusOK, gin.H{"UserId": user.UserId, "Login": user.Login})
-// }
+func jsonConferenceReviewsOkResponse(c *gin.Context, reviews []models.Review) {
+	c.JSON(http.StatusOK, gin.H{"reviews": reviews})
+}
 
-// // doctor
+func jsonConferenceCreateResponse(c *gin.Context, conference *models.Conference) {
+	c.JSON(http.StatusCreated, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+		"description": conference.Description, "date": conference.Date,
+		"address": conference.Address, "maxUsers": conference.MaxUsers,
+		"currentUsers": conference.CurrentUsers})
+}
 
-// func jsonDoctorCreateResponse(c *gin.Context, doctor *models.Doctor, token string) {
-// 	c.JSON(http.StatusCreated, gin.H{"DoctorId": doctor.DoctorId, "Login": doctor.Login,
-// 		"StartTime": doctor.StartTime, "EndTime": doctor.EndTime, "Token": token})
-// }
+func jsonConferenceUserCreateResponse(c *gin.Context) {
+	c.JSON(http.StatusCreated, gin.H{})
+}
 
-// func jsonDoctorLoginOkResponse(c *gin.Context, doctor *models.Doctor, token string) {
-// 	c.JSON(http.StatusOK, gin.H{"DoctorId": doctor.DoctorId, "Login": doctor.Login, "Token": token})
-// }
-
-// func jsonDoctorInfoOkResponse(c *gin.Context, doctor *models.Doctor) {
-// 	c.JSON(http.StatusOK, gin.H{"DoctorId": doctor.DoctorId, "Login": doctor.Login,
-// 		"StartTime": doctor.StartTime, "EndTime": doctor.EndTime})
-// }
-
-// func jsonDoctorsOkResponse(c *gin.Context, doctors []models.Doctor) {
-// 	c.JSON(http.StatusOK, gin.H{"doctors": doctors})
-// }
-
-// // records
-
-// func jsonRecordsOkResponse(c *gin.Context, records []models.Record) {
-// 	c.JSON(http.StatusOK, gin.H{"records": records})
-// }
-
-// func jsonRecordCreatedResponse(c *gin.Context, record *models.Record) {
-// 	c.JSON(http.StatusCreated, gin.H{"record": record})
-// }
-
-// // pets
-
-// func jsonPetsOkResponse(c *gin.Context, pets []models.Pet) {
-// 	c.JSON(http.StatusOK, gin.H{"pets": pets})
-// }
-
-// func jsonPetCreatedResponse(c *gin.Context, pet *models.Pet) {
-// 	c.JSON(http.StatusCreated, gin.H{"pet": pet})
-// }
-
-// func jsonPetOkResponse(c *gin.Context, pet *models.Pet) {
-// 	c.JSON(http.StatusOK, gin.H{"pet": pet})
-// }
+func jsonReviewCreateResponse(c *gin.Context, review *models.Review) {
+	c.JSON(http.StatusCreated, gin.H{"conferanceName": review.ConferenceName, "login": review.Login,
+		"name": review.Name, "surname": review.Surname, "date": review.Date, "description": review.Description})
+}

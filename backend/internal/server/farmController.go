@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
-	// "net/http"
 )
 
 func (s *services) GetFarms(c *gin.Context) {

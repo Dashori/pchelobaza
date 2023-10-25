@@ -14,12 +14,13 @@ type ConferencePostgres struct {
 }
 
 type ReviewPostgres struct {
-	ReviewId     uint64    `db:"id"`
-	ConferenceId uint64    `db:"id_conference"`
-	UserId       uint64    `db:"id_user"`
-	Login        string    `db:"login"`
-	Name         string    `db:"name"`
-	Surname      string    `db:"surname"`
-	Date         time.Time `db:"date"`
-	Description  string    `db:"description"`
+	ReviewId       uint64    `db:"id"`
+	ConferenceId   uint64    `db:"id_conference"`
+	ConferenceName string    `db:"conf_name"`
+	UserId         uint64    `db:"id_user"`
+	Login          string    `db:"login"`
+	Name           string    `db:"name"`
+	Surname        string    `db:"surname"`
+	Date           time.Time `db:"date"`
+	Description    string    `db:"description"`
 }
