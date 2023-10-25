@@ -2,10 +2,10 @@ package server
 
 import (
 	models "backend/internal/models"
+	"backend/internal/server/middlewares"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
-	"backend/internal/server/middlewares"
 	// "net/http"
 )
 
@@ -78,6 +78,17 @@ func (s *services) GetFarmInfo(c *gin.Context) {
 	if !errorHandler(c, err) {
 		return
 	}
+
+	honey, err := s.Services.HoneyService.GetFarmHoney(name)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("honey", honey)
+	if !errorHandler(c, err) {
+		return
+	}
+	res.Honey = honey
 
 	jsonFarmInfoOkResponse(c, res)
 }

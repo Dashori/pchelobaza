@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	dbErrors "backend/internal/pkg/errors/db_errors"
-	servicesErrors "backend/internal/pkg/errors/services_errors"
+	serviceErrors "backend/internal/pkg/errors/services_errors"
 )
 
 func errorHandler(c *gin.Context, err error) bool {
@@ -14,22 +14,24 @@ func errorHandler(c *gin.Context, err error) bool {
 	}
 
 	if err == dbErrors.ErrorInitDB ||
-		err == servicesErrors.ErrorHash ||
-		err == servicesErrors.ErrorUserUpdate ||
-		err == servicesErrors.ErrorUserCreate ||
-		err == servicesErrors.ErrorGetUserByLogin ||
-		err == servicesErrors.ErrorGetFarmByName{
+		err == serviceErrors.ErrorHash ||
+		err == serviceErrors.ErrorUserUpdate ||
+		err == serviceErrors.ErrorUserCreate ||
+		err == serviceErrors.ErrorGetUserByLogin ||
+		err == serviceErrors.ErrorGetFarmByName ||
+		err == serviceErrors.ErrorCreateFarm {
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}
 
-	if err == servicesErrors.UserDoesNotExists ||
-		err == servicesErrors.UserAlreadyExists ||
-		err == servicesErrors.InvalidPassword ||
-		err == servicesErrors.ErrorConfirmPassword ||
-		err == servicesErrors.FarmAlreadyExists ||
-		err == servicesErrors.ErrorFarmAccess || 
-		err == servicesErrors.FarmDoesNotExists {
+	if err == serviceErrors.UserDoesNotExists ||
+		err == serviceErrors.UserAlreadyExists ||
+		err == serviceErrors.InvalidPassword ||
+		err == serviceErrors.ErrorConfirmPassword ||
+		err == serviceErrors.FarmAlreadyExists ||
+		err == serviceErrors.ErrorFarmAccess ||
+		err == serviceErrors.FarmDoesNotExists ||
+		err == serviceErrors.ErrorHoney {
 		jsonBadRequestResponse(c, err)
 		return false
 	}

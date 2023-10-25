@@ -7,6 +7,7 @@ import (
 	"backend/internal/repository/postgres/postgres_models"
 	"database/sql"
 	"github.com/jmoiron/sqlx"
+	// "fmt"
 )
 
 type FarmPostgresRepository struct {
@@ -29,16 +30,44 @@ func copyFarm(f postgresModel.FarmPostgres) models.Farm {
 		Address:     f.Address,
 	}
 
+	honey := []models.Honey{}
+	for _, i := range f.Honey {
+		tempHoney := models.Honey{
+			Name:        i.Name,
+			Description: i.Description}
+		honey = append(honey, tempHoney)
+	}
+
+	farm.Honey = honey
 	return farm
 }
 
 func (f *FarmPostgresRepository) CreateFarm(farm *models.Farm) error {
-	query := `insert into bee_farm(id_user, name, description, address) values($1, $2, $3, $4);`
+	query := `insert into bee_farm(id_user, name, description, address) values($1, $2, $3, $4) returning id;`
 
 	_, err := f.db.Exec(query, farm.UserId, farm.Name, farm.Description, farm.Address)
 
 	if err != nil {
 		return err
+	}
+
+	query = `select id from bee_farm where name = $1;`
+	var farmId uint64
+	err = f.db.Get(&farmId, query, farm.Name)
+
+	if err == sql.ErrNoRows {
+		return repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return err
+	}
+
+	query = `insert into bee_farm_honey(id_farm, id_honey) values($1, $2);`
+
+	for _, i := range farm.Honey {
+		_, err = f.db.Exec(query, farmId, i.HoneyId)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -90,12 +119,35 @@ func (f *FarmPostgresRepository) GetUsersFarm(userId uint64, limit int, skipped 
 }
 
 func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
-	query := `update bee_farm set description = $1, address = $2 where id = $3;`
-
-	_, err := f.db.Exec(query, farm.Description, farm.Address, farm.FarmId)
-
+	tx, err := f.db.Begin()
 	if err != nil {
 		return err
+	}
+
+	query := `update bee_farm set description = $1, address = $2 where id = $3;`
+
+	_, err = tx.Exec(query, farm.Description, farm.Address, farm.FarmId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	query = `delete from bee_farm_honey where id_farm = $1;`
+
+	_, err = tx.Exec(query, farm.FarmId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	query = `insert into bee_farm_honey(id_farm, if_honey) valuse($1, $2);`
+
+	for _, i := range farm.Honey {
+		_, err = tx.Exec(query, farm.FarmId, i.HoneyId)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
 	return nil

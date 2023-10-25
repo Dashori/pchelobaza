@@ -59,9 +59,9 @@ func (a *App) initServices(r *AppRepositoryFields) *AppServiceFields {
 
 	u := &AppServiceFields{
 		UserService:       servicesImplementation.NewUserImplementation(r.UserRepository, passwordHasher, a.Logger),
-		HoneyService:      servicesImplementation.NewHoneyImplementation(r.HoneyRepository, a.Logger),
+		HoneyService:      servicesImplementation.NewHoneyImplementation(r.HoneyRepository, r.FarmRepository, a.Logger),
 		RequestService:    servicesImplementation.NewRequestImplementation(r.RequestRepository, r.UserRepository, a.Logger),
-		FarmService:       servicesImplementation.NewFarmImplementation(r.FarmRepository, r.UserRepository, a.Logger),
+		FarmService:       servicesImplementation.NewFarmImplementation(r.FarmRepository, r.UserRepository, r.HoneyRepository, a.Logger),
 		ConferenceService: servicesImplementation.NewConferenceImplementation(r.ConferenceRepository, r.UserRepository, a.Logger),
 	}
 

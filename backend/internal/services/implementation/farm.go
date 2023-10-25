@@ -6,25 +6,28 @@ import (
 	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/repository"
 	"backend/internal/services"
-	"github.com/charmbracelet/log"
 	"fmt"
+	"github.com/charmbracelet/log"
 )
 
 type FarmImplementation struct {
-	FarmRepository repository.FarmRepository
-	UserRepository repository.UserRepository
-	logger         *log.Logger
+	FarmRepository  repository.FarmRepository
+	UserRepository  repository.UserRepository
+	HoneyRepository repository.HoneyRepository
+	logger          *log.Logger
 }
 
 func NewFarmImplementation(
 	FarmRepository repository.FarmRepository,
 	UserRepository repository.UserRepository,
+	HoneyRepository repository.HoneyRepository,
 	logger *log.Logger,
 ) services.FarmService {
 	return &FarmImplementation{
-		FarmRepository: FarmRepository,
-		UserRepository: UserRepository,
-		logger:         logger,
+		FarmRepository:  FarmRepository,
+		UserRepository:  UserRepository,
+		HoneyRepository: HoneyRepository,
+		logger:          logger,
 	}
 }
 
@@ -54,10 +57,23 @@ func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, err
 		return nil, serviceErrors.FarmAlreadyExists
 	}
 	newFarm.UserId = user.UserId
+
+	for i, honey := range newFarm.Honey {
+		id, err := f.HoneyRepository.GetHoneyId(honey.Name)
+		if err != nil && err != repoErrors.EntityDoesNotExists {
+			f.logger.Warn("FARM! Error in repository method GetHoneyId", "err", err)
+			return nil, serviceErrors.ErrorCreateFarm
+		} else if err == repoErrors.EntityDoesNotExists {
+			f.logger.Warn("FARM! There is no honey with this name", "name", honey.Name)
+			return nil, serviceErrors.ErrorHoney
+		}
+		newFarm.Honey[i].HoneyId = id
+	}
+
 	err = f.FarmRepository.CreateFarm(newFarm)
 	if err != nil {
 		f.logger.Warn("FARM! Error in repository method CreateFarm", "err", err)
-		return nil, serviceErrors.FarmAlreadyExists
+		return nil, serviceErrors.ErrorCreateFarm
 	}
 
 	farm, err = f.GetFarm(newFarm.Name)
@@ -125,6 +141,18 @@ func (f *FarmImplementation) PatchFarm(newFarm *models.Farm) error {
 	if farm.UserId != user.UserId {
 		f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
 		return serviceErrors.ErrorFarmAccess
+	}
+
+	for i, honey := range newFarm.Honey {
+		id, err := f.HoneyRepository.GetHoneyId(honey.Name)
+		if err != nil && err != repoErrors.EntityDoesNotExists {
+			f.logger.Warn("FARM! Error in repository method GetHoneyId", "err", err)
+			return serviceErrors.ErrorCreateFarm
+		} else if err == repoErrors.EntityDoesNotExists {
+			f.logger.Warn("FARM! There is no honey with this name", "name", honey.Name)
+			return serviceErrors.ErrorHoney
+		}
+		newFarm.Honey[i].HoneyId = id
 	}
 
 	fmt.Println("!!", newFarm)
