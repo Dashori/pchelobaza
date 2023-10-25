@@ -192,18 +192,25 @@ func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int
 
 func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.Conference, UserId uint64) error {
 	query := `update bee_conference set current_users = $1 where id = $2;`
+	
+	tx, err := c.db.Begin()
+	if err != nil {
+		return err
+	}
 
-	_, err := c.db.Exec(query, conference.CurrentUsers, conference.ConferenceId)
+	_, err = tx.Exec(query, conference.CurrentUsers, conference.ConferenceId)
 
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	query = `insert into bee_user_conference(id_user, id_conference) values($1, $2);`
 
-	_, err = c.db.Exec(query, UserId, conference.ConferenceId)
+	_, err = tx.Exec(query, UserId, conference.ConferenceId)
 
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
