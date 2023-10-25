@@ -20,7 +20,8 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.ErrorGetUserByLogin ||
 		err == serviceErrors.ErrorGetFarmByName ||
 		err == serviceErrors.ErrorCreateFarm ||
-		err == serviceErrors.ErrorGetHoney {
+		err == serviceErrors.ErrorGetHoney ||
+		err == serviceErrors.ErrorCreateRequest {
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}
@@ -32,7 +33,9 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.FarmAlreadyExists ||
 		err == serviceErrors.ErrorFarmAccess ||
 		err == serviceErrors.FarmDoesNotExists ||
-		err == serviceErrors.ErrorHoney {
+		err == serviceErrors.ErrorHoney ||
+		err == serviceErrors.RequestAlreadyExists ||
+		err == serviceErrors.UserAlreadyBeemaster {
 		jsonBadRequestResponse(c, err)
 		return false
 	}

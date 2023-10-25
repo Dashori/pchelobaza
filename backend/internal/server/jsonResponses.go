@@ -62,6 +62,26 @@ func jsonUserHoneyOkResponse(c *gin.Context, honey []models.Honey) {
 	c.JSON(http.StatusOK, gin.H{"honey": honey})
 }
 
+// request
+func jsonRequestCreateResponse(c *gin.Context, request *models.Request) {
+	c.JSON(http.StatusCreated, gin.H{"description": request.Description, "status": request.Status})
+}
+
+func jsonGetRequestResponse(c *gin.Context, request *models.Request) {
+	c.JSON(http.StatusCreated, gin.H{"description": request.Description, "status": request.Status})
+}
+
+func jsonGetRequestsResponse(c *gin.Context, requests []models.Request) {
+	c.JSON(http.StatusCreated, gin.H{"requests": requests})
+}
+
+func jsonGetRequestPermResponse(c *gin.Context) {
+	c.JSON(http.StatusForbidden, gin.H{"err": "You can't see this, permission denied!"})
+}
+
+
+
+
 // func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 // 	c.JSON(http.StatusOK, gin.H{"UserId": user.UserId, "Login": user.Login})
 // }

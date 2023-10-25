@@ -24,7 +24,7 @@ func (s *services) GetFarms(c *gin.Context) {
 
 	skipped, ok := c.GetQuery("skipped")
 	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No login in the query!"))
+		jsonBadRequestResponse(c, fmt.Errorf("No skipped in the query!"))
 		return
 	}
 	skippedNum, _ := strconv.Atoi(skipped)

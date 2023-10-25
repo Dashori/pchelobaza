@@ -6,7 +6,7 @@ import (
 	"backend/internal/app"
 	// "backend/internal/server/controllers"
 	"backend/internal/server/middlewares"
-	"fmt"
+	// "fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -50,34 +50,15 @@ func SetupServer(a *app.App) *gin.Engine {
 			honey.GET("", s.GetHoney)
 		}
 
-		api.POST("/setRole", s.setRole)
+		request := api.Group("/requests")
+		{
+			request.Use(middlewares.JwtAuthMiddleware())
+			request.POST("", s.AddRequest)
+			request.GET("", s.GetRequest)
+			request.PATCH("", s.PatchRequest)
+		}
+
 	}
 
 	return router
-}
-
-func (s *services) setRole(c *gin.Context) {
-	// var role *Role
-	// err := c.ShouldBindJSON(&role)
-	// if err != nil {
-	// 	jsonInternalServerErrorResponse(c, err)
-	// 	return
-	// }
-
-	// if role.Role == "doctor" {
-	// 	err = t.Services.DoctorService.SetRole()
-	// } else if role.Role == "client" {
-	// 	err = t.Services.ClientService.SetRole()
-	// } else {
-	// 	jsonBadRequestResponse(c, fmt.Errorf("Такой роли не существует!"))
-	// }
-
-	// if err != nil {
-	// 	jsonInternalServerErrorResponse(c, err)
-	// 	return
-	// }
-
-	// jsonStatusOkResponse(c)
-	fmt.Println("bbbb")
-	return
 }

@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 func (s *services) GetHoney(c *gin.Context) {
