@@ -23,6 +23,7 @@ func copyFarm(f postgresModel.FarmPostgres) models.Farm {
 	farm := models.Farm{
 		FarmId:      f.FarmId,
 		UserId:      f.UserId,
+		UserLogin:   f.UserLogin,
 		Name:        f.Name,
 		Description: f.Description,
 		Address:     f.Address,
@@ -44,7 +45,11 @@ func (f *FarmPostgresRepository) CreateFarm(farm *models.Farm) error {
 }
 
 func (f *FarmPostgresRepository) GetFarmByName(name string) (*models.Farm, error) {
-	query := `select * from bee_farm where name = $1;`
+	query := `select f.id, f.id_user, f.name, f.description,
+	f.address, u.login
+	from bee_farm as f
+	join bee_user as u on f.id_user = u.id
+	where f.name = $1;`
 	farmDB := &postgresModel.FarmPostgres{}
 
 	err := f.db.Get(farmDB, query, name)

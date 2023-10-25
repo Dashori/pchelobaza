@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"backend/internal/server/middlewares"
 	// "net/http"
 )
 
@@ -60,4 +61,58 @@ func (s *services) AddFarm(c *gin.Context) {
 	}
 
 	jsonFarmCreateResponse(c, *res)
+}
+
+func (s *services) GetFarmInfo(c *gin.Context) {
+	name, ok := c.GetQuery("name")
+	if !ok {
+		jsonBadRequestResponse(c, fmt.Errorf("No farm name in the query!"))
+		return
+	}
+
+	res, err := s.Services.FarmService.GetFarm(name)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if !errorHandler(c, err) {
+		return
+	}
+
+	jsonFarmInfoOkResponse(c, res)
+}
+
+func (s *services) PatchFarm(c *gin.Context) {
+	name, ok := c.GetQuery("name")
+	if !ok {
+		jsonBadRequestResponse(c, fmt.Errorf("No farm name in the query!"))
+		return
+	}
+
+	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	if err != nil {
+		jsonUnauthorizedResponse(c, nil)
+		return
+	}
+
+	var farm *models.Farm
+	err = c.ShouldBindJSON(&farm)
+	farm.Name = name
+	farm.UserLogin = login
+
+	if err != nil {
+		jsonInternalServerErrorResponse(c, err)
+		return
+	}
+
+	err = s.Services.FarmService.PatchFarm(farm)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if !errorHandler(c, err) {
+		return
+	}
+
+	jsonStatusOkResponse(c)
 }

@@ -25,7 +25,7 @@ func SetupServer(a *app.App) *gin.Engine {
 		{
 			auth.POST("/login", s.Login)
 			auth.POST("/signup", s.SignUp)
-			// auth.POST("/logout", controllers.DeleteFileContent)
+			// auth.POST("/logout", s.DeleteFileContent)
 		}
 
 		user := api.Group("/users")
@@ -37,42 +37,15 @@ func SetupServer(a *app.App) *gin.Engine {
 
 		farm := api.Group("/farms")
 		{
+			farm.Use(middlewares.JwtAuthMiddleware())
 			farm.GET("", s.GetFarms)
 			farm.POST("", s.AddFarm)
+			farm.GET("/", s.GetFarmInfo)
+			farm.PATCH("/", s.PatchFarm)
 		}
 
 		api.POST("/setRole", s.setRole)
-
-		// api.GET("/doctors", t.getAllDoctors)
-		// api.POST("/doctor/create", t.createDoctor)
-		// api.POST("/doctor/login", t.loginDoctor)
-
-		// doctor := api.Group("/doctor")
-		// doctor.Use(middlewares.JwtAuthMiddleware())
-		// doctor.GET("/info", t.doctorInfo)
-		// doctor.GET("/records", t.doctorRecords)
-		// doctor.PATCH("/shedule", t.doctorShedule)
-
-		// api.POST("/client/create", t.createClient)
-		// api.POST("/client/login", t.loginClient)
-
-		// client := api.Group("/client")
-		// client.Use(middlewares.JwtAuthMiddleware())
-		// client.GET("/info", t.infoClient)
-		// client.GET("/records", t.ClientRecords)
-		// client.GET("/pets", t.ClientPets)
-		// client.POST("/record", t.NewRecord)
-		// client.POST("/pet", t.NewPet)
-		// client.DELETE("/pet", t.DeletePet)
 	}
-
-	// port := a.Config.Port
-	// adress := a.Config.Address
-	// err := router.Run(adress + port)
-
-	// if err != nil {
-	// 	return nil
-	// }
 
 	return router
 }

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"backend/internal/models"
+	// "backend/internal/models"
 	dbErrors "backend/internal/pkg/errors/db_errors"
 	"backend/internal/pkg/hasher/implementation"
 	"backend/internal/repository"
@@ -13,7 +13,7 @@ import (
 	"github.com/charmbracelet/log"
 	_ "github.com/jackc/pgx/stdlib"
 	"os"
-	"time"
+	// "time"
 )
 
 type App struct {
@@ -106,170 +106,170 @@ func (a *App) Init() error {
 	a.Repositories = a.initRepositories()
 	a.Services = a.initServices(a.Repositories)
 
-	newUser := models.User{
-		Login:           "dashori6",
-		Password:        "abcde",
-		ConfirmPassword: "abcde",
-		Name:            "dasha",
-		Surname:         "chepigo",
-		Contact:         "daahaaa@icloud.com",
-		Role:            "beeman",
-	}
+	// newUser := models.User{
+	// 	Login:           "dashori6",
+	// 	Password:        "abcde",
+	// 	ConfirmPassword: "abcde",
+	// 	Name:            "dasha",
+	// 	Surname:         "chepigo",
+	// 	Contact:         "daahaaa@icloud.com",
+	// 	Role:            "beeman",
+	// }
 
-	user, err := a.Services.UserService.Create(&newUser)
-	if err != nil {
-		fmt.Println("create ", err)
-	} else {
-		fmt.Println(user.Name)
-	}
-	user, err = a.Services.UserService.Login("dashori5", "abcd")
-	if err != nil {
-		fmt.Println("login", err)
-	} else {
-		fmt.Println(user.Name, user.Surname)
-	}
-	user2, err := a.Services.UserService.GetUserByLogin("dashori6")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(user2)
-	}
+	// user, err := a.Services.UserService.Create(&newUser)
+	// if err != nil {
+	// 	fmt.Println("create ", err)
+	// } else {
+	// 	fmt.Println(user.Name)
+	// }
+	// user, err = a.Services.UserService.Login("dashori5", "abcd")
+	// if err != nil {
+	// 	fmt.Println("login", err)
+	// } else {
+	// 	fmt.Println(user.Name, user.Surname)
+	// }
+	// user2, err := a.Services.UserService.GetUserByLogin("dashori6")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(user2)
+	// }
 
-	userup := models.User{
-		Login: "dashori6",
-		Name:  "arisha",
-	}
+	// userup := models.User{
+	// 	Login: "dashori6",
+	// 	Name:  "arisha",
+	// }
 
-	err = a.Services.UserService.Update(&userup)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		user2, _ = a.Services.UserService.GetUserByLogin("dashori6")
-		fmt.Println(user2.Name, user2.Surname)
-	}
+	// err = a.Services.UserService.Update(&userup)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	user2, _ = a.Services.UserService.GetUserByLogin("dashori6")
+	// 	fmt.Println(user2.Name, user2.Surname)
+	// }
 
-	Honey, err := a.Services.HoneyService.GetAllHoney()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(Honey)
-	}
+	// Honey, err := a.Services.HoneyService.GetAllHoney()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(Honey)
+	// }
 
-	fmt.Println("\n\n")
-	req, err := a.Services.RequestService.GetRequestsPagination(5, 4)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(req)
-	}
+	// fmt.Println("\n\n")
+	// req, err := a.Services.RequestService.GetRequestsPagination(5, 4)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(req)
+	// }
 
-	fmt.Println("\n\n")
-	req, err = a.Services.RequestService.GetAllRequests()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(req)
-	}
+	// fmt.Println("\n\n")
+	// req, err = a.Services.RequestService.GetAllRequests()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(req)
+	// }
 
-	fmt.Println("\n\n")
-	req2, err := a.Services.RequestService.GetUserRequest("dashori6")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(req2)
-	}
+	// fmt.Println("\n\n")
+	// req2, err := a.Services.RequestService.GetUserRequest("dashori6")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(req2)
+	// }
 
-	req5 := models.Request{
-		UserLogin:   "dashori6",
-		Description: "need",
-	}
+	// req5 := models.Request{
+	// 	UserLogin:   "dashori6",
+	// 	Description: "need",
+	// }
 
-	req3, err := a.Services.RequestService.CreateRequest(&req5)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(req3)
-	}
+	// req3, err := a.Services.RequestService.CreateRequest(&req5)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(req3)
+	// }
 
-	requp := models.Request{
-		UserLogin: "Wood52",
-		Status:    "approved",
-	}
+	// requp := models.Request{
+	// 	UserLogin: "Wood52",
+	// 	Status:    "approved",
+	// }
 
-	err = a.Services.RequestService.PatchUserRequest(requp)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		req2, err := a.Services.RequestService.GetUserRequest("Lindsey69")
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println(req2)
-		}
-	}
+	// err = a.Services.RequestService.PatchUserRequest(requp)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	req2, err := a.Services.RequestService.GetUserRequest("Lindsey69")
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 	} else {
+	// 		fmt.Println(req2)
+	// 	}
+	// }
 
-	farm, err := a.Services.FarmService.GetUsersFarm("Pacheco30", 5, 0)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(farm)
-	}
+	// farm, err := a.Services.FarmService.GetUsersFarm("Pacheco30", 5, 0)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(farm)
+	// }
 
-	confs, err := a.Services.ConferenceService.GetAllConferences(5, 0)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(confs)
-	}
+	// confs, err := a.Services.ConferenceService.GetAllConferences(5, 0)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(confs)
+	// }
 
-	conf := models.Conference{
-		Name:        "myconf2",
-		UserLogin:   "Black99",
-		Description: "abcde",
-		Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
-		Address:     "aaaa",
-		MaxUsers:    12,
-	}
-	confPatch := models.Conference{
-		Name:        "myconf2",
-		UserLogin:   "Black99",
-		Description: "abcdefghijklmnop",
-		Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
-		Address:     "aaaa",
-		MaxUsers:    12,
-	}
+	// conf := models.Conference{
+	// 	Name:        "myconf2",
+	// 	UserLogin:   "Black99",
+	// 	Description: "abcde",
+	// 	Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
+	// 	Address:     "aaaa",
+	// 	MaxUsers:    12,
+	// }
+	// confPatch := models.Conference{
+	// 	Name:        "myconf2",
+	// 	UserLogin:   "Black99",
+	// 	Description: "abcdefghijklmnop",
+	// 	Date:        time.Date(2023, 11, 11, 19, 00, 00, 00, time.UTC),
+	// 	Address:     "aaaa",
+	// 	MaxUsers:    12,
+	// }
 
-	newConf, err := a.Services.ConferenceService.CreateConference(&conf)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(newConf)
-	}
-	err = a.Services.ConferenceService.PatchConference(&confPatch)
-	fmt.Println("!!!", err)
+	// newConf, err := a.Services.ConferenceService.CreateConference(&conf)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(newConf)
+	// }
+	// err = a.Services.ConferenceService.PatchConference(&confPatch)
+	// fmt.Println("!!!", err)
 
-	newConf, err = a.Services.ConferenceService.GetConferenceByName("myconf2")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(newConf)
-	}
+	// newConf, err = a.Services.ConferenceService.GetConferenceByName("myconf2")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(newConf)
+	// }
 
-	usersss, err := a.Services.ConferenceService.GetConferenceUsers("Conference1", 5, 0)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(usersss)
-	}
+	// usersss, err := a.Services.ConferenceService.GetConferenceUsers("Conference1", 5, 0)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(usersss)
+	// }
 
-	reviews, err := a.Services.ConferenceService.GetConferenceReviews("Conference1", 5, 0)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(reviews)
-	}
-	err = a.Services.ConferenceService.PatchConferenceUsers("myconf2", "Black99")
-	fmt.Println("***", err)
+	// reviews, err := a.Services.ConferenceService.GetConferenceReviews("Conference1", 5, 0)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(reviews)
+	// }
+	// err = a.Services.ConferenceService.PatchConferenceUsers("myconf2", "Black99")
+	// fmt.Println("***", err)
 	return nil
 }
 

@@ -17,7 +17,8 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == servicesErrors.ErrorHash ||
 		err == servicesErrors.ErrorUserUpdate ||
 		err == servicesErrors.ErrorUserCreate ||
-		err == servicesErrors.ErrorGetUserByLogin {
+		err == servicesErrors.ErrorGetUserByLogin ||
+		err == servicesErrors.ErrorGetFarmByName{
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}
@@ -27,7 +28,8 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == servicesErrors.InvalidPassword ||
 		err == servicesErrors.ErrorConfirmPassword ||
 		err == servicesErrors.FarmAlreadyExists ||
-		err == servicesErrors.ErrorFarmAccess {
+		err == servicesErrors.ErrorFarmAccess || 
+		err == servicesErrors.FarmDoesNotExists {
 		jsonBadRequestResponse(c, err)
 		return false
 	}

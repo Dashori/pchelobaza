@@ -34,8 +34,6 @@ func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 		"contact": user.Contact, "registration_date": user.RegisteredAt, "role": user.Role})
 }
 
-// // user
-
 func jsonUserCreateResponse(c *gin.Context, token string) {
 	c.JSON(http.StatusCreated, gin.H{"token": token})
 }
@@ -49,9 +47,14 @@ func jsonUserFarmsOkResponse(c *gin.Context, farms []models.Farm) {
 	c.JSON(http.StatusOK, gin.H{"farms": farms})
 }
 
+func jsonFarmInfoOkResponse(c *gin.Context, farm *models.Farm) {
+	c.JSON(http.StatusOK, gin.H{"name": farm.Name, "description": farm.Description,
+		"address": farm.Address, "user": farm.UserLogin, "honey": farm.Honey})
+}
+
 func jsonFarmCreateResponse(c *gin.Context, farm models.Farm) {
 	c.JSON(http.StatusCreated, gin.H{"name": farm.Name, "description": farm.Description,
-		"address": farm.Address, "userId": farm.UserId})
+		"address": farm.Address, "userLogin": farm.UserLogin})
 }
 
 // func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {

@@ -22,7 +22,7 @@ func (s *services) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := middlewares.GenerateToken(res.UserId, res.Role)
+	token, err := middlewares.GenerateToken(res.Login, res.Role)
 
 	if err != nil {
 		jsonBadRequestResponse(c, err)
@@ -47,7 +47,7 @@ func (s *services) SignUp(c *gin.Context) {
 		return
 	}
 
-	token, err := middlewares.GenerateToken(res.UserId, res.Role)
+	token, err := middlewares.GenerateToken(res.Login, res.Role)
 	if err != nil {
 		jsonInternalServerErrorResponse(c, err)
 		return

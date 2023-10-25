@@ -7,6 +7,7 @@ import (
 	"backend/internal/repository"
 	"backend/internal/services"
 	"github.com/charmbracelet/log"
+	"fmt"
 )
 
 type FarmImplementation struct {
@@ -63,6 +64,7 @@ func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, err
 	if err != nil {
 		return nil, err
 	}
+	farm.UserLogin = user.Login
 
 	f.logger.Info("FARM! Successfully create new farm")
 	return farm, nil
@@ -118,11 +120,14 @@ func (f *FarmImplementation) PatchFarm(newFarm *models.Farm) error {
 	if err != nil {
 		return err
 	}
+	newFarm.FarmId = farm.FarmId
 
 	if farm.UserId != user.UserId {
 		f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
 		return serviceErrors.ErrorFarmAccess
 	}
+
+	fmt.Println("!!", newFarm)
 
 	err = f.FarmRepository.PatchFarm(newFarm)
 	if err != nil {
