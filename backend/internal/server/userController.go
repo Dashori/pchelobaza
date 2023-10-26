@@ -4,13 +4,12 @@ import (
 	models "backend/internal/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	// "net/http"
 )
 
 func (s *services) GetUser(c *gin.Context) {
-	login, ok := c.GetQuery("login")
-	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No login in the path!"))
+	login := c.Param("login")
+	if login == "" {
+		jsonBadRequestResponse(c, fmt.Errorf("No name in the path!"))
 		return
 	}
 
@@ -27,9 +26,9 @@ func (s *services) GetUser(c *gin.Context) {
 }
 
 func (s *services) PatchUser(c *gin.Context) {
-	login, ok := c.GetQuery("login")
-	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No login in the path!"))
+	login := c.Param("login")
+	if login == "" {
+		jsonBadRequestResponse(c, fmt.Errorf("No name in the path!"))
 		return
 	}
 

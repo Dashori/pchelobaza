@@ -71,32 +71,7 @@ paths:
           description: User already exists
         '500':
           description: Status internal server error
-
-  /auth/logout:
-    post:
-      tags:
-        - auth
-      summary: Logout
-      description: logout from the server
-      security:
-        - bearerAuth: []
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
-        "500":
-          description: Internal Server Error
-
+          
   /api/v1/users/{login}:
     parameters:
       - description: Authorization

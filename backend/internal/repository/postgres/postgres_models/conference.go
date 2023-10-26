@@ -2,15 +2,26 @@ package postgresModel
 
 import "time"
 
-type ConferencePostgres struct {
+type OnlyConferencePostgres struct {
 	ConferenceId uint64    `db:"id"`
-	UserId       uint64    `db:"id_user"`
 	Name         string    `db:"name"`
+	UserId       uint64    `db:"id_user"`
 	Description  string    `db:"description"`
 	Address      string    `db:"address"`
 	MaxUsers     int       `db:"maximum_users"`
 	CurrentUsers int       `db:"current_users"`
 	Date         time.Time `db:"date"`
+}
+
+type ConferencePostgres struct {
+	ConferenceId   uint64    `db:"id"`
+	ConferenceName string    `db:"conf_name"`
+	UserId         uint64    `db:"id_user"`
+	Description    string    `db:"description"`
+	Address        string    `db:"address"`
+	MaxUsers       int       `db:"maximum_users"`
+	CurrentUsers   int       `db:"current_users"`
+	Date           time.Time `db:"date"`
 }
 
 type ReviewPostgres struct {

@@ -24,6 +24,28 @@ func copyConference(c postgresModel.ConferencePostgres) models.Conference {
 	conference := models.Conference{
 		ConferenceId: c.ConferenceId,
 		UserId:       c.UserId,
+		Name:         c.ConferenceName,
+		Description:  c.Description,
+		Address:      c.Address,
+		MaxUsers:     c.MaxUsers,
+		CurrentUsers: c.CurrentUsers,
+		Date: time.Date(
+			c.Date.Year(),
+			c.Date.Month(),
+			c.Date.Day(),
+			c.Date.Hour(),
+			c.Date.Minute(),
+			c.Date.Second(),
+			c.Date.Nanosecond(),
+			time.UTC),
+	}
+
+	return conference
+}
+
+func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conference {
+	conference := models.Conference{
+		ConferenceId: c.ConferenceId,
 		Name:         c.Name,
 		Description:  c.Description,
 		Address:      c.Address,
@@ -72,7 +94,7 @@ func (c *ConferencePostgresRepository) GetAllConferences(limit int, skipped int)
 	offset $1
 	limit $2;`
 
-	var conferencePostgres []postgresModel.ConferencePostgres
+	var conferencePostgres []postgresModel.OnlyConferencePostgres
 	err := c.db.Select(&conferencePostgres, query, skipped, limit)
 
 	if err == sql.ErrNoRows {
@@ -84,7 +106,7 @@ func (c *ConferencePostgresRepository) GetAllConferences(limit int, skipped int)
 	conferenceModels := []models.Conference{}
 
 	for _, r := range conferencePostgres {
-		conference := copyConference(r)
+		conference := copyOnlyConference(r)
 		conferenceModels = append(conferenceModels, conference)
 	}
 
@@ -107,8 +129,7 @@ func (c *ConferencePostgresRepository) CreateConference(conference *models.Confe
 
 func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models.Conference, error) {
 	query := `select * from bee_conference where name = $1;`
-	conferenceDB := &postgresModel.ConferencePostgres{}
-
+	conferenceDB := &postgresModel.OnlyConferencePostgres{}
 	err := c.db.Get(conferenceDB, query, name)
 
 	if err == sql.ErrNoRows {
@@ -116,8 +137,7 @@ func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models
 	} else if err != nil {
 		return nil, err
 	}
-
-	conferenceModel := copyConference(*conferenceDB)
+	conferenceModel := copyOnlyConference(*conferenceDB)
 
 	return &conferenceModel, nil
 }
@@ -137,7 +157,7 @@ func (c *ConferencePostgresRepository) PatchConference(conference *models.Confer
 }
 
 func (c *ConferencePostgresRepository) GetAllConferenceUsers(name string) ([]models.User, error) {
-	query := `select u.login, u.name, u.surname, cn.name 
+	query := `select u.login, u.name, u.surname, cn.name as conf_name
 	from bee_user_conference as c
 	join bee_user as u on c.id_user = u.id
 	join bee_conference as cn on c.id_conference = cn.id
@@ -164,7 +184,7 @@ func (c *ConferencePostgresRepository) GetAllConferenceUsers(name string) ([]mod
 
 func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int,
 	skipped int) ([]models.User, error) {
-	query := `select u.login, u.name, u.surname, cn.name 
+	query := `select u.login, u.name, u.surname, cn.name as conf_name
 	from bee_user_conference as c
 	join bee_user as u on c.id_user = u.id
 	join bee_conference as cn on c.id_conference = cn.id

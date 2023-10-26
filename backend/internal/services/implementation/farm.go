@@ -105,6 +105,10 @@ func (f *FarmImplementation) GetFarm(name string) (*models.Farm, error) {
 
 func (f *FarmImplementation) GetUsersFarm(login string, limit int, skipped int) ([]models.Farm, error) {
 	f.logger.Debug("FARM! Start GetUsersFarm")
+	if limit < 0 || skipped < 0 {
+		return nil, serviceErrors.ErrorPaginationParams
+	}
+
 	user, err := f.GetUserByLogin(login)
 	if err != nil {
 		return nil, err

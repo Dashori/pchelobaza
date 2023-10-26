@@ -71,9 +71,9 @@ func (s *services) AddFarm(c *gin.Context) {
 }
 
 func (s *services) GetFarmInfo(c *gin.Context) {
-	name, ok := c.GetQuery("name")
-	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No farm name in the query!"))
+	name := c.Param("name")
+	if name == "" {
+		jsonBadRequestResponse(c, fmt.Errorf("No name in the path!"))
 		return
 	}
 
@@ -101,9 +101,9 @@ func (s *services) GetFarmInfo(c *gin.Context) {
 }
 
 func (s *services) PatchFarm(c *gin.Context) {
-	name, ok := c.GetQuery("name")
-	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No farm name in the query!"))
+	name := c.Param("name")
+	if name == "" {
+		jsonBadRequestResponse(c, fmt.Errorf("No name in the path!"))
 		return
 	}
 

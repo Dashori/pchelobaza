@@ -6,6 +6,7 @@ import (
 	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/repository"
 	"backend/internal/services"
+	"fmt"
 	"github.com/charmbracelet/log"
 	"time"
 )
@@ -44,6 +45,7 @@ func (c *ConferenceImplementation) GetUserByLogin(userLogin string) (*models.Use
 
 func (c *ConferenceImplementation) GetAllConferences(limit int, skipped int) ([]models.Conference, error) {
 	c.logger.Debug("CONFERENCE! Start get all conference")
+	fmt.Println(limit, skipped)
 	if limit < 0 || skipped < 0 {
 		return nil, serviceErrors.ErrorPaginationParams
 	}
@@ -122,6 +124,9 @@ func (c *ConferenceImplementation) GetConferenceByName(name string) (*models.Con
 	if err != nil && err != repoErrors.EntityDoesNotExists {
 		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceByName", "name", conference.Name, "error", err)
 		return nil, serviceErrors.ErrorGetConference
+	} else if err == repoErrors.EntityDoesNotExists {
+		c.logger.Warn("CONFERENCE! There is no conference with", "name", name)
+		return nil, serviceErrors.ErrorNoConference
 	}
 
 	c.logger.Info("CONFERENCE! Successfully get conference", "name", name)
@@ -150,12 +155,6 @@ func (c *ConferenceImplementation) PatchConference(conference *models.Conference
 		return serviceErrors.ErrorNoYourConference
 	}
 
-	// проверка что пользователь beemaster
-	if user.Role != "beemaster" {
-		c.logger.Warn("CONFERENCE! User is not beemaster", "login", user.Login)
-		return serviceErrors.ErrorRoleForConference
-	}
-
 	today := time.Now()
 
 	if !oldConference.Date.After(today) {
@@ -163,14 +162,9 @@ func (c *ConferenceImplementation) PatchConference(conference *models.Conference
 		return serviceErrors.ErrorOldConference
 	}
 
-	if !conference.Date.After(today) {
-		c.logger.Warn("CONFERENCE! Bad date for conference", "date", conference.Date)
-		return serviceErrors.ErrorDateForConference
-	}
-
-	if conference.MaxUsers < 10 {
+	if conference.MaxUsers < conference.CurrentUsers {
 		c.logger.Warn("CONFERENCE! Bad count of users", "users", conference.MaxUsers)
-		return serviceErrors.ErrorUsersForConference
+		return serviceErrors.ErrorPatchConfUsers
 	}
 
 	conference.ConferenceId = oldConference.ConferenceId

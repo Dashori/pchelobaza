@@ -14,6 +14,10 @@ func jsonPermResponse(c *gin.Context, err error) {
 	c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 }
 
+func jsonAlreadyExistsResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+}
+
 // errors
 
 func jsonInternalServerErrorResponse(c *gin.Context, err error) {

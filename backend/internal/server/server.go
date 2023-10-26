@@ -21,14 +21,13 @@ func SetupServer(a *app.App) *gin.Engine {
 		{
 			auth.POST("/login", s.Login)
 			auth.POST("/signup", s.SignUp)
-			// auth.POST("/logout", s.DeleteFileContent)
 		}
 
 		user := api.Group("/users")
 		{
 			user.Use(middlewares.JwtAuthMiddleware())
-			user.GET("", s.GetUser)
-			user.PATCH("", s.PatchUser)
+			user.GET("/:login", s.GetUser)
+			user.PATCH("/:login", s.PatchUser)
 		}
 
 		farm := api.Group("/farms")
@@ -36,8 +35,8 @@ func SetupServer(a *app.App) *gin.Engine {
 			farm.Use(middlewares.JwtAuthMiddleware())
 			farm.GET("", s.GetFarms)
 			farm.POST("", s.AddFarm)
-			farm.GET("/", s.GetFarmInfo)
-			farm.PATCH("/", s.PatchFarm)
+			farm.GET("/:name", s.GetFarmInfo)
+			farm.PATCH("/:name", s.PatchFarm)
 		}
 
 		honey := api.Group("/honey")

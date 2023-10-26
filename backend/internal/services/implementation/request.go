@@ -6,6 +6,7 @@ import (
 	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/repository"
 	"backend/internal/services"
+	"fmt"
 	"github.com/charmbracelet/log"
 )
 
@@ -102,10 +103,22 @@ func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 		return serviceErrors.ErrorRequestStatus // нельзя его редактировать
 	}
 
-	err = r.RequestRepository.PatchUserRequest(&request)
-	if err != nil {
-		r.logger.Warn("REQUEST! Error patch user request", "error", err)
-		return serviceErrors.ErrorRequestPatch
+	fmt.Println("USER LOGIN", request.UserLogin)
+
+	if request.Status == "approve" {
+		fmt.Println("USER LOGIN", request.UserLogin)
+
+		err = r.RequestRepository.PatchUserRequestApprove(&request)
+		if err != nil {
+			r.logger.Warn("REQUEST! Error patch user request", "error", err)
+			return serviceErrors.ErrorRequestPatch
+		}
+	} else {
+		err = r.RequestRepository.PatchUserRequest(&request)
+		if err != nil {
+			r.logger.Warn("REQUEST! Error patch user request", "error", err)
+			return serviceErrors.ErrorRequestPatch
+		}
 	}
 
 	r.logger.Info("USER! Successfully patch user request")
@@ -135,7 +148,7 @@ func (r *RequestImplementation) CreateRequest(newRequest *models.Request) (*mode
 
 	// проверка что заявки еще нет
 	request, err := r.RequestRepository.GetUserRequest(UserLogin)
-	if err == nil && err == repoErrors.EntityDoesNotExists {
+	if err == nil {
 		r.logger.Warn("REQUEST! Request for this user already exists", "login", newRequest.UserLogin)
 		return nil, serviceErrors.RequestAlreadyExists
 	}

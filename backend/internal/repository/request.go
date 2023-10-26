@@ -8,4 +8,5 @@ type RequestRepository interface {
 	GetRequestsPagination(limit int, skipped int) ([]models.Request, error)
 	GetUserRequest(UserLogin string) (*models.Request, error)
 	PatchUserRequest(request *models.Request) error
+	PatchUserRequestApprove(request *models.Request) error
 }

@@ -123,3 +123,39 @@ func (r *RequestPostgresRepository) PatchUserRequest(request *models.Request) er
 
 	return nil
 }
+
+func (r *RequestPostgresRepository) PatchUserRequestApprove(request *models.Request) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := `update bee_request
+	set status = $1
+	from bee_request r join bee_user u on r.id_user = u.id
+	where u.login = $2;`
+
+	_, err = tx.Exec(query, request.Status, request.UserLogin)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	query = `update bee_user set role = 'beemaster' where login = $1;`
+
+	_, err = tx.Exec(query, request.UserLogin)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}

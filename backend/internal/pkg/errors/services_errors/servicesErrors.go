@@ -53,7 +53,10 @@ var (
 	ErrorConferenceJoin           = errors.New("Service error! Данный пользователь уже зарегестрирован на конференцию!")
 	ErrorNoPlace                  = errors.New("Service error! Все места на конференцию заняты!")
 	ErrorJoinConf                 = errors.New("Service error! Ошибка при записи на конференцию!")
-	ErrorCreateReview             = errors.New("Service error! Ошибка при добавлении комментария!")
+
+	ErrorCreateReview = errors.New("Service error! Ошибка при добавлении комментария!")
+
+	ErrorPatchConfUsers = errors.New("Service error! Ошибка при изменении количества участников конференции -- вы не можете сделать меньше мест, чем записалось людей!")
 
 	ErrorHash = errors.New("Service error! Ошибка получения хэша для пароля!")
 )

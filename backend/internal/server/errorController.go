@@ -13,6 +13,13 @@ func errorHandler(c *gin.Context, err error) bool {
 		return true
 	}
 
+	if err == serviceErrors.FarmAlreadyExists ||
+		err == serviceErrors.RequestAlreadyExists ||
+		err == serviceErrors.UserAlreadyExists {
+		jsonAlreadyExistsResponse(c, err)
+		return false
+	}
+
 	if err == dbErrors.ErrorInitDB ||
 		err == serviceErrors.ErrorHash ||
 		err == serviceErrors.ErrorUserUpdate ||
@@ -28,20 +35,18 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.ErrorEditConference ||
 		err == serviceErrors.ErrorGetConferenceUsers ||
 		err == serviceErrors.ErrorJoinConf ||
-		err == serviceErrors.ErrorGetConferenceReviews {
+		err == serviceErrors.ErrorGetConferenceReviews ||
+		err == serviceErrors.ErrorPatchConfUsers {
 		jsonInternalServerErrorResponse(c, err)
 		return false
 	}
 
 	if err == serviceErrors.UserDoesNotExists ||
-		err == serviceErrors.UserAlreadyExists ||
 		err == serviceErrors.InvalidPassword ||
 		err == serviceErrors.ErrorConfirmPassword ||
-		err == serviceErrors.FarmAlreadyExists ||
 		err == serviceErrors.ErrorFarmAccess ||
 		err == serviceErrors.FarmDoesNotExists ||
 		err == serviceErrors.ErrorHoney ||
-		err == serviceErrors.RequestAlreadyExists ||
 		err == serviceErrors.UserAlreadyBeemaster ||
 		err == serviceErrors.ErrorPaginationParams ||
 		err == serviceErrors.ErrorRoleForConference ||
