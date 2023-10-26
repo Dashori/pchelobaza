@@ -58,7 +58,8 @@ func errorHandler(c *gin.Context, err error) bool {
 		err == serviceErrors.ErrorDateForConference ||
 		err == serviceErrors.ErrorUsersForConference ||
 		err == serviceErrors.ErrorNoPlace ||
-		err == serviceErrors.ErrorConferenceJoin {
+		err == serviceErrors.ErrorConferenceJoin ||
+		err == serviceErrors.RequestErrorValue {
 		jsonBadRequestResponse(c, err)
 		return false
 	}

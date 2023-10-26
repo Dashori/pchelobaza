@@ -93,6 +93,14 @@ func (r *RequestImplementation) GetUserRequest(UserLogin string) (*models.Reques
 
 func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 	r.logger.Debug("REQUEST! Start patch user request")
+
+	fmt.Println("!!!", request.Status)
+
+	if request.Status != "approve" || request.Status != "waiting" ||
+		request.Status != "rejected" {
+		return serviceErrors.RequestErrorValue // нельзя его редактировать
+	}
+
 	oldRequest, err := r.GetUserRequest(request.UserLogin)
 	if err != nil {
 		return err

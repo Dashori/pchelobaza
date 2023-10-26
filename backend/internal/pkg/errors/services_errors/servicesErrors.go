@@ -23,6 +23,7 @@ var (
 	UserAlreadyBeemaster       = errors.New("Service error! Пользователь уже является beemaster!")
 	RequestDoesNotExists       = errors.New("Service error! Заявки от пользователя нет!")
 	RequestAlreadyExists       = errors.New("Service error! Заявка от пользователя уже существует!")
+	RequestErrorValue          = errors.New("Service error! Неверный статус заявки!")
 	ErrorRequestStatus         = errors.New("Service error! Заявку нельзя редактировать, так как она не находится в статусе ожидания!")
 	ErrorRequestPatch          = errors.New("Service error! Не удалось обновить статус по заявке!")
 

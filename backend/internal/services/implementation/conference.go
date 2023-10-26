@@ -183,7 +183,7 @@ func (c *ConferenceImplementation) GetAllConferenceUsers(name string) ([]models.
 	c.logger.Debug("CONFERENCE! Start get all conference users")
 	users, err := c.ConferenceRepository.GetAllConferenceUsers(name)
 	if err != nil && err != repoErrors.EntityDoesNotExists {
-		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceByName", "name", name, "error", err)
+		c.logger.Warn("CONFERENCE! Error in repository method GetAllConferenceUsers", "name", name, "error", err)
 		return nil, serviceErrors.ErrorGetConferenceUsers
 	}
 
@@ -196,7 +196,7 @@ func (c *ConferenceImplementation) GetConferenceUsers(name string,
 	c.logger.Debug("CONFERENCE! Start get all conference users")
 	users, err := c.ConferenceRepository.GetConferenceUsers(name, limit, skipped)
 	if err != nil && err != repoErrors.EntityDoesNotExists {
-		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceByName", "name", name, "error", err)
+		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceUsers", "name", name, "error", err)
 		return nil, serviceErrors.ErrorGetConferenceUsers
 	}
 

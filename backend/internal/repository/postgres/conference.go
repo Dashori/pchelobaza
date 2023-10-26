@@ -157,7 +157,7 @@ func (c *ConferencePostgresRepository) PatchConference(conference *models.Confer
 }
 
 func (c *ConferencePostgresRepository) GetAllConferenceUsers(name string) ([]models.User, error) {
-	query := `select u.login, u.name, u.surname, cn.name as conf_name
+	query := `select u.login, u.name, u.surname
 	from bee_user_conference as c
 	join bee_user as u on c.id_user = u.id
 	join bee_conference as cn on c.id_conference = cn.id
@@ -184,7 +184,7 @@ func (c *ConferencePostgresRepository) GetAllConferenceUsers(name string) ([]mod
 
 func (c *ConferencePostgresRepository) GetConferenceUsers(name string, limit int,
 	skipped int) ([]models.User, error) {
-	query := `select u.login, u.name, u.surname, cn.name as conf_name
+	query := `select u.login, u.name, u.surname
 	from bee_user_conference as c
 	join bee_user as u on c.id_user = u.id
 	join bee_conference as cn on c.id_conference = cn.id
@@ -245,7 +245,7 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 
 func (c *ConferencePostgresRepository) GetConferenceReviews(name string, limit int,
 	skipped int) ([]models.Review, error) {
-	query := `select cn.name as conf_name, r.date, r.description, u.login, u.name, u.surname
+	query := `select r.date, r.description, u.login, u.name, u.surname
 	from bee_review as r 
 	join bee_user as u on u.id= r.id_user
 	join bee_conference as cn on r.id_conference = cn.id
