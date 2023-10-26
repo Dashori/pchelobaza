@@ -53,18 +53,17 @@ services:
   nginx:
     image: nginx:1.24
     container_name: web-nginx
-    env_file:
-      - .env
-    networks:
-      - mynetwork
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/static:/static
     ports:
       - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
-    volumes:
-      - ./logs/nginx:/var/log/nginx
-      - ./nginx/nginx.conf:/nginx.conf.template
     depends_on:
-      - backend
-      - postgres
+      postgres:
+        condition: service_healthy 
+    networks:
+      - mynetwork
+
 
 networks:
   mynetwork:
