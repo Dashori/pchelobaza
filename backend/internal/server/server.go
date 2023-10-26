@@ -3,12 +3,7 @@ package server
 import (
 	"backend/internal/app"
 	"backend/internal/server/middlewares"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
-	"os"
 )
 
 type services struct {
@@ -19,13 +14,6 @@ func SetupServer(a *app.App) *gin.Engine {
 	s := services{a.Services}
 
 	router := gin.Default()
-
-	swagger := ginSwagger.WrapHandler(swaggerfiles.Handler,
-		ginSwagger.URL("http://localhost:8080/docs/swagger.yaml"),
-		ginSwagger.DefaultModelsExpandDepth(-1))
-
-	router.GET("swagger/*any", swagger)
-	router.GET("docs/*any", getOpenApi)
 
 	api := router.Group("/api/v1")
 	{
@@ -82,21 +70,4 @@ func SetupServer(a *app.App) *gin.Engine {
 	}
 
 	return router
-}
-
-func getOpenApi(c *gin.Context) {
-	plan, err := os.ReadFile("openapi.json")
-	if err != nil {
-		jsonInternalServerErrorResponse(c, err)
-		return
-	}
-
-	var data interface{}
-	err = json.Unmarshal(plan, &data)
-	if err != nil {
-		jsonInternalServerErrorResponse(c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, data)
 }

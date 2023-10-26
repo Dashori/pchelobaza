@@ -25,6 +25,8 @@ services:
       dockerfile: Dockerfile
     container_name: web-backend
     command: go run cmd/main.go
+    ports: 
+      - ${BACKEND_PORT}:${BACKEND_PORT}
     volumes:
       - ./backend:/app
     env_file:
@@ -56,6 +58,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/static:/static
+      - ./api.yaml:/static/api.yaml
       - ./images:/static/images
     ports:
       - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
