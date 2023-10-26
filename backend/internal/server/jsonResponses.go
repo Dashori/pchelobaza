@@ -115,6 +115,6 @@ func jsonConferenceUserCreateResponse(c *gin.Context) {
 }
 
 func jsonReviewCreateResponse(c *gin.Context, review *models.Review) {
-	c.JSON(http.StatusCreated, gin.H{"conferanceName": review.ConferenceName, "login": review.Login,
+	c.JSON(http.StatusCreated, gin.H{"conferenceName": review.ConferenceName, "login": review.Login,
 		"name": review.Name, "surname": review.Surname, "date": review.Date, "description": review.Description})
 }

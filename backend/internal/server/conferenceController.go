@@ -213,6 +213,12 @@ func (s *services) PatchConferenceUsers(c *gin.Context) {
 }
 
 func (s *services) AddReview(c *gin.Context) {
+	name := c.Param("name")
+	if name == "" {
+		jsonBadRequestResponse(c, fmt.Errorf("No name in the path!"))
+		return
+	}
+
 	var review *models.Review
 	err := c.ShouldBindJSON(&review)
 	fmt.Println(review)
@@ -229,6 +235,7 @@ func (s *services) AddReview(c *gin.Context) {
 	}
 
 	review.Login = login
+	review.ConferenceName = name
 
 	res, err := s.Services.ConferenceService.CreateReview(review)
 	if err != nil {

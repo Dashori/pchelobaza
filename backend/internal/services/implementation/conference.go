@@ -281,12 +281,18 @@ func (c *ConferenceImplementation) GetConferenceReviews(name string,
 func (c *ConferenceImplementation) CreateReview(review *models.Review) (*models.Review, error) {
 	c.logger.Debug("CONFERENCE! Start create review")
 
-	_, err := c.GetConferenceByName(review.ConferenceName)
+	conf, err := c.GetConferenceByName(review.ConferenceName)
+	if err != nil {
+		return nil, err
+	}
+	user, err := c.GetUserByLogin(review.Login)
 	if err != nil {
 		return nil, err
 	}
 
+	review.UserId = user.UserId
 	review.Date = time.Now()
+	review.ConferenceId = conf.ConferenceId
 
 	err = c.ConferenceRepository.CreateReview(review)
 	if err != nil && err != repoErrors.EntityDoesNotExists {

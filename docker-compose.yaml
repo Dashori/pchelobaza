@@ -60,8 +60,8 @@ services:
     ports:
       - ${NGINX_EXTERNAL_PORT}:${NGINX_PORT}
     depends_on:
-      postgres:
-        condition: service_healthy 
+      - backend
+      - pgadmin
     networks:
       - mynetwork
 

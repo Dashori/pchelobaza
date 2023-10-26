@@ -214,12 +214,18 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 		return err
 	}
 
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	return nil
 }
 
 func (c *ConferencePostgresRepository) GetConferenceReviews(name string, limit int,
 	skipped int) ([]models.Review, error) {
-	query := `select cn.name as conf_name, r.description, u.login, u.name, u.surname
+	query := `select cn.name as conf_name, r.date, r.description, u.login, u.name, u.surname
 	from bee_review as r 
 	join bee_user as u on u.id= r.id_user
 	join bee_conference as cn on r.id_conference = cn.id

@@ -305,7 +305,7 @@ insert into bee_conference(id_user, name, description, date, address, maximum_us
 ('66','Conference15','Welcome to the conference!','2022-6-1 13:00','French Polynesia, Port James, Hernandez Fort, 678','23','9'),
 ('67','Conference16','Welcome to the conference!','2022-4-3 17:00','Namibia, Thomasview, Ward Common, 962','11','0'),
 ('68','Conference17','Welcome to the conference!','2022-2-19 15:00','Estonia, Port Charlesfurt, Julie Station, 2618','59','6'),
-('69','Conference18','Welcome to the conference!','2023-10-25 11:00','Monaco, Emilystad, Calderon Stream, 02323','23','21'),
+('69','Conference18','Welcome to the conference!','2023-12-25 11:00','Monaco, Emilystad, Calderon Stream, 02323','23','21'),
 ('70','Conference19','Welcome to the conference!','2023-1-20 19:00','Ecuador, Lonnieside, Wanda Meadows, 18920','41','31');
 
 insert into bee_user_conference(id_user, id_conference) values 
