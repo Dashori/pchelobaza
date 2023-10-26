@@ -6,6 +6,7 @@ import (
 	"backend/internal/repository"
 	"backend/internal/repository/postgres/postgres_models"
 	"database/sql"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -73,10 +74,28 @@ func (u *UserPostgresRepository) GetUserByLogin(login string) (*models.User, err
 	return &userModel, nil
 }
 
-func (u *UserPostgresRepository) UpdateUser(user *models.User) error {
-	query := `update bee_user set password = $1, name = $2, surname = $3, contact = $4 where login = $5;`
+func (u *UserPostgresRepository) GetUserById(id uint64) (*models.User, error) {
+	query := `select * from bee_user where id = $1;`
+	userDB := &postgresModel.UserPostgres{}
 
-	_, err := u.db.Exec(query, user.Password, user.Name, user.Surname, user.Contact, user.Login)
+	err := u.db.Get(userDB, query, id)
+
+	if err == sql.ErrNoRows {
+		return nil, repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return nil, err
+	}
+
+	userModel := copyUser(*userDB)
+
+	return &userModel, nil
+}
+
+func (u *UserPostgresRepository) UpdateUser(user *models.User) error {
+	query := `update bee_user set login = $1, password = $2, name = $3, surname = $4, contact = $5 where id = $6;`
+
+	fmt.Println(user.Login, user.UserId)
+	_, err := u.db.Exec(query, user.Login, user.Password, user.Name, user.Surname, user.Contact, user.UserId)
 
 	if err != nil {
 		return err

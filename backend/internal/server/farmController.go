@@ -50,13 +50,14 @@ func (s *services) AddFarm(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
 	farm.UserLogin = login
+	farm.UserId = id
 
 	res, err := s.Services.FarmService.CreateFarm(farm)
 	if err != nil {
@@ -107,7 +108,7 @@ func (s *services) PatchFarm(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
@@ -117,6 +118,7 @@ func (s *services) PatchFarm(c *gin.Context) {
 	err = c.ShouldBindJSON(&farm)
 	farm.Name = name
 	farm.UserLogin = login
+	farm.UserId = id
 
 	if err != nil {
 		jsonInternalServerErrorResponse(c, err)

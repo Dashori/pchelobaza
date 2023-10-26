@@ -38,7 +38,7 @@ func jsonBadRoleResponse(c *gin.Context, role string) {
 
 // user
 func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
-	c.JSON(http.StatusOK, gin.H{"login": user.Login, "name": user.Name, "surname": user.Surname,
+	c.JSON(http.StatusOK, gin.H{"userId": user.UserId, "login": user.Login, "name": user.Name, "surname": user.Surname,
 		"contact": user.Contact, "registration_date": user.RegisteredAt, "role": user.Role})
 }
 

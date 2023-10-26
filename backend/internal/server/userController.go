@@ -4,6 +4,7 @@ import (
 	models "backend/internal/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func (s *services) GetUser(c *gin.Context) {
@@ -32,9 +33,22 @@ func (s *services) PatchUser(c *gin.Context) {
 		return
 	}
 
+	tempId, ok := c.GetQuery("id")
+	if !ok {
+		jsonBadRequestResponse(c, fmt.Errorf("No id in the query!"))
+		return
+	}
+
+	id, err := strconv.Atoi(tempId)
+	if err != nil {
+		jsonBadRequestResponse(c, fmt.Errorf("Error id in the query!"))
+		return
+	}
+
 	var user *models.User
-	err := c.ShouldBindJSON(&user)
-	user.Login = login
+	err = c.ShouldBindJSON(&user)
+	// user.Login = login
+	user.UserId = uint64(id)
 	fmt.Println(user)
 
 	if err != nil {

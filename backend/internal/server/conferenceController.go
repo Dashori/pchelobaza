@@ -130,13 +130,14 @@ func (s *services) CreateConference(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
 	conference.UserLogin = login
+	conference.UserId = id
 
 	res, err := s.Services.ConferenceService.CreateConference(conference)
 	if err != nil {
@@ -166,7 +167,7 @@ func (s *services) PatchConference(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
@@ -174,6 +175,7 @@ func (s *services) PatchConference(c *gin.Context) {
 
 	conference.UserLogin = login
 	conference.Name = name
+	conference.UserId = id
 
 	err = s.Services.ConferenceService.PatchConference(conference)
 	if err != nil {
@@ -194,7 +196,7 @@ func (s *services) PatchConferenceUsers(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, _, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
@@ -228,13 +230,14 @@ func (s *services) AddReview(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
 	review.Login = login
+	review.UserId = id
 	review.ConferenceName = name
 
 	res, err := s.Services.ConferenceService.CreateReview(review)

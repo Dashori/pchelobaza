@@ -18,13 +18,14 @@ func (s *services) AddRequest(c *gin.Context) {
 		return
 	}
 
-	login, _, err := middlewares.ExtractTokenIdAndRole(c)
+	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
 	request.UserLogin = login
+	request.UserId = id
 
 	res, err := s.Services.RequestService.CreateRequest(request)
 	if !errorHandler(c, err) {
@@ -36,7 +37,7 @@ func (s *services) AddRequest(c *gin.Context) {
 
 // login limit skipped
 func (s *services) GetRequest(c *gin.Context) {
-	login, role, err := middlewares.ExtractTokenIdAndRole(c)
+	login, role, _, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
@@ -93,7 +94,7 @@ func (s *services) GetRequest(c *gin.Context) {
 }
 
 func (s *services) PatchRequest(c *gin.Context) {
-	_, role, err := middlewares.ExtractTokenIdAndRole(c)
+	_, role, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
@@ -113,6 +114,7 @@ func (s *services) PatchRequest(c *gin.Context) {
 	var request *models.Request
 	err = c.ShouldBindJSON(&request)
 	request.UserLogin = login
+	request.UserId = id
 
 	err = s.Services.RequestService.PatchUserRequest(*request)
 	if !errorHandler(c, err) {

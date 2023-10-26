@@ -58,8 +58,6 @@ CREATE TABLE "bee_user"(
 ALTER TABLE
     "bee_user" ADD PRIMARY KEY("id");
 ALTER TABLE
-    "bee_user" ADD CONSTRAINT "bee_user_login_unique" UNIQUE(login);
-ALTER TABLE
     "bee_user"  ADD CONSTRAINT "role_type_check" CHECK (role IN ('beeadmin', 'beeman', 'beemaster'));
 
 
@@ -75,8 +73,6 @@ CREATE TABLE "bee_conference"(
 );
 ALTER TABLE
     "bee_conference" ADD PRIMARY KEY("id");
-ALTER TABLE
-    "bee_conference" ADD CONSTRAINT "bee_user_name_unique" UNIQUE(name);
 
 CREATE TABLE "bee_farm"(
     "id" SERIAL NOT NULL,
@@ -87,8 +83,7 @@ CREATE TABLE "bee_farm"(
 );
 ALTER TABLE
     "bee_farm" ADD PRIMARY KEY("id");
-ALTER TABLE
-    "bee_farm" ADD CONSTRAINT "bee_farm_login_unique" UNIQUE(name);
+
 
 ALTER TABLE
     "bee_farm_honey" ADD CONSTRAINT "bee_farm_honey_id_farm_foreign" FOREIGN KEY("id_farm") REFERENCES "bee_farm"("id");

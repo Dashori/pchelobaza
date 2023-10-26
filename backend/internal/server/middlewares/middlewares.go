@@ -3,6 +3,7 @@ package middlewares
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -24,12 +25,13 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 
 const apiCode = "DASHORI"
 
-func GenerateToken(login string, role string) (string, error) {
+func GenerateToken(login string, id uint64, role string) (string, error) {
 	token_lifespan := 1
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["login"] = login
+	claims["id"] = id
 	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -63,7 +65,7 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
-func ExtractTokenIdAndRole(c *gin.Context) (string, string, error) {
+func ExtractTokenIdAndRole(c *gin.Context) (string, string, uint64, error) {
 	tokenString := ExtractToken(c)
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -75,7 +77,7 @@ func ExtractTokenIdAndRole(c *gin.Context) (string, string, error) {
 	})
 
 	if err != nil {
-		return "", "", err
+		return "", "", 0, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
@@ -86,8 +88,14 @@ func ExtractTokenIdAndRole(c *gin.Context) (string, string, error) {
 
 		role := fmt.Sprint(claims["role"])
 
-		return login, role, nil
+		id, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["id"]), 10, 32)
+
+		if err != nil {
+			return "", "", 0, err
+		}
+
+		return login, role, id, nil
 	}
 
-	return "", "", nil
+	return "", "", 0, nil
 }

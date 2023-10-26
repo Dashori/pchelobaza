@@ -14,10 +14,10 @@ type User struct {
 	Role            string
 }
 
-type UserPatch struct {
-	Login    string
-	Password string
-	Name     string
-	Surname  string
-	Contact  string
-}
+// type UserPatch struct {
+// 	Login    string
+// 	Password string
+// 	Name     string
+// 	Surname  string
+// 	Contact  string
+// }

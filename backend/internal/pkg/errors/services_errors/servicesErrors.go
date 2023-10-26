@@ -15,6 +15,7 @@ var (
 	ErrorPaginationParams = errors.New("Service error! Неверные параметры для пагинации!")
 
 	ErrorGetUserByLogin = errors.New("Service error! Ошибка при получении пользователя по логину!")
+	ErrorGetUserById    = errors.New("Service error! Ошибка при получении пользователя по id!")
 
 	ErrorCreateRequest         = errors.New("Service error! Не удалось создать новую заявку!")
 	ErrorGetAllRequests        = errors.New("Service error! Ошибка при получении пользовательских заявок!")

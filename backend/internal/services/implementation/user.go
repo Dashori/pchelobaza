@@ -46,6 +46,23 @@ func (u *UserImplementation) GetUserByLogin(login string) (*models.User, error) 
 	return tempUser, nil
 }
 
+func (u *UserImplementation) GetUserById(id uint64) (*models.User, error) {
+	u.logger.Debug("USER! Start GetUserById with", "id", id)
+	tempUser, err := u.UserRepository.GetUserById(id)
+
+	if err != nil && err == repoErrors.EntityDoesNotExists {
+		u.logger.Warn("USER! Error, user with this login does not exists", "id", id, "error", err)
+		return nil, serviceErrors.UserDoesNotExists
+	} else if err != nil {
+		u.logger.Warn("USER! Error in repository method GetUserById", "id", id, "error", err)
+		return nil, serviceErrors.ErrorGetUserById
+	}
+
+	u.logger.Debug("USER! Successfully GetUserById with", "id", id)
+
+	return tempUser, nil
+}
+
 func (u *UserImplementation) Create(newUser *models.User) (*models.User, error) {
 	u.logger.Debug("USER! Start create user with", "login", newUser.Login)
 
@@ -110,7 +127,7 @@ func (u *UserImplementation) Login(login, password string) (*models.User, error)
 
 func (u *UserImplementation) Update(user *models.User) error {
 	u.logger.Debug("USER! Start update user with", "login", user.Login)
-	_, err := u.GetUserByLogin(user.Login)
+	_, err := u.GetUserById(user.UserId)
 	if err != nil {
 		return err
 	}

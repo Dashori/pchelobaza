@@ -33,6 +33,7 @@ func copyFarm(f postgresModel.FarmPostgres) models.Farm {
 	honey := []models.Honey{}
 	for _, i := range f.Honey {
 		tempHoney := models.Honey{
+			HoneyId:     i.HoneyId,
 			Name:        i.Name,
 			Description: i.Description}
 		honey = append(honey, tempHoney)
