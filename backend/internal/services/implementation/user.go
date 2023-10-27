@@ -132,6 +132,17 @@ func (u *UserImplementation) Update(user *models.User) error {
 		return err
 	}
 
+	// проверка что такого юзера нет
+	_, err = u.UserRepository.GetUserByLogin(user.Login)
+
+	if err != nil && err != repoErrors.EntityDoesNotExists {
+		u.logger.Warn("USER! Error in repository method GetUserByLogin", "login", user.Login, "error", err)
+		return serviceErrors.ErrorUserCreate
+	} else if err == nil {
+		u.logger.Warn("USER! User already exists with", "login", user.Login)
+		return serviceErrors.UserAlreadyExists
+	}
+
 	passwordHash, err := u.hasher.GetHash(user.Password)
 	if err != nil {
 		u.logger.Warn("USER! Error get hash for password", "login", user.Login)

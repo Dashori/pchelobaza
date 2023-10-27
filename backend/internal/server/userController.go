@@ -2,9 +2,9 @@ package server
 
 import (
 	models "backend/internal/models"
+	"backend/internal/server/middlewares"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 func (s *services) GetUser(c *gin.Context) {
@@ -33,22 +33,20 @@ func (s *services) PatchUser(c *gin.Context) {
 		return
 	}
 
-	tempId, ok := c.GetQuery("id")
-	if !ok {
-		jsonBadRequestResponse(c, fmt.Errorf("No id in the query!"))
+	loginToken, _, id, err := middlewares.ExtractTokenIdAndRole(c)
+	if err != nil {
+		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
-	id, err := strconv.Atoi(tempId)
-	if err != nil {
-		jsonBadRequestResponse(c, fmt.Errorf("Error id in the query!"))
+	if login != loginToken {
+		jsonBadRequestResponse(c, fmt.Errorf("Login from query and token not the same!"))
 		return
 	}
 
 	var user *models.User
 	err = c.ShouldBindJSON(&user)
-	// user.Login = login
-	user.UserId = uint64(id)
+	user.UserId = id
 	fmt.Println(user)
 
 	if err != nil {

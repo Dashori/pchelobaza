@@ -56,12 +56,12 @@ func jsonUserFarmsOkResponse(c *gin.Context, farms []models.Farm) {
 }
 
 func jsonFarmInfoOkResponse(c *gin.Context, farm *models.Farm) {
-	c.JSON(http.StatusOK, gin.H{"name": farm.Name, "description": farm.Description,
+	c.JSON(http.StatusOK, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
 		"address": farm.Address, "user": farm.UserLogin, "honey": farm.Honey})
 }
 
 func jsonFarmCreateResponse(c *gin.Context, farm models.Farm) {
-	c.JSON(http.StatusCreated, gin.H{"name": farm.Name, "description": farm.Description,
+	c.JSON(http.StatusCreated, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
 		"address": farm.Address, "userLogin": farm.UserLogin})
 }
 

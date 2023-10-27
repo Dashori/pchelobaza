@@ -50,13 +50,12 @@ func (s *services) AddFarm(c *gin.Context) {
 		return
 	}
 
-	login, _, id, err := middlewares.ExtractTokenIdAndRole(c)
+	_, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
 		return
 	}
 
-	farm.UserLogin = login
 	farm.UserId = id
 
 	res, err := s.Services.FarmService.CreateFarm(farm)
@@ -116,7 +115,7 @@ func (s *services) PatchFarm(c *gin.Context) {
 
 	var farm *models.Farm
 	err = c.ShouldBindJSON(&farm)
-	farm.Name = name
+	// farm.Name = name
 	farm.UserLogin = login
 	farm.UserId = id
 

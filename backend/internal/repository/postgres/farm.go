@@ -75,7 +75,7 @@ func (f *FarmPostgresRepository) CreateFarm(farm *models.Farm) error {
 }
 
 func (f *FarmPostgresRepository) GetFarmByName(name string) (*models.Farm, error) {
-	query := `select f.id, f.id_user, f.name, f.description,
+	query := `select f.id, f.id_user as id_user, f.name, f.description,
 	f.address, u.login
 	from bee_farm as f
 	join bee_user as u on f.id_user = u.id
@@ -83,6 +83,27 @@ func (f *FarmPostgresRepository) GetFarmByName(name string) (*models.Farm, error
 	farmDB := &postgresModel.FarmPostgres{}
 
 	err := f.db.Get(farmDB, query, name)
+
+	if err == sql.ErrNoRows {
+		return nil, repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return nil, err
+	}
+
+	farmModel := copyFarm(*farmDB)
+
+	return &farmModel, nil
+}
+
+func (f *FarmPostgresRepository) GetFarmById(id uint64) (*models.Farm, error) {
+	query := `select f.id, f.id_user as id_user, f.name, f.description,
+	f.address, u.login
+	from bee_farm as f
+	join bee_user as u on f.id_user = u.id
+	where f.id = $1;`
+	farmDB := &postgresModel.FarmPostgres{}
+
+	err := f.db.Get(farmDB, query, id)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists
@@ -125,9 +146,9 @@ func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
 		return err
 	}
 
-	query := `update bee_farm set description = $1, address = $2 where id = $3;`
+	query := `update bee_farm set name = $1, description = $2, address = $3 where id = $4;`
 
-	_, err = tx.Exec(query, farm.Description, farm.Address, farm.FarmId)
+	_, err = tx.Exec(query, farm.Name, farm.Description, farm.Address, farm.FarmId)
 	if err != nil {
 		tx.Rollback()
 		return err

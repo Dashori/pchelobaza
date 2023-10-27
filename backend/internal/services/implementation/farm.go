@@ -45,9 +45,26 @@ func (f *FarmImplementation) GetUserByLogin(userLogin string) (*models.User, err
 	return user, nil
 }
 
+func (f *FarmImplementation) GetUserById(id uint64) (*models.User, error) {
+	f.logger.Debug("USER! Start GetUserById with", "id", id)
+	tempUser, err := f.UserRepository.GetUserById(id)
+
+	if err != nil && err == repoErrors.EntityDoesNotExists {
+		f.logger.Warn("USER! Error, user with this login does not exists", "id", id, "error", err)
+		return nil, serviceErrors.UserDoesNotExists
+	} else if err != nil {
+		f.logger.Warn("USER! Error in repository method GetUserById", "id", id, "error", err)
+		return nil, serviceErrors.ErrorGetUserById
+	}
+
+	f.logger.Debug("USER! Successfully GetUserById with", "id", id)
+
+	return tempUser, nil
+}
+
 func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, error) {
 	f.logger.Debug("FARM! Start create farm")
-	user, err := f.GetUserByLogin(newFarm.UserLogin)
+	user, err := f.GetUserById(newFarm.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -56,19 +73,8 @@ func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, err
 		f.logger.Warn("FARM! Farm with this name already exists", "name", newFarm.Name)
 		return nil, serviceErrors.FarmAlreadyExists
 	}
-	newFarm.UserId = user.UserId
 
-	for i, honey := range newFarm.Honey {
-		id, err := f.HoneyRepository.GetHoneyId(honey.Name)
-		if err != nil && err != repoErrors.EntityDoesNotExists {
-			f.logger.Warn("FARM! Error in repository method GetHoneyId", "err", err)
-			return nil, serviceErrors.ErrorCreateFarm
-		} else if err == repoErrors.EntityDoesNotExists {
-			f.logger.Warn("FARM! There is no honey with this name", "name", honey.Name)
-			return nil, serviceErrors.ErrorHoney
-		}
-		newFarm.Honey[i].HoneyId = id
-	}
+	newFarm.UserId = user.UserId
 
 	err = f.FarmRepository.CreateFarm(newFarm)
 	if err != nil {
@@ -131,43 +137,41 @@ func (f *FarmImplementation) GetUsersFarm(login string, limit int, skipped int) 
 
 func (f *FarmImplementation) PatchFarm(newFarm *models.Farm) error {
 	f.logger.Debug("FARM! Start PatchFarm")
-	user, err := f.GetUserByLogin(newFarm.UserLogin)
+	user, err := f.GetUserById(newFarm.UserId)
 	if err != nil {
 		return err
 	}
 
-	farm, err := f.GetFarm(newFarm.Name)
-	if err != nil {
-		return err
-	}
-	newFarm.FarmId = farm.FarmId
+	fmt.Println(newFarm.Name)
 
-	if farm.UserId != user.UserId {
-		f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
-		return serviceErrors.ErrorFarmAccess
-	}
+	farm, err := f.FarmRepository.GetFarmByName(newFarm.Name)
+	if err == repoErrors.EntityDoesNotExists {
 
-	for i, honey := range newFarm.Honey {
-		id, err := f.HoneyRepository.GetHoneyId(honey.Name)
-		if err != nil && err != repoErrors.EntityDoesNotExists {
-			f.logger.Warn("FARM! Error in repository method GetHoneyId", "err", err)
-			return serviceErrors.ErrorCreateFarm
-		} else if err == repoErrors.EntityDoesNotExists {
-			f.logger.Warn("FARM! There is no honey with this name", "name", honey.Name)
-			return serviceErrors.ErrorHoney
+		farm, err = f.FarmRepository.GetFarmById(newFarm.FarmId)
+		if err != nil && err == repoErrors.EntityDoesNotExists {
+			// f.logger.Warn("FARM! Error, farm with this name does not exists", "name", name, "error", err)
+			return serviceErrors.FarmDoesNotExists
+		} else if err != nil {
+			// f.logger.Warn("FARM! Error in repository method GetFarmByName", "name", name, "error", err)
+			return serviceErrors.ErrorGetFarmByName
 		}
-		newFarm.Honey[i].HoneyId = id
+
+		if farm.UserId != user.UserId {
+			f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
+			return serviceErrors.ErrorFarmAccess
+		}
+
+		fmt.Println("!!", newFarm)
+
+		err = f.FarmRepository.PatchFarm(newFarm)
+		if err != nil {
+			f.logger.Warn("FARM! Error, farm update with login", "login", user.Login, "farm", farm.Name, "error", err)
+			return serviceErrors.ErrorFarmUpdate
+		}
+
+		f.logger.Info("FARM! Successfully update farm with", "login", user.Login, "farm", farm.Name)
+	} else {
+		return serviceErrors.ErrorGetFarmByName
 	}
-
-	fmt.Println("!!", newFarm)
-
-	err = f.FarmRepository.PatchFarm(newFarm)
-	if err != nil {
-		f.logger.Warn("FARM! Error, farm update with login", "login", user.Login, "farm", farm.Name, "error", err)
-		return serviceErrors.ErrorFarmUpdate
-	}
-
-	f.logger.Info("FARM! Successfully update farm with", "login", user.Login, "farm", farm.Name)
-
 	return nil
 }
