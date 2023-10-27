@@ -2,6 +2,10 @@ openapi: 3.0.3
 info:
   title: Pchelobaza
   version: 1.0.0
+
+servers:
+  - url: /api/v1
+
 tags:
   - name: auth
     description: Authorization
@@ -15,7 +19,6 @@ tags:
     description: Operations with user requests
   - name: conferences
     description: Operations with conferences
-
 
 paths:
   /auth/login:
@@ -38,11 +41,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
         '400':
-          description: Invalid input
-        '401':
-          description: Invalid login or password
-        '404':
-          description: User not found
+          description: Bad request
         '500':
           description: Status internal server error
           
@@ -72,39 +71,7 @@ paths:
         '500':
           description: Status internal server error
 
-  /auth/logout:
-    post:
-      tags:
-        - auth
-      summary: Logout
-      description: logout from the server
-      security:
-        - bearerAuth: []
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
-        "500":
-          description: Internal Server Error
-
   /users/{login}:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     get:
       tags:
         - users
@@ -126,10 +93,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
     patch:
@@ -159,23 +126,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Invalid input
+          description: Bad request
         '401':
           description: Unauthorized
-        '403':
-          description: Permission denied
         '500':
           description: Status internal server error
 
-  /farms:
-    parameters:
-    - description: Authorization
-      in: header
-      name: Authorization
-      required: true
-      schema:
-        type: string
-          
+  /farms:          
     get:
       tags:
         - farms
@@ -209,10 +166,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllFarms'
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
-        '404':
-          description: User not found
         '500':
           description: Status internal server error
     post:
@@ -236,24 +193,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Farm'
         '400':
-          description: Invalid input
+          description: Bad request
         '401':
           description: Unauthorized
-        '403':
-          description: Permission denied
         '500':
           description: Status internal server error
   
       
-  /farms/{name}:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
-        
+  /farms/{name}:        
     get:
       tags:
         - farms
@@ -275,10 +222,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Farm'
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
-        '404':
-          description: Farm not found
         '500':
           description: Status internal server error
           
@@ -309,13 +256,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Farm'
         '400':
-          description: Invalid input
+          description: Bad request
         '401':
           description: Unauthorized
-        '403':
-          description: Permission denied
-        '404':
-          description: Farm not found
         '500':
           description: Status internal server error
           
@@ -328,19 +271,6 @@ paths:
       description: Get all types of honey
       security:
         - bearerAuth: []
-      parameters:
-        - description: Authorization
-          in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-        # - description: Limit honey
-        #   in: query
-        #   name: limit
-        #   required: true
-        #   schema:
-        #     type: number
       responses:
         '200':
           description: OK
@@ -354,46 +284,6 @@ paths:
           description: Status internal server error
           
   /requests:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
-    # get:
-    #   tags:
-    #   - requests
-    #   summary: Get all requests
-    #   description: Get all requests, method for admin
-    #   parameters:
-    #   - description: Limit requests
-    #     in: query
-    #     name: limit
-    #     required: true
-    #     schema:
-    #       type: number
-    #   - description: Skipped requests
-    #     in: query
-    #     name: skipped
-    #     required: true
-    #     schema:
-    #       type: number
-    #   security:
-    #     - bearerAuth: []
-    #   responses:
-    #     '200':
-    #       description: OK
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/AllRequests'
-    #     '401':
-    #       description: Unauthorized
-    #     '403':
-    #       description: Permission denied
-    #     '500':
-    #       description: Status internal server error
     post:
       tags:
       - requests
@@ -415,11 +305,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Request'
         '400':
-          description: Invalid input
+          description: Bad request
         '401':
           description: Unauthorized
-        '403':
-          description: Permission denied
         '409':
           description: Request already exists
         '500':
@@ -438,6 +326,18 @@ paths:
         required: false
         schema:
           type: string
+      - description: Limit requests
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: number
+      - description: Skipped requests
+        in: query
+        name: skipped
+        required: false
+        schema:
+          type: number
       responses:
         '200':
           description: OK
@@ -462,7 +362,7 @@ paths:
         - bearerAuth: []
       parameters:
       - description: user login
-        in: path
+        in: query
         name: login
         required: true
         schema:
@@ -493,13 +393,6 @@ paths:
   
     
   /conferences:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     get:
       tags:
       - conferences
@@ -560,14 +453,6 @@ paths:
           description: Status internal server error
           
   /conferences/{name}:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
-        
     get:
       tags:
       - conferences
@@ -595,17 +480,6 @@ paths:
           description: Conference not found
         '500':
           description: Status internal server error
-    
-
-          
-  /conferences/{name}/settings:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     patch:
       tags:
       - conferences
@@ -645,13 +519,6 @@ paths:
           description: Status internal server error
           
   /conferences/{name}/participants:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     get:
       tags:
       - conferences
@@ -666,6 +533,18 @@ paths:
           required: true
           schema:
             type: string
+        - description: Limit participants
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped participants
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -716,13 +595,6 @@ paths:
           description: Status internal server error
   
   /conferences/{name}/reviews:
-    parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
     get:
       tags:
       - conferences
@@ -811,7 +683,7 @@ components:
       properties:
         login:
           type: string
-          example: 'user'
+          example: 'dashori'
         password:
           type: string
           example: '12345'
@@ -829,11 +701,11 @@ components:
       properties:
         login:
           type: string
-          example: 'user'
+          example: 'dashori'
         password:
           type: string
           example: '12345'
-        confirm_password:
+        confirmPassword:
           type: string
           example: '12345'
         name:
@@ -842,28 +714,31 @@ components:
         surname:
           type: string
           example: 'Chicago'
-        contacts:
+        contact:
           type: string
           example: '12345@mail.ru'
     
     User:
       type: object
       properties:
+        userId:
+          type: integer
+          example: 1
         login:
           type: string
-          example: 'user'
+          example: 'dashori'
         name:
           type: string
           example: 'Dasha'
         surname:
           type: string
           example: 'Chicago'
-        contacts:
+        contact:
           type: string
           example: '12345@mail.ru'
         registration_date:
           type: string
-          example: '12.12.2023'
+          example: '2023-12-25T11:00:00Z'
         role:
           type: string
           example: 'beemaster'
@@ -871,6 +746,12 @@ components:
     UserUpdate:
       type: object
       properties:
+        userId:
+          type: integer
+          example: 1
+        login:
+          type: string
+          example: 'dashori'
         password:
           type: string
           example: '12345'
@@ -880,13 +761,16 @@ components:
         surname:
           type: string
           example: 'Chicago'
-        contacts:
+        contact:
           type: string
           example: '12345@mail.ru'
 
     Farm:
       type: object
       properties:
+        farmId:
+          type: integer
+          example: 5
         name:
           type: string
           example: 'mybee'
@@ -896,9 +780,12 @@ components:
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
-        owner:
+        userLogin:
           type: string
           example: 'dashori'
+        userId:
+          type: integer
+          example: 5
         honey:
           items: 
             $ref: '#/components/schemas/Honey'
@@ -906,6 +793,9 @@ components:
     FarmPatch:
       type: object
       properties:
+        farmId:
+          type: integer
+          example: 5
         description:
           type: string
           example: 'this is my farm'
@@ -928,6 +818,9 @@ components:
     Honey:
       type: object
       properties:
+        honeyId:
+          type: integer
+          example: 5
         name:
           type: string
           example: 'wildflower'
@@ -945,12 +838,15 @@ components:
     Request:
       type: object
       properties:
+        login:
+          type: string
+          example: 'dashori'
         description:
           type: string
           example: 'Please give me the beemaster rules because...'
-        state:
+        status:
           type: string
-          example: 'waiting for approve'
+          example: 'waiting'
           
     AllRequests:
       type: object
@@ -968,17 +864,17 @@ components:
           example: 'The International Honeybee Conference'
         owner:
           type: string
-          example: "dashori"
+          example: 'dashori'
         description:
           type: string
           example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
         date:
           type: string
-          example: '12.12.2023'
+          example: '2023-12-25T11:00:00Z'
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
-        availableUsers:
+        currentUsers:
           type: number
           example: 200
         maxUsers:
@@ -993,7 +889,7 @@ components:
           example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
         date:
           type: string
-          example: '12.12.2023'
+          example: '2023-12-25T11:00:00Z'
         address:
           type: string
           example: 'Orenburg region, Orenburg, Tereshkova 297'
@@ -1025,9 +921,9 @@ components:
         owner:
           type: string
           example: "dashori"
-        timestamp:
+        date:
           type: string
-          example: '12.12.2023 12:50'
+          example: '2023-12-25T11:00:00Z'
         text:
           type: string
           example: 'It is a great conference!!'

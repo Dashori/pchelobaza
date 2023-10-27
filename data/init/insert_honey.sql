@@ -1,0 +1,22 @@
+
+insert into bee_honey(name, description) values 
+('Acacia honey', 'Acacia honey is light in color and has a mild, floral taste. It is known for its clarity and slow crystallization.'),
+('Manuka honey', 'Manuka honey is produced in New Zealand and has unique antibacterial properties. It is dark in color and has a strong, earthy flavor.'),
+('Clover honey', 'Clover honey is made from the nectar of clover flowers. It has a sweet, mild taste and is one of the most popular types of honey.'),
+('Buckwheat honey', 'Buckwheat honey is dark and full-bodied with a strong, molasses-like flavor. It is rich in antioxidants and has a slightly bitter aftertaste.'),
+('Wildflower honey', 'Wildflower honey is made from the nectar of various wildflowers. It has a complex flavor profile and can vary in color and taste depending on the region.'),
+('Orange blossom honey', 'Orange blossom honey is light and fragrant with a distinct citrus flavor. It is often used in baking and pairs well with tea.'),
+('Sage honey', 'Sage honey is produced from the nectar of sage plants. It has a light amber color and a delicate, herbal flavor.'),
+('Eucalyptus honey', 'Eucalyptus honey comes from the nectar of eucalyptus trees. It has a bold, slightly medicinal taste and is commonly used for respiratory ailments.'),
+('Lavender honey', 'Lavender honey is made from the nectar of lavender flowers. It has a floral aroma and a delicate, sweet taste.'),
+('Thyme honey', 'Thyme honey is produced from the nectar of thyme plants. It has a golden color and a strong, herbal flavor.'),
+('Heather honey', 'Heather honey is made from the nectar of heather plants. It has a thick, syrupy consistency and a strong, slightly bitter taste.'),
+('Chestnut honey', 'Chestnut honey is dark and robust with a slightly nutty flavor. It pairs well with strong cheeses and is often used in savory dishes.'),
+('Borage honey', 'Borage honey is produced from the nectar of borage flowers. It has a light color and a mild, floral taste.'),
+('Linden honey', 'Linden honey is made from the nectar of linden trees. It has a pale yellow color and a delicate, sweet flavor.'),
+('Sunflower honey', 'Sunflower honey is produced from the nectar of sunflower blossoms. It has a light color and a mild, nutty taste.'),
+('Rapeseed honey', 'Rapeseed honey is made from the nectar of rapeseed flowers. It has a pale yellow color and a mild, buttery flavor.'),
+('Bamboo honey', 'Bamboo honey is produced from the nectar of bamboo flowers. It has a dark color and a rich, caramel-like taste.'),
+('Cactus honey', 'Cactus honey is made from the nectar of cactus flowers. It has a light amber color and a sweet, fruity flavor.'),
+('Avocado honey', 'Avocado honey is produced from the nectar of avocado blossoms. It has a dark color and a rich, buttery taste.'),
+('Rosemary honey', 'Rosemary honey is made from the nectar of rosemary plants. It has a light amber color and a strong, aromatic flavor.');

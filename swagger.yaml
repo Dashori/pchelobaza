@@ -1,0 +1,993 @@
+openapi: 3.0.3
+info:
+  title: Pchelobaza
+  version: 1.0.0
+tags:
+  - name: auth
+    description: Authorization
+  - name: users
+    description: Operations with users
+  - name: farms
+    description: Operations with bee farms
+  - name: honey
+    description: Operations with honey
+  - name: requests
+    description: Operations with user requests
+  - name: conferences
+    description: Operations with conferences
+
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      description: Login using provided credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid input
+        '401':
+          description: Invalid login or password
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
+          
+  /auth/signup:
+    post:
+      tags:
+        - auth
+      summary: SignUp
+      description: Create new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid input
+        '409':
+          description: User already exists
+        '500':
+          description: Status internal server error
+          
+  /api/v1/users/{login}:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - users
+      summary: Getting user info
+      description: Getting all the information about the user
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: login of the user
+          in: path
+          name: login
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
+    patch:
+      tags:
+        - users
+      summary: Edit user's info
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: The user's login for patch 
+          in: path
+          name: login
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '500':
+          description: Status internal server error
+
+  /farms:
+    parameters:
+    - description: Authorization
+      in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+          
+    get:
+      tags:
+        - farms
+      summary: Getting all user's farm
+      security:
+        - bearerAuth: []
+      description: Getting all the information about the bee farm of user 
+      parameters:
+        - description: user login
+          in: query
+          name: login
+          required: true
+          schema:
+            type: string
+        - description: Limit farms
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped farms
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllFarms'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Status internal server error
+    post:
+      tags: 
+        - farms
+      summary: Add new farm
+      description: Add new farm
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '500':
+          description: Status internal server error
+  
+      
+  /farms/{name}:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+        
+    get:
+      tags:
+        - farms
+      summary: Getting farm info
+      description: Getting all the information about the bee farm
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name of the farm
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Farm not found
+        '500':
+          description: Status internal server error
+          
+    patch:
+      tags:
+        - farms
+      summary: Edit farm's info
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: The farm name for patch 
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FarmPatch'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: Farm not found
+        '500':
+          description: Status internal server error
+          
+
+  /honey:
+    get:
+      tags:
+      - honey
+      summary: Get all types of honey
+      description: Get all types of honey
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: Authorization
+          in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllHoney'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Status internal server error
+          
+  /requests:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - requests
+      summary: Create new request
+      description: Create new request, method for beeman
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '409':
+          description: Request already exists
+        '500':
+          description: Status internal server error
+    get:
+      tags:
+      - requests
+      summary: Get user's request or all requests
+      description: Get user's request or all requests
+      security:
+        - bearerAuth: []
+      parameters:
+      - description: login
+        in: query
+        name: login
+        required: false
+        schema:
+          type: string
+      - description: Limit requests
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: number
+      - description: Skipped requests
+        in: query
+        name: skipped
+        required: false
+        schema:
+          type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllRequests'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: User or request not found
+        '500':
+          description: Status internal server error
+    patch:
+      tags:
+      - requests
+      summary: Answer about request by admin
+      description: Approve or disapprove request
+      security:
+        - bearerAuth: []
+      parameters:
+      - description: user login
+        in: query
+        name: login
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: User or request not found
+        '500':
+          description: Status internal server error
+  
+    
+  /conferences:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+      - conferences
+      summary: Get all conferences
+      security:
+        - bearerAuth: []
+      description: Get all conferences
+      parameters:
+        - description: Limit confereces
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped confereces
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllConferences'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Status internal server error
+    post:
+      tags:
+      - conferences
+      summary: Create new conference 
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conference'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '500':
+          description: Status internal server error
+          
+  /conferences/{name}:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+        
+    get:
+      tags:
+      - conferences
+      summary: Get conference
+      description: Get conference
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+    patch:
+      tags:
+      - conferences
+      summary: Edit conference by owner
+      description: Edit conference by owner
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+          
+  /conferences/{name}/participants:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+      - conferences
+      summary: Get participants
+      description: Get participants
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+        - description: Limit participants
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped participants
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+    post:
+      tags:
+      - conferences
+      summary: Edit conferense by user
+      description: Edit conferense by user
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Permission denied
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+  
+  /conferences/{name}/reviews:
+    parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+      - conferences
+      summary: Get all the reviews about conference
+      description: Get all the reviews about conference
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+        - description: Limit reviews
+          in: query
+          name: limit
+          required: true
+          schema:
+            type: number
+        - description: Skipped reviews
+          in: query
+          name: skipped
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReviews'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+    post:
+      tags:
+      - conferences
+      summary: Add new reviewe
+      description: Add new reviewe
+      security:
+        - bearerAuth: []
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReviews'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '404':
+          description: Conference not found
+        '500':
+          description: Status internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+      
+  schemas:
+    LoginUser:
+      type: object
+      properties:
+        login:
+          type: string
+          example: 'user'
+        password:
+          type: string
+          example: '12345'
+          
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: '12345'
+        
+    
+    NewUser:
+      type: object
+      properties:
+        login:
+          type: string
+          example: 'user'
+        password:
+          type: string
+          example: '12345'
+        confirmPassword:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: 'Dasha'
+        surname:
+          type: string
+          example: 'Chicago'
+        contact:
+          type: string
+          example: '12345@mail.ru'
+    
+    User:
+      type: object
+      properties:
+        login:
+          type: string
+          example: 'user'
+        name:
+          type: string
+          example: 'Dasha'
+        surname:
+          type: string
+          example: 'Chicago'
+        contact:
+          type: string
+          example: '12345@mail.ru'
+        registration_date:
+          type: string
+          example: '12.12.2023'
+        role:
+          type: string
+          example: 'beemaster'
+          
+    UserUpdate:
+      type: object
+      properties:
+        password:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: 'Dasha'
+        surname:
+          type: string
+          example: 'Chicago'
+        contacts:
+          type: string
+          example: '12345@mail.ru'
+
+    Farm:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'mybee'
+        description:
+          type: string
+          example: 'this is my farm'
+        address:
+          type: string
+          example: 'Orenburg region, Orenburg, Tereshkova 297'
+        userLogin:
+          type: string
+          example: 'dashori'
+        honey:
+          items: 
+            $ref: '#/components/schemas/Honey'
+          type: array
+    FarmPatch:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'this is my farm'
+        address:
+          type: string
+          example: 'Orenburg region, Orenburg, Tereshkova 297'
+        honey:
+          items: 
+            $ref: '#/components/schemas/Honey'
+          type: array
+          
+    AllFarms:
+      type: object
+      properties:
+        farms:
+          items: 
+            $ref: '#/components/schemas/Farm'
+          type: array
+          
+    Honey:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'wildflower'
+        description:
+          type: string
+          example: 'Typically a mix of flowers and flavors, wildflower honey is a subtle cacophony of floral notes'
+    AllHoney:
+      type: object
+      properties:
+        honey:
+          items: 
+            $ref: '#/components/schemas/Honey'
+          type: array
+          
+    Request:
+      type: object
+      properties:
+        login:
+          type: string
+          example: 'dashori'
+        description:
+          type: string
+          example: 'Please give me the beemaster rules because...'
+        state:
+          type: string
+          example: 'waiting for approve'
+          
+    AllRequests:
+      type: object
+      properties:
+        requests:
+          items: 
+            $ref: '#/components/schemas/Request'
+          type: array
+  
+    Conference:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'The International Honeybee Conference'
+        owner:
+          type: string
+          example: 'dashori'
+        description:
+          type: string
+          example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
+        date:
+          type: string
+          example: '12.12.2023'
+        address:
+          type: string
+          example: 'Orenburg region, Orenburg, Tereshkova 297'
+        availableUsers:
+          type: number
+          example: 200
+        maxUsers:
+          type: number
+          example: 500
+          
+    ConferenceUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
+        date:
+          type: string
+          example: '12.12.2023'
+        address:
+          type: string
+          example: 'Orenburg region, Orenburg, Tereshkova 297'
+        maxUsers:
+          type: number
+          example: 500
+
+    ConferenceSimple: 
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'The International Honeybee Conference'
+        description:
+          type: string
+          example: 'The International Honeybee Conference serves as a global platform for scientists, beekeepers, and policy makers to come together and exchange knowledge, research findings, and best practices in the field of apiculture'
+      
+    AllConferences:
+      type: object
+      properties:
+        conferences:
+          items: 
+            $ref: '#/components/schemas/ConferenceSimple'
+          type: array
+    
+    Review:
+      type: object
+      properties:
+        owner:
+          type: string
+          example: "dashori"
+        timestamp:
+          type: string
+          example: '12.12.2023 12:50'
+        text:
+          type: string
+          example: 'It is a great conference!!'
+
+    AllReviews:
+      type: object
+      properties:
+        reviews:
+          items: 
+            $ref: '#/components/schemas/Review'
+          type: array
