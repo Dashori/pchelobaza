@@ -36,6 +36,48 @@ services:
         condition: service_healthy 
     networks:
       - mynetwork
+  
+  backend-ro-1:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: web-backend-ro-1
+    command: go run cmd/main.go
+    ports: 
+      - ${BACKEND_PORT_RO_1}:${BACKEND_PORT}
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy 
+      backend:
+        condition: service_started
+    networks:
+      - mynetwork
+
+  backend-ro-2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: web-backend-ro-2
+    command: go run cmd/main.go
+    ports: 
+      - ${BACKEND_PORT_RO_2}:${BACKEND_PORT}
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy 
+      backend:
+        condition: service_started
+      backend-ro-1:
+        condition: service_started
+    networks:
+      - mynetwork
 
   pgadmin:
     image: dpage/pgadmin4:7
@@ -67,7 +109,6 @@ services:
       - pgadmin
     networks:
       - mynetwork
-
 
 networks:
   mynetwork:
