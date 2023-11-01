@@ -5,6 +5,7 @@ info:
 
 servers:
   - url: /api/v1
+  - url: /mirror/api/v1
 
 tags:
   - name: auth
