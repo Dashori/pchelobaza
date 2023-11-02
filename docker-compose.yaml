@@ -175,25 +175,6 @@ services:
     networks:
       - mynetwork
 
-
 networks:
   mynetwork:
     driver: bridge
-
-# ab -n200 -c100 -H "clientId:test-client"-H "token:93e6acff-2ef9-4c85-9d0b-c9948a8ee93b" -v 2 http://127.0.0.1/oauth2/user/client/
-# ab -n 200 -c 1 -H "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw" http://localhost:8089/api/v1/honey
-
-# curl -X 'GET' \
-#   'http://localhost:8089/api/v1/honey' \
-#   -H 'accept: application/json' \
-#   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw'
-
-
-# ab -n 200 -c 100 -H "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw" http://localhost:8089/api/v1/honey
-
-# ab -n 200 -c 1 -H "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw" http://localhost:8089/api/v1/honeyab -n 200 -c 1 -H "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw" http://localhost:8089/api/v1/honey
-
-
-# ab -n 200 -c 1  http://localhost:8089/api/v1/honey
-
-#  ab -n 10000 -c 1 -H "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTg3OTE0NzYsImlkIjoxMDIsImxvZ2luIjoiZGFzaG9yaSIsInJvbGUiOiJiZWVtYW4ifQ.X6gzetnUwl691TBfKw_1Ae5P2rKZ-WPmc9LRoN4ZGCw" http://localhost:8089/api/v1/honey
