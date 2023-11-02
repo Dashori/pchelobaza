@@ -100,7 +100,7 @@ Percentage of the requests served within a certain time (ms)
 ![1.png](./images/1.png)
 
 
-#### 3 инстанс
+#### 3 инстанса
 ```
 Server Software:        nginx/1.24.0
 Server Hostname:        localhost
