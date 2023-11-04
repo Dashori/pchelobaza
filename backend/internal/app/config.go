@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
 	"os"
 )
 
@@ -22,6 +24,12 @@ type Config struct {
 
 func (c *Config) ParseConfig() {
 
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println("error!!!")
+		// log.Fatalf("Some error occured. Err: %s", err)
+	}
+
 	c.Address = os.Getenv("BACKEND_HOST")
 	c.Port = os.Getenv("BACKEND_PORT")
 	c.LogLevel = os.Getenv("LOG_LEVEL")
@@ -31,6 +39,6 @@ func (c *Config) ParseConfig() {
 	c.Postgres.Port = os.Getenv("POSTGRESQL_PORT")
 	c.Postgres.User = os.Getenv("POSTGRESQL_USERNAME")
 	c.Postgres.Password = os.Getenv("POSTGRESQL_PASSWORD")
-	c.Postgres.DBName = os.Getenv("POSTGRESQL_DB")
+	c.Postgres.DBName = os.Getenv("POSTGRESQL_DATABASE")
 
 }

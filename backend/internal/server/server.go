@@ -3,7 +3,9 @@ package server
 import (
 	"backend/internal/app"
 	"backend/internal/server/middlewares"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type services struct {
@@ -14,7 +16,13 @@ func SetupServer(a *app.App) *gin.Engine {
 	s := services{a.Services}
 
 	router := gin.Default()
-
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodHead, http.MethodDelete, http.MethodOptions},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 	api := router.Group("/api/v1")
 	{
 		auth := api.Group("/auth")

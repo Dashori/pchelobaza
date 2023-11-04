@@ -4,9 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod download
-
-RUN go build -o ./build/main ./cmd/main.go
+RUN go mod download && \
+    go build -o ./build/main ./cmd/main.go
 
 # FROM alpine:3.18
 
