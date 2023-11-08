@@ -9,7 +9,6 @@ backend-module-build-job:
   when: always
   script:
       - cd backend 
-      - go mod init backend
       - go mod tidy
   artifacts:
     paths:
@@ -24,8 +23,7 @@ linter-backend-job:
   allow_failure: true
   image: golangci/golangci-lint:v1.52.2
   script:
-    - cd backend
-    - go mod tidy
+    - cd backend 
     - golangci-lint run --timeout 3m0s
   needs:
     - backend-module-build-job
