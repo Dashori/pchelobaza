@@ -9,7 +9,7 @@ backend-module-build-job:
   when: always
   script:
       - cd backend 
-      - go mod tidy
+      - go mod download
   artifacts:
     paths:
       - backend/go.sum
@@ -42,9 +42,8 @@ backend-build-job:
   when: always
   script:
     - cd backend 
-    - go mod tidy
-    - cd cmd
-    - go build main.go
+    - go mod download
+    - go build cmd/main.go
   artifacts:
     paths:
       - backend/cmd/main
