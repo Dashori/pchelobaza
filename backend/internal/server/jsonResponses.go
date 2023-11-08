@@ -32,10 +32,6 @@ func jsonUnauthorizedResponse(c *gin.Context, err error) {
 	c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 }
 
-func jsonBadRoleResponse(c *gin.Context, role string) {
-	c.JSON(http.StatusForbidden, gin.H{"error": role})
-}
-
 // user
 func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 	c.JSON(http.StatusOK, gin.H{"userId": user.UserId, "login": user.Login, "name": user.Name, "surname": user.Surname,

@@ -20,29 +20,6 @@ func CreateConferencePostgresRepository(db *sql.DB) repository.ConferenceReposit
 	return &ConferencePostgresRepository{db: dbx}
 }
 
-func copyConference(c postgresModel.ConferencePostgres) models.Conference {
-	conference := models.Conference{
-		ConferenceId: c.ConferenceId,
-		UserId:       c.UserId,
-		Name:         c.ConferenceName,
-		Description:  c.Description,
-		Address:      c.Address,
-		MaxUsers:     c.MaxUsers,
-		CurrentUsers: c.CurrentUsers,
-		Date: time.Date(
-			c.Date.Year(),
-			c.Date.Month(),
-			c.Date.Day(),
-			c.Date.Hour(),
-			c.Date.Minute(),
-			c.Date.Second(),
-			c.Date.Nanosecond(),
-			time.UTC),
-	}
-
-	return conference
-}
-
 func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conference {
 	conference := models.Conference{
 		ConferenceId: c.ConferenceId,
@@ -221,7 +198,10 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 	_, err = tx.Exec(query, conference.CurrentUsers, conference.ConferenceId)
 
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 
@@ -230,13 +210,19 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 	_, err = tx.Exec(query, UserId, conference.ConferenceId)
 
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 

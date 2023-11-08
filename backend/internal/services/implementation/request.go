@@ -95,9 +95,9 @@ func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 	r.logger.Debug("REQUEST! Start patch user request")
 
 	fmt.Println("!!!", request.Status)
+	status := request.Status
 
-	if request.Status != "approve" || request.Status != "waiting" ||
-		request.Status != "rejected" {
+	if status != "approve" && status != "waiting" && status != "rejected" {
 		return serviceErrors.RequestErrorValue // нельзя его редактировать
 	}
 
@@ -155,7 +155,7 @@ func (r *RequestImplementation) CreateRequest(newRequest *models.Request) (*mode
 	}
 
 	// проверка что заявки еще нет
-	request, err := r.RequestRepository.GetUserRequest(UserLogin)
+	_, err = r.RequestRepository.GetUserRequest(UserLogin)
 	if err == nil {
 		r.logger.Warn("REQUEST! Request for this user already exists", "login", newRequest.UserLogin)
 		return nil, serviceErrors.RequestAlreadyExists
@@ -169,7 +169,7 @@ func (r *RequestImplementation) CreateRequest(newRequest *models.Request) (*mode
 		return nil, serviceErrors.ErrorCreateRequest
 	}
 
-	request, err = r.GetUserRequest(newRequest.UserLogin)
+	request, err := r.GetUserRequest(newRequest.UserLogin)
 	if err != nil {
 		return nil, err
 	}

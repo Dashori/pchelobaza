@@ -78,33 +78,3 @@ func errorHandler(c *gin.Context, err error) bool {
 
 	return true
 }
-
-func errorHandlerClientAuth(c *gin.Context, err error, role string) bool {
-
-	if err != nil {
-		jsonUnauthorizedResponse(c, err)
-		return false
-	}
-
-	if role != "client" {
-		jsonBadRoleResponse(c, role)
-		return false
-	}
-
-	return true
-}
-
-func errorHandlerDoctorAuth(c *gin.Context, err error, role string) bool {
-
-	if err != nil {
-		jsonUnauthorizedResponse(c, err)
-		return false
-	}
-
-	if role != "doctor" {
-		jsonBadRoleResponse(c, role)
-		return false
-	}
-
-	return true
-}

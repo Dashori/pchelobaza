@@ -138,8 +138,10 @@ func (r *RequestPostgresRepository) PatchUserRequestApprove(request *models.Requ
 	_, err = tx.Exec(query, request.Status, request.UserLogin)
 
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	query = `update bee_user set role = 'beemaster' where login = $1;`
@@ -147,14 +149,18 @@ func (r *RequestPostgresRepository) PatchUserRequestApprove(request *models.Requ
 	_, err = tx.Exec(query, request.UserLogin)
 
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	return nil

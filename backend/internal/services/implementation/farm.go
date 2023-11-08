@@ -68,7 +68,8 @@ func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, err
 	if err != nil {
 		return nil, err
 	}
-	farm, err := f.GetFarm(newFarm.Name)
+
+	_, err = f.GetFarm(newFarm.Name)
 	if err != serviceErrors.FarmDoesNotExists {
 		f.logger.Warn("FARM! Farm with this name already exists", "name", newFarm.Name)
 		return nil, serviceErrors.FarmAlreadyExists
@@ -82,7 +83,7 @@ func (f *FarmImplementation) CreateFarm(newFarm *models.Farm) (*models.Farm, err
 		return nil, serviceErrors.ErrorCreateFarm
 	}
 
-	farm, err = f.GetFarm(newFarm.Name)
+	farm, err := f.GetFarm(newFarm.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -144,10 +145,10 @@ func (f *FarmImplementation) PatchFarm(newFarm *models.Farm) error {
 
 	fmt.Println(newFarm.Name)
 
-	farm, err := f.FarmRepository.GetFarmByName(newFarm.Name)
+	_, err = f.FarmRepository.GetFarmByName(newFarm.Name)
 	if err == repoErrors.EntityDoesNotExists {
 
-		farm, err = f.FarmRepository.GetFarmById(newFarm.FarmId)
+		farm, err := f.FarmRepository.GetFarmById(newFarm.FarmId)
 		if err != nil && err == repoErrors.EntityDoesNotExists {
 			// f.logger.Warn("FARM! Error, farm with this name does not exists", "name", name, "error", err)
 			return serviceErrors.FarmDoesNotExists
