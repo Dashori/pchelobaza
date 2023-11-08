@@ -1,3 +1,5 @@
+image: erlendum/golang-dind
+
 stages:
   - pre
   - build
