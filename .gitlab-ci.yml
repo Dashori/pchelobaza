@@ -1,9 +1,54 @@
 stages:
+  - pre
   - build
+
+backend-module-build-job:      
+  stage: pre
+  when: always
+  script:
+      - cd backend 
+      - go mod init backend
+      - go mod tidy
+  artifacts:
+    paths:
+      - backend/go.sum
+      - backend/go.mod
+    expire_in: 1 hour
+  tags:
+    - web
+
+linter-backend-job:
+  stage: pre
+  allow_failure: true
+  image: golangci/golangci-lint:v1.52.2
+  script:
+    - cd backend
+    - go mod tidy
+    - golangci-lint run --timeout 3m0s
+  needs:
+    - backend-module-build-job
+  tags:
+    - web
+
 
 test-job:
   stage: build
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
-  tags:
-    - web
+
+
+backend-build-job:    
+  stage: build
+  when: always
+  script:
+    - cd backend 
+    - go mod tidy
+    - cd cmd
+    - go build main.go
+  artifacts:
+    paths:
+      - backend/cmd/main
+    expire_in: 1 hour
+  needs:
+    - backend-module-build-job
+
