@@ -43,7 +43,7 @@ func jsonUserCreateResponse(c *gin.Context, token string) {
 }
 
 func jsonUserLoginOkResponse(c *gin.Context, token string) {
-	c.JSON(http.StatusOK, gin.H{"Token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 // farm
