@@ -10,11 +10,6 @@ backend-module-build-job:
   script:
       - cd backend 
       - go mod download
-  artifacts:
-    paths:
-      - backend/go.sum
-      - backend/go.mod
-    expire_in: 1 hour
   tags:
     - web
 
