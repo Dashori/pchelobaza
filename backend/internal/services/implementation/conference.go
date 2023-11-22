@@ -149,9 +149,10 @@ func (c *ConferenceImplementation) PatchConference(conference *models.Conference
 	if err != nil {
 		return err
 	}
+	fmt.Println("aaaa", oldConference.UserId, user.UserId)
 
 	if oldConference.UserId != user.UserId {
-		c.logger.Warn("CONFERENCE! You can not edit this conference", "name", conference.Name)
+		c.logger.Warn("CONFERENCE! You can not edit this conference, not yours", "name", conference.Name)
 		return serviceErrors.ErrorNoYourConference
 	}
 

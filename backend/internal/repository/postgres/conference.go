@@ -28,6 +28,7 @@ func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conferenc
 		Address:      c.Address,
 		MaxUsers:     c.MaxUsers,
 		UserLogin:    c.Login,
+		UserId:       c.UserId,
 		CurrentUsers: c.CurrentUsers,
 		Date: time.Date(
 			c.Date.Year(),
@@ -137,10 +138,10 @@ func (c *ConferencePostgresRepository) GetConferenceById(id uint64) (*models.Con
 
 func (c *ConferencePostgresRepository) PatchConference(conference *models.Conference) error {
 	query := `update bee_conference set description = $1, date = $2, address = $3,
-	 maximum_users = $4  where id = $5;`
+	 maximum_users = $4, name = $5  where id = $6;`
 
 	_, err := c.db.Exec(query, conference.Description, conference.Date, conference.Address,
-		conference.MaxUsers, conference.ConferenceId)
+		conference.MaxUsers, conference.Name, conference.ConferenceId)
 
 	if err != nil {
 		return err
