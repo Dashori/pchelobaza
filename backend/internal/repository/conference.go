@@ -6,6 +6,7 @@ type ConferenceRepository interface {
 	GetAllConferences(limit int, skipped int) ([]models.Conference, error)
 	CreateConference(conference *models.Conference) error
 	GetConferenceByName(name string) (*models.Conference, error)
+	GetConferenceById(id uint64) (*models.Conference, error)
 	PatchConference(conference *models.Conference) error
 	GetAllConferenceUsers(name string) ([]models.User, error)
 	GetConferenceUsers(name string, limit int, skipped int) ([]models.User, error)

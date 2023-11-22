@@ -6,7 +6,6 @@ import (
 	serviceErrors "backend/internal/pkg/errors/services_errors"
 	"backend/internal/repository"
 	"backend/internal/services"
-	"fmt"
 	"github.com/charmbracelet/log"
 )
 
@@ -94,7 +93,6 @@ func (r *RequestImplementation) GetUserRequest(UserLogin string) (*models.Reques
 func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 	r.logger.Debug("REQUEST! Start patch user request")
 
-	fmt.Println("!!!", request.Status)
 	status := request.Status
 
 	if status != "approve" && status != "waiting" && status != "rejected" {
@@ -111,11 +109,7 @@ func (r *RequestImplementation) PatchUserRequest(request models.Request) error {
 		return serviceErrors.ErrorRequestStatus // нельзя его редактировать
 	}
 
-	fmt.Println("USER LOGIN", request.UserLogin)
-
 	if request.Status == "approve" {
-		fmt.Println("USER LOGIN", request.UserLogin)
-
 		err = r.RequestRepository.PatchUserRequestApprove(&request)
 		if err != nil {
 			r.logger.Warn("REQUEST! Error patch user request", "error", err)
@@ -148,7 +142,7 @@ func (r *RequestImplementation) CreateRequest(newRequest *models.Request) (*mode
 		return nil, serviceErrors.ErrorGetUserByLogin
 	}
 
-	// проверка что пользователь не beemaster
+	// проверка что пользователь beemaster
 	if user.Role == "beemaster" {
 		r.logger.Warn("REQUEST! Error, user already beemaster", "login", UserLogin)
 		return nil, serviceErrors.UserAlreadyBeemaster

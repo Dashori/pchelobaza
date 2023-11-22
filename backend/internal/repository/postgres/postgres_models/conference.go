@@ -6,6 +6,7 @@ type OnlyConferencePostgres struct {
 	ConferenceId uint64    `db:"id"`
 	Name         string    `db:"name"`
 	UserId       uint64    `db:"id_user"`
+	Login        string    `db:"login"`
 	Description  string    `db:"description"`
 	Address      string    `db:"address"`
 	MaxUsers     int       `db:"maximum_users"`
@@ -17,6 +18,7 @@ type ConferencePostgres struct {
 	ConferenceId   uint64    `db:"id"`
 	ConferenceName string    `db:"conf_name"`
 	UserId         uint64    `db:"id_user"`
+	Login          string    `db:"login"`
 	Description    string    `db:"description"`
 	Address        string    `db:"address"`
 	MaxUsers       int       `db:"maximum_users"`

@@ -89,7 +89,7 @@ func jsonConferencesOkResponse(c *gin.Context, conferences []models.Conference) 
 }
 
 func jsonConferenceOkResponse(c *gin.Context, conference *models.Conference) {
-	c.JSON(http.StatusOK, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+	c.JSON(http.StatusOK, gin.H{"id": conference.ConferenceId, "name": conference.Name, "userLogin": conference.UserLogin,
 		"description": conference.Description, "date": conference.Date,
 		"address": conference.Address, "maxUsers": conference.MaxUsers,
 		"currentUsers": conference.CurrentUsers})
@@ -104,7 +104,7 @@ func jsonConferenceReviewsOkResponse(c *gin.Context, reviews []models.Review) {
 }
 
 func jsonConferenceCreateResponse(c *gin.Context, conference *models.Conference) {
-	c.JSON(http.StatusCreated, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+	c.JSON(http.StatusCreated, gin.H{"id": conference.ConferenceId, "name": conference.Name, "userLogin": conference.UserLogin,
 		"description": conference.Description, "date": conference.Date,
 		"address": conference.Address, "maxUsers": conference.MaxUsers,
 		"currentUsers": conference.CurrentUsers})
@@ -115,6 +115,6 @@ func jsonConferenceUserCreateResponse(c *gin.Context) {
 }
 
 func jsonReviewCreateResponse(c *gin.Context, review *models.Review) {
-	c.JSON(http.StatusCreated, gin.H{"conferenceName": review.ConferenceName, "login": review.Login,
+	c.JSON(http.StatusCreated, gin.H{"id": review.ReviewId, "conferenceId": review.ConferenceId, "conferenceName": review.ConferenceName, "login": review.Login,
 		"name": review.Name, "surname": review.Surname, "date": review.Date, "description": review.Description})
 }

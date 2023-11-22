@@ -27,6 +27,7 @@ func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conferenc
 		Description:  c.Description,
 		Address:      c.Address,
 		MaxUsers:     c.MaxUsers,
+		UserLogin:    c.Login,
 		CurrentUsers: c.CurrentUsers,
 		Date: time.Date(
 			c.Date.Year(),
@@ -108,6 +109,21 @@ func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models
 	query := `select * from bee_conference where name = $1;`
 	conferenceDB := &postgresModel.OnlyConferencePostgres{}
 	err := c.db.Get(conferenceDB, query, name)
+
+	if err == sql.ErrNoRows {
+		return nil, repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return nil, err
+	}
+	conferenceModel := copyOnlyConference(*conferenceDB)
+
+	return &conferenceModel, nil
+}
+
+func (c *ConferencePostgresRepository) GetConferenceById(id uint64) (*models.Conference, error) {
+	query := `select * from bee_conference where id = $1;`
+	conferenceDB := &postgresModel.OnlyConferencePostgres{}
+	err := c.db.Get(conferenceDB, query, id)
 
 	if err == sql.ErrNoRows {
 		return nil, repoErrors.EntityDoesNotExists

@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: /api/v1
+  - url: http://localhost:8080/api/v1
   - url: /mirror/api/v1
 
 tags:
@@ -130,6 +130,8 @@ paths:
           description: Bad request
         '401':
           description: Unauthorized
+        '409':
+          description: Conflict
         '500':
           description: Status internal server error
 
@@ -185,7 +187,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Farm'
+              $ref: '#/components/schemas/NewFarm'
       responses:
         '201':
           description: OK
@@ -259,6 +261,8 @@ paths:
         '400':
           description: Bad request
         '401':
+          description: Unauthorized
+        '403':
           description: Unauthorized
         '500':
           description: Status internal server error
@@ -373,7 +377,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Request'
+              $ref: '#/components/schemas/RequestPatch'
       responses:
         '200':
           description: OK
@@ -724,7 +728,7 @@ components:
       properties:
         userId:
           type: integer
-          example: 1
+          example: 102
         login:
           type: string
           example: 'dashori'
@@ -749,7 +753,7 @@ components:
       properties:
         userId:
           type: integer
-          example: 1
+          example: 102
         login:
           type: string
           example: 'dashori'
@@ -766,12 +770,9 @@ components:
           type: string
           example: '12345@mail.ru'
 
-    Farm:
+    NewFarm:
       type: object
       properties:
-        farmId:
-          type: integer
-          example: 5
         name:
           type: string
           example: 'mybee'
@@ -786,7 +787,33 @@ components:
           example: 'dashori'
         userId:
           type: integer
-          example: 5
+          example: 102
+        honey:
+          items: 
+            $ref: '#/components/schemas/Honey'
+          type: array
+
+    Farm:
+      type: object
+      properties:
+        farmId:
+          type: integer
+          example: 121
+        name:
+          type: string
+          example: 'mybee'
+        description:
+          type: string
+          example: 'this is my farm'
+        address:
+          type: string
+          example: 'Orenburg region, Orenburg, Tereshkova 297'
+        userLogin:
+          type: string
+          example: 'dashori'
+        userId:
+          type: integer
+          example: 102
         honey:
           items: 
             $ref: '#/components/schemas/Honey'
@@ -794,9 +821,12 @@ components:
     FarmPatch:
       type: object
       properties:
+        name:
+          type: string
+          example: "mybee3"
         farmId:
           type: integer
-          example: 5
+          example: 121
         description:
           type: string
           example: 'this is my farm'
@@ -845,6 +875,13 @@ components:
         description:
           type: string
           example: 'Please give me the beemaster rules because...'
+    
+    RequestPatch:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'approve'
 
     AllRequests:
       type: object

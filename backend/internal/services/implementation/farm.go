@@ -143,36 +143,37 @@ func (f *FarmImplementation) PatchFarm(newFarm *models.Farm) error {
 		return err
 	}
 
-	fmt.Println(newFarm.Name)
+	fmt.Println(newFarm.Name, newFarm.FarmId)
+	// проверяем, что такое название еще не занято
+	oldFarm, err := f.FarmRepository.GetFarmByName(newFarm.Name)
 
-	_, err = f.FarmRepository.GetFarmByName(newFarm.Name)
-	if err == repoErrors.EntityDoesNotExists {
+	if err != nil && err != repoErrors.EntityDoesNotExists {
+		f.logger.Warn("FARM! Error in repository method GetFarmByName", "name", newFarm.Name, "error", err)
+		return serviceErrors.ErrorGetFarmByName
+	} else if err == nil && oldFarm.FarmId != newFarm.FarmId {
+		f.logger.Warn("FARM! Farm with this name already exists with", "name", newFarm.Name)
+		return serviceErrors.FarmAlreadyExists
+	}
 
-		farm, err := f.FarmRepository.GetFarmById(newFarm.FarmId)
-		if err != nil && err == repoErrors.EntityDoesNotExists {
-			// f.logger.Warn("FARM! Error, farm with this name does not exists", "name", name, "error", err)
-			return serviceErrors.FarmDoesNotExists
-		} else if err != nil {
-			// f.logger.Warn("FARM! Error in repository method GetFarmByName", "name", name, "error", err)
-			return serviceErrors.ErrorGetFarmByName
-		}
-
-		if farm.UserId != user.UserId {
-			f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
-			return serviceErrors.ErrorFarmAccess
-		}
-
-		fmt.Println("!!", newFarm)
-
-		err = f.FarmRepository.PatchFarm(newFarm)
-		if err != nil {
-			f.logger.Warn("FARM! Error, farm update with login", "login", user.Login, "farm", farm.Name, "error", err)
-			return serviceErrors.ErrorFarmUpdate
-		}
-
-		f.logger.Info("FARM! Successfully update farm with", "login", user.Login, "farm", farm.Name)
-	} else {
+	farm, err := f.FarmRepository.GetFarmById(newFarm.FarmId)
+	if err != nil && err == repoErrors.EntityDoesNotExists {
+		f.logger.Warn("FARM! Error, farm with this name does not exists", "id", newFarm.FarmId, "error", err)
+		return serviceErrors.FarmDoesNotExists
+	} else if err != nil {
+		f.logger.Warn("FARM! Error in repository method GetFarmById", "id", newFarm.FarmId, "error", err)
 		return serviceErrors.ErrorGetFarmByName
 	}
+
+	if farm.UserId != user.UserId {
+		f.logger.Warn("FARM! Error patch farm", "login", user.Login, "farm", farm.Name)
+		return serviceErrors.ErrorFarmAccess
+	}
+
+	err = f.FarmRepository.PatchFarm(newFarm)
+	if err != nil {
+		f.logger.Warn("FARM! Error, farm update with login", "login", user.Login, "farm", farm.Name, "error", err)
+		return serviceErrors.ErrorFarmUpdate
+	}
+
 	return nil
 }
