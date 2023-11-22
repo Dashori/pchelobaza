@@ -52,13 +52,13 @@ func jsonUserFarmsOkResponse(c *gin.Context, farms []models.Farm) {
 }
 
 func jsonFarmInfoOkResponse(c *gin.Context, farm *models.Farm) {
-	c.JSON(http.StatusOK, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
-		"address": farm.Address, "user": farm.UserLogin, "honey": farm.Honey})
+	c.JSON(http.StatusOK, gin.H{"FarmId": farm.FarmId, "Name": farm.Name, "Description": farm.Description,
+		"Address": farm.Address, "UserLogin": farm.UserLogin, "Honey": farm.Honey})
 }
 
 func jsonFarmCreateResponse(c *gin.Context, farm models.Farm) {
-	c.JSON(http.StatusCreated, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
-		"address": farm.Address, "userLogin": farm.UserLogin})
+	c.JSON(http.StatusCreated, gin.H{"FarmId": farm.FarmId, "Name": farm.Name, "Description": farm.Description,
+		"Address": farm.Address, "UserLogin": farm.UserLogin})
 }
 
 // honey
