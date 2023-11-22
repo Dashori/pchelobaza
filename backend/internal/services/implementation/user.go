@@ -138,7 +138,7 @@ func (u *UserImplementation) Update(user *models.User) error {
 	if err != nil && err != repoErrors.EntityDoesNotExists {
 		u.logger.Warn("USER! Error in repository method GetUserByLogin", "login", user.Login, "error", err)
 		return serviceErrors.ErrorUserCreate
-	} else if err == nil && oldUser.UserId != user.UserId{
+	} else if err == nil && oldUser.UserId != user.UserId {
 		u.logger.Warn("USER! User already exists with", "login", user.Login)
 		return serviceErrors.UserAlreadyExists
 	}

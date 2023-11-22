@@ -72,7 +72,7 @@ func jsonRequestCreateResponse(c *gin.Context, request *models.Request) {
 }
 
 func jsonGetRequestResponse(c *gin.Context, request *models.Request) {
-	c.JSON(http.StatusOK, gin.H{"description": request.Description, "status": request.Status})
+	c.JSON(http.StatusOK, gin.H{"requests": []models.Request{*request}})
 }
 
 func jsonGetRequestsResponse(c *gin.Context, requests []models.Request) {

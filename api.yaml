@@ -845,10 +845,7 @@ components:
         description:
           type: string
           example: 'Please give me the beemaster rules because...'
-        status:
-          type: string
-          example: 'waiting'
-          
+
     AllRequests:
       type: object
       properties:
