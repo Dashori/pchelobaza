@@ -627,7 +627,7 @@ paths:
           schema:
             type: number
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json:
@@ -658,14 +658,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Review'
+              $ref: '#/components/schemas/NewReview'
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllReviews'
+                $ref: '#/components/schemas/NewReview'
         '400':
           description: Invalid input
         '401':
@@ -950,16 +950,42 @@ components:
             $ref: '#/components/schemas/ConferenceSimple'
           type: array
     
+    NewReview:
+      type: object
+      properties:
+        Description:
+          type: string
+          example: "It is a great conference!!"
+
+  
     Review:
       type: object
       properties:
-        owner:
+        ReviewId:
+          type: number
+          example: 1
+        ConferenceId:
+          type: number
+          example: 1
+        ConferenceName:
+          type: string
+          example: "Conference18"
+        UserId:
+          type: number
+          example: 1
+        Login:
           type: string
           example: "dashori"
-        date:
+        Name:
+          type: string
+          example: "Don"
+        Surname: 
+          type: string
+          example: "Lucero"
+        Date:
           type: string
           example: '2023-12-25T11:00:00Z'
-        text:
+        Description:
           type: string
           example: 'It is a great conference!!'
 

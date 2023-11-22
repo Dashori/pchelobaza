@@ -33,6 +33,7 @@ func jsonUnauthorizedResponse(c *gin.Context, err error) {
 }
 
 // user
+
 func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 	c.JSON(http.StatusOK, gin.H{"userId": user.UserId, "login": user.Login, "name": user.Name, "surname": user.Surname,
 		"contact": user.Contact, "registration_date": user.RegisteredAt, "role": user.Role})
