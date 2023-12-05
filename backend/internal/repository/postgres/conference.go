@@ -107,7 +107,10 @@ func (c *ConferencePostgresRepository) CreateConference(conference *models.Confe
 }
 
 func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models.Conference, error) {
-	query := `select * from bee_conference where name = $1;`
+	query := `select c.id, c.id_user, u.login, c.name, c.description, c.address, 
+	c.maximum_users, c.current_users, c.date
+	from bee_conference c join bee_user u on c.id_user = u.id
+	where c.name = $1;`
 	conferenceDB := &postgresModel.OnlyConferencePostgres{}
 	err := c.db.Get(conferenceDB, query, name)
 
@@ -122,7 +125,10 @@ func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models
 }
 
 func (c *ConferencePostgresRepository) GetConferenceById(id uint64) (*models.Conference, error) {
-	query := `select * from bee_conference where id = $1;`
+	query := `select c.id, c.id_user, u.login, c.name, c.description, 
+	c.address, c.maximum_users, c.current_users, c.date
+	from bee_conference c join bee_user u on c.id_user = u.id
+	where c.id = $1;`
 	conferenceDB := &postgresModel.OnlyConferencePostgres{}
 	err := c.db.Get(conferenceDB, query, id)
 

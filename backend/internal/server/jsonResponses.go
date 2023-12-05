@@ -90,7 +90,8 @@ func jsonConferencesOkResponse(c *gin.Context, conferences []models.Conference) 
 }
 
 func jsonConferenceOkResponse(c *gin.Context, conference *models.Conference) {
-	c.JSON(http.StatusOK, gin.H{"id": conference.ConferenceId, "name": conference.Name, "userLogin": conference.UserLogin,
+	c.JSON(http.StatusOK, gin.H{"conferenceId": conference.ConferenceId, "name": conference.Name,
+		"userLogin": conference.UserLogin, "userId": conference.UserId,
 		"description": conference.Description, "date": conference.Date,
 		"address": conference.Address, "maxUsers": conference.MaxUsers,
 		"currentUsers": conference.CurrentUsers})
