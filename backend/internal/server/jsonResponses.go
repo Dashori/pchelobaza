@@ -32,11 +32,8 @@ func jsonUnauthorizedResponse(c *gin.Context, err error) {
 	c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 }
 
-func jsonBadRoleResponse(c *gin.Context, role string) {
-	c.JSON(http.StatusForbidden, gin.H{"error": role})
-}
-
 // user
+
 func jsonUserInfoOkResponse(c *gin.Context, user *models.User) {
 	c.JSON(http.StatusOK, gin.H{"userId": user.UserId, "login": user.Login, "name": user.Name, "surname": user.Surname,
 		"contact": user.Contact, "registration_date": user.RegisteredAt, "role": user.Role})
@@ -47,7 +44,7 @@ func jsonUserCreateResponse(c *gin.Context, token string) {
 }
 
 func jsonUserLoginOkResponse(c *gin.Context, token string) {
-	c.JSON(http.StatusOK, gin.H{"Token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 // farm
@@ -56,13 +53,13 @@ func jsonUserFarmsOkResponse(c *gin.Context, farms []models.Farm) {
 }
 
 func jsonFarmInfoOkResponse(c *gin.Context, farm *models.Farm) {
-	c.JSON(http.StatusOK, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
-		"address": farm.Address, "user": farm.UserLogin, "honey": farm.Honey})
+	c.JSON(http.StatusOK, gin.H{"FarmId": farm.FarmId, "Name": farm.Name, "Description": farm.Description,
+		"Address": farm.Address, "UserLogin": farm.UserLogin, "Honey": farm.Honey})
 }
 
 func jsonFarmCreateResponse(c *gin.Context, farm models.Farm) {
-	c.JSON(http.StatusCreated, gin.H{"farmId": farm.FarmId, "name": farm.Name, "description": farm.Description,
-		"address": farm.Address, "userLogin": farm.UserLogin})
+	c.JSON(http.StatusCreated, gin.H{"FarmId": farm.FarmId, "Name": farm.Name, "Description": farm.Description,
+		"Address": farm.Address, "UserLogin": farm.UserLogin})
 }
 
 // honey
@@ -76,7 +73,7 @@ func jsonRequestCreateResponse(c *gin.Context, request *models.Request) {
 }
 
 func jsonGetRequestResponse(c *gin.Context, request *models.Request) {
-	c.JSON(http.StatusOK, gin.H{"description": request.Description, "status": request.Status})
+	c.JSON(http.StatusOK, gin.H{"requests": []models.Request{*request}})
 }
 
 func jsonGetRequestsResponse(c *gin.Context, requests []models.Request) {
@@ -93,7 +90,7 @@ func jsonConferencesOkResponse(c *gin.Context, conferences []models.Conference) 
 }
 
 func jsonConferenceOkResponse(c *gin.Context, conference *models.Conference) {
-	c.JSON(http.StatusOK, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+	c.JSON(http.StatusOK, gin.H{"id": conference.ConferenceId, "name": conference.Name, "userLogin": conference.UserLogin,
 		"description": conference.Description, "date": conference.Date,
 		"address": conference.Address, "maxUsers": conference.MaxUsers,
 		"currentUsers": conference.CurrentUsers})
@@ -108,7 +105,7 @@ func jsonConferenceReviewsOkResponse(c *gin.Context, reviews []models.Review) {
 }
 
 func jsonConferenceCreateResponse(c *gin.Context, conference *models.Conference) {
-	c.JSON(http.StatusCreated, gin.H{"name": conference.Name, "userLogin": conference.UserLogin,
+	c.JSON(http.StatusCreated, gin.H{"id": conference.ConferenceId, "name": conference.Name, "userLogin": conference.UserLogin,
 		"description": conference.Description, "date": conference.Date,
 		"address": conference.Address, "maxUsers": conference.MaxUsers,
 		"currentUsers": conference.CurrentUsers})
@@ -119,6 +116,6 @@ func jsonConferenceUserCreateResponse(c *gin.Context) {
 }
 
 func jsonReviewCreateResponse(c *gin.Context, review *models.Review) {
-	c.JSON(http.StatusCreated, gin.H{"conferenceName": review.ConferenceName, "login": review.Login,
+	c.JSON(http.StatusCreated, gin.H{"id": review.ReviewId, "conferenceId": review.ConferenceId, "conferenceName": review.ConferenceName, "login": review.Login,
 		"name": review.Name, "surname": review.Surname, "date": review.Date, "description": review.Description})
 }

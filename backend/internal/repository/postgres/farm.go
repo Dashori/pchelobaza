@@ -150,16 +150,20 @@ func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
 
 	_, err = tx.Exec(query, farm.Name, farm.Description, farm.Address, farm.FarmId)
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	query = `delete from bee_farm_honey where id_farm = $1;`
 
 	_, err = tx.Exec(query, farm.FarmId)
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	query = `insert into bee_farm_honey(id_farm, id_honey) values($1, $2);`
@@ -167,15 +171,19 @@ func (f *FarmPostgresRepository) PatchFarm(farm *models.Farm) error {
 	for _, i := range farm.Honey {
 		_, err = tx.Exec(query, farm.FarmId, i.HoneyId)
 		if err != nil {
-			tx.Rollback()
-			return err
+			err2 := tx.Rollback()
+			if err2 != nil {
+				return err2
+			}
 		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	return nil

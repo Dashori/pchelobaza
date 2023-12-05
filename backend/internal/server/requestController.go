@@ -50,12 +50,12 @@ func (s *services) GetRequest(c *gin.Context) {
 		loginFlag = false
 	}
 
-	if loginFlag == true && login != queryLogin && role != "beeadmin" {
+	if loginFlag && login != queryLogin && role != "beeadmin" {
 		jsonGetRequestPermResponse(c)
 		return
 	}
 
-	if loginFlag == true {
+	if loginFlag {
 		res, err := s.Services.RequestService.GetUserRequest(queryLogin)
 		if !errorHandler(c, err) {
 			return
@@ -113,6 +113,11 @@ func (s *services) PatchRequest(c *gin.Context) {
 
 	var request *models.Request
 	err = c.ShouldBindJSON(&request)
+	if err != nil {
+		jsonInternalServerErrorResponse(c, err)
+		return
+	}
+
 	request.UserLogin = login
 	request.UserId = id
 

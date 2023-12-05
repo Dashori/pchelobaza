@@ -17,7 +17,7 @@ func main() {
 	host := os.Getenv("BACKEND_HOST")
 	port := os.Getenv("BACKEND_PORT")
 	fmt.Println("back ", host, port)
-	err = server.SetupServer(&a).Run(host + ":" + port)
+	err = server.SetupServer(&a).Run()
 	if err != nil {
 		fmt.Println(err)
 	}

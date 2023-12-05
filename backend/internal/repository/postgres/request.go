@@ -67,7 +67,7 @@ func (r *RequestPostgresRepository) GetAllRequests() ([]models.Request, error) {
 }
 
 func (r *RequestPostgresRepository) GetRequestsPagination(limit int, skipped int) ([]models.Request, error) {
-	query := `select r.id, r.description, r.status, u.login from bee_request r join bee_user u on r.id_user = u.id
+	query := `select r.id, r.description, r.status, r.id_user, u.login from bee_request r join bee_user u on r.id_user = u.id
 	order by status desc
 	offset $1 
 	limit $2;`
@@ -92,7 +92,7 @@ func (r *RequestPostgresRepository) GetRequestsPagination(limit int, skipped int
 }
 
 func (r *RequestPostgresRepository) GetUserRequest(UserLogin string) (*models.Request, error) {
-	query := `select r.id, r.description, r.status, u.login from bee_request r join bee_user u on r.id_user = u.id
+	query := `select r.id, r.description, r.status, r.id_user, u.login from bee_request r join bee_user u on r.id_user = u.id
 	where u.login = $1;`
 
 	requestPostgres := &postgresModel.RequestRostgres{}
@@ -138,8 +138,10 @@ func (r *RequestPostgresRepository) PatchUserRequestApprove(request *models.Requ
 	_, err = tx.Exec(query, request.Status, request.UserLogin)
 
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	query = `update bee_user set role = 'beemaster' where login = $1;`
@@ -147,14 +149,18 @@ func (r *RequestPostgresRepository) PatchUserRequestApprove(request *models.Requ
 	_, err = tx.Exec(query, request.UserLogin)
 
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
-		return err
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 	}
 
 	return nil

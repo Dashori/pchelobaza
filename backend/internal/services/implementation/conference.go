@@ -136,12 +136,12 @@ func (c *ConferenceImplementation) GetConferenceByName(name string) (*models.Con
 func (c *ConferenceImplementation) PatchConference(conference *models.Conference) error {
 	// descr, date, max users, address
 	c.logger.Debug("CONFERENCE! Start patch conference")
-	oldConference, err := c.ConferenceRepository.GetConferenceByName(conference.Name)
+	oldConference, err := c.ConferenceRepository.GetConferenceById(conference.ConferenceId)
 	if err != nil && err != repoErrors.EntityDoesNotExists {
-		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceByName", "name", conference.Name, "error", err)
+		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceById", "id", conference.ConferenceId, "error", err)
 		return serviceErrors.ErrorGetConference
 	} else if err == repoErrors.EntityDoesNotExists {
-		c.logger.Warn("CONFERENCE! There is no conference with", "name", conference.Name)
+		c.logger.Warn("CONFERENCE! There is no conference with", "id", conference.ConferenceId)
 		return serviceErrors.ErrorNoConference
 	}
 
@@ -149,9 +149,10 @@ func (c *ConferenceImplementation) PatchConference(conference *models.Conference
 	if err != nil {
 		return err
 	}
+	fmt.Println("aaaa", oldConference.UserId, user.UserId)
 
 	if oldConference.UserId != user.UserId {
-		c.logger.Warn("CONFERENCE! You can not edit this conference", "name", conference.Name)
+		c.logger.Warn("CONFERENCE! You can not edit this conference, not yours", "name", conference.Name)
 		return serviceErrors.ErrorNoYourConference
 	}
 
@@ -160,6 +161,16 @@ func (c *ConferenceImplementation) PatchConference(conference *models.Conference
 	if !oldConference.Date.After(today) {
 		c.logger.Warn("CONFERENCE! This conference has already passed", "date", oldConference.Date)
 		return serviceErrors.ErrorOldConference
+	}
+
+	// проверка что такое название уже есть
+	newNameConf, err := c.ConferenceRepository.GetConferenceByName(conference.Name)
+	if err != nil && err != repoErrors.EntityDoesNotExists {
+		c.logger.Warn("CONFERENCE! Error in repository method GetConferenceById", "id", conference.ConferenceId, "error", err)
+		return serviceErrors.ErrorGetConference
+	} else if err == nil && conference.ConferenceId != newNameConf.ConferenceId {
+		c.logger.Warn("USER! Conefernce already exists with", "name", conference.Name)
+		return serviceErrors.UserAlreadyExists
 	}
 
 	if conference.MaxUsers < conference.CurrentUsers {

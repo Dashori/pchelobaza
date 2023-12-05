@@ -174,7 +174,6 @@ func (s *services) PatchConference(c *gin.Context) {
 	}
 
 	conference.UserLogin = login
-	conference.Name = name
 	conference.UserId = id
 
 	err = s.Services.ConferenceService.PatchConference(conference)

@@ -20,29 +20,6 @@ func CreateConferencePostgresRepository(db *sql.DB) repository.ConferenceReposit
 	return &ConferencePostgresRepository{db: dbx}
 }
 
-func copyConference(c postgresModel.ConferencePostgres) models.Conference {
-	conference := models.Conference{
-		ConferenceId: c.ConferenceId,
-		UserId:       c.UserId,
-		Name:         c.ConferenceName,
-		Description:  c.Description,
-		Address:      c.Address,
-		MaxUsers:     c.MaxUsers,
-		CurrentUsers: c.CurrentUsers,
-		Date: time.Date(
-			c.Date.Year(),
-			c.Date.Month(),
-			c.Date.Day(),
-			c.Date.Hour(),
-			c.Date.Minute(),
-			c.Date.Second(),
-			c.Date.Nanosecond(),
-			time.UTC),
-	}
-
-	return conference
-}
-
 func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conference {
 	conference := models.Conference{
 		ConferenceId: c.ConferenceId,
@@ -50,6 +27,8 @@ func copyOnlyConference(c postgresModel.OnlyConferencePostgres) models.Conferenc
 		Description:  c.Description,
 		Address:      c.Address,
 		MaxUsers:     c.MaxUsers,
+		UserLogin:    c.Login,
+		UserId:       c.UserId,
 		CurrentUsers: c.CurrentUsers,
 		Date: time.Date(
 			c.Date.Year(),
@@ -142,12 +121,27 @@ func (c *ConferencePostgresRepository) GetConferenceByName(name string) (*models
 	return &conferenceModel, nil
 }
 
+func (c *ConferencePostgresRepository) GetConferenceById(id uint64) (*models.Conference, error) {
+	query := `select * from bee_conference where id = $1;`
+	conferenceDB := &postgresModel.OnlyConferencePostgres{}
+	err := c.db.Get(conferenceDB, query, id)
+
+	if err == sql.ErrNoRows {
+		return nil, repoErrors.EntityDoesNotExists
+	} else if err != nil {
+		return nil, err
+	}
+	conferenceModel := copyOnlyConference(*conferenceDB)
+
+	return &conferenceModel, nil
+}
+
 func (c *ConferencePostgresRepository) PatchConference(conference *models.Conference) error {
 	query := `update bee_conference set description = $1, date = $2, address = $3,
-	 maximum_users = $4  where id = $5;`
+	 maximum_users = $4, name = $5  where id = $6;`
 
 	_, err := c.db.Exec(query, conference.Description, conference.Date, conference.Address,
-		conference.MaxUsers, conference.ConferenceId)
+		conference.MaxUsers, conference.Name, conference.ConferenceId)
 
 	if err != nil {
 		return err
@@ -221,7 +215,10 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 	_, err = tx.Exec(query, conference.CurrentUsers, conference.ConferenceId)
 
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 
@@ -230,13 +227,19 @@ func (c *ConferencePostgresRepository) PatchConferenceUsers(conference *models.C
 	_, err = tx.Exec(query, UserId, conference.ConferenceId)
 
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return err2
+		}
 		return err
 	}
 
