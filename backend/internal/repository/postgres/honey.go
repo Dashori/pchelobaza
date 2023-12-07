@@ -67,7 +67,7 @@ func (h *HoneyPostgresRepository) GetHoneyId(name string) (uint64, error) {
 }
 
 func (h *HoneyPostgresRepository) GetFarmHoney(name string) ([]models.Honey, error) {
-	query := `select h.name, h.description from bee_farm as f
+	query := `select h.id, h.name, h.description from bee_farm as f
 	join bee_farm_honey as fm on f.id = fm.id_farm
 	join bee_honey as h on h.id = fm.id_honey
 	where f.name = $1;`
