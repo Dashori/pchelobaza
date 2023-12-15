@@ -2,7 +2,7 @@
 
 ### Summary
 - Backend для форума пчеловодов
-- Frontend делала @poliorang и можно его найти [тут](https://github.com/poliorang/web_pchelobaza_bmstu7)
+- Frontend делала [@poliorang](https://github.com/poliorang) и можно его найти [тут](https://github.com/poliorang/web_pchelobaza_bmstu7)
 - Golang feat. postgres master-slave (gin + sqlx)
 - Nginx (я даже сама его пересобрала с нужным модулем!)
 - Rest api (ну типа)
@@ -27,6 +27,7 @@
 - Используются JWT-токены для авторизации
 - Балансировка get-запросов 2:1:1 через nginx сделана, но по-хорошему на ro инстансах надо сделать ro доступ к бд с помощью ролей, но я просто эти инстансы подключила к postgres slave
 - Для локального запуска есть свой .env файл в /backend, но тогда нужно раскоментить строчки в коде для его чтения в /backend/internal/app/config.go
+- Есть mirror-backend, который использует postgres slave (правда кажется я это сломала...)
 - До того, как нужен был master-slave я использовала обычный postgres образ, но для master-slave — [bitnami/postgresql](https://hub.docker.com/r/bitnami/postgresql), который у меня, кажется, каждый раз заново инициализирует бд
 - Есть вероятность, что мы что-то не протестили или не поправили в swagger
 - В PATCH запросах нужно указывать абсолютно все поля
