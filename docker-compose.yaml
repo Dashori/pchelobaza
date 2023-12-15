@@ -87,13 +87,13 @@ services:
       LOG_FILE: "logs.txt"
       POSTGRESQL_HOST: "postgres-slave"
       POSTGRESQL_PORT: 5432
-      POSTGRESQL_USERNAME: "dashori"
-      POSTGRESQL_PASSWORD: "password"
-      POSTGRESQL_DB: "postgres"
+      POSTGRESQL_USERNAME: dashori
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: postgres
       TZ: "Europe/Moscow"
     depends_on:
       postgres-slave:
-        condition: service_healthy 
+        condition: service_healthy
       backend:
         condition: service_started
     networks:
@@ -113,9 +113,9 @@ services:
       LOG_FILE: "logs.txt"
       POSTGRESQL_HOST: "postgres-slave"
       POSTGRESQL_PORT: 5432
-      POSTGRESQL_USERNAME: "dashori"
-      POSTGRESQL_PASSWORD: "password"
-      POSTGRESQL_DB: "postgres"
+      POSTGRESQL_USERNAME: dashori
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: postgres
       TZ: "Europe/Moscow"
     depends_on:
       postgres-slave:
@@ -137,9 +137,9 @@ services:
       LOG_FILE: "logs_mirror.txt"
       POSTGRESQL_HOST: "postgres-slave"
       POSTGRESQL_PORT: 5432
-      POSTGRESQL_USERNAME: "dashori"
-      POSTGRESQL_PASSWORD: "password"
-      POSTGRESQL_DB: "postgres"
+      POSTGRESQL_USERNAME: dashori
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: postgres
       TZ: "Europe/Moscow"
     ports: 
       - ${BACKEND_PORT}

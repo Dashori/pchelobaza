@@ -4,7 +4,6 @@ import (
 	"backend/internal/app"
 	"backend/internal/server"
 	"fmt"
-	"os"
 )
 
 func main() {
@@ -14,9 +13,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	host := os.Getenv("BACKEND_HOST")
-	port := os.Getenv("BACKEND_PORT")
-	fmt.Println("back ", host, port)
+
 	err = server.SetupServer(&a).Run()
 	if err != nil {
 		fmt.Println(err)

@@ -1,8 +1,8 @@
 package app
 
 import (
-	"fmt"
-	"github.com/joho/godotenv"
+	// "fmt"
+	// "github.com/joho/godotenv"
 	"os"
 )
 
@@ -23,14 +23,13 @@ type Config struct {
 }
 
 func (c *Config) ParseConfig() {
+	// при локальном запуске свой .env файл
+	// err := godotenv.Load(".env") 
+	// if err != nil {
+	// 	fmt.Println("error!!!")
+	// }
+	// c.Address = os.Getenv("BACKEND_HOST")
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Println("error!!!")
-		// log.Fatalf("Some error occured. Err: %s", err)
-	}
-
-	c.Address = os.Getenv("BACKEND_HOST")
 	c.Port = os.Getenv("BACKEND_PORT")
 	c.LogLevel = os.Getenv("LOG_LEVEL")
 	c.LogFile = os.Getenv("LOG_FILE")

@@ -1,17 +1,8 @@
-image: erlendum/golang-dind
+image: dashori/golang-dind:1.21.3
 
 stages:
   - pre
   - build
-
-backend-module-build-job:      
-  stage: pre
-  when: always
-  script:
-      - cd backend 
-      - go mod download
-  tags:
-    - web
 
 linter-backend-job:
   stage: pre
@@ -19,18 +10,13 @@ linter-backend-job:
   image: golangci/golangci-lint:v1.52.2
   script:
     - cd backend 
+    - go mod download
     - golangci-lint run --timeout 3m0s
-  needs:
-    - backend-module-build-job
-  tags:
-    - web
-
 
 test-job:
-  stage: build
+  stage: pre
   script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
-
+    - echo "Тут могли бы быть тесты"
 
 backend-build-job:    
   stage: build
@@ -39,10 +25,6 @@ backend-build-job:
     - cd backend 
     - go mod download
     - go build cmd/main.go
-  artifacts:
-    paths:
-      - backend/cmd/main
-    expire_in: 1 hour
   needs:
-    - backend-module-build-job
+    - linter-backend-job
 
