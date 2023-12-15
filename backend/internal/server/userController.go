@@ -33,14 +33,9 @@ func (s *services) PatchUser(c *gin.Context) {
 		return
 	}
 
-	loginToken, _, id, err := middlewares.ExtractTokenIdAndRole(c)
+	_, _, id, err := middlewares.ExtractTokenIdAndRole(c)
 	if err != nil {
 		jsonUnauthorizedResponse(c, nil)
-		return
-	}
-
-	if login != loginToken {
-		jsonBadRequestResponse(c, fmt.Errorf("Login from query and token not the same!"))
 		return
 	}
 

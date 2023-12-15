@@ -1,7 +1,6 @@
 package app
 
 import (
-	// "backend/internal/models"
 	dbErrors "backend/internal/pkg/errors/db_errors"
 	"backend/internal/pkg/hasher/implementation"
 	"backend/internal/repository"
@@ -13,7 +12,6 @@ import (
 	"github.com/charmbracelet/log"
 	_ "github.com/jackc/pgx/stdlib"
 	"os"
-	// "time"
 )
 
 type App struct {
